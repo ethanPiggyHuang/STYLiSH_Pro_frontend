@@ -8,6 +8,7 @@ import ThankYou from './pages/ThankYou/ThankYou';
 import Product from './pages/Product/Product';
 import Profile from './pages/Profile/Profile';
 import Promote from './pages/Admin/Promote';
+import Analyze from './pages/Admin/Analyze';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -20,7 +21,8 @@ root.render(
         <Route path="checkout" element={<Checkout />} />
         <Route path="thankyou" element={<ThankYou />} />
         <Route path="profile" element={<Profile />} />
-        <Route path="promote" element={<Promote />} />
+        <Route path="admin/promote" element={<Promote />} />
+        <Route path="admin/analyze" element={<Analyze />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

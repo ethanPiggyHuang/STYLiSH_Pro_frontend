@@ -202,12 +202,7 @@ function Promote() {
 
   //if (!product) return null;
 
-  return <Wrapper>promote
-            <
-
-
-
-  </Wrapper>;
+  return <Wrapper>promote</Wrapper>;
 }
 
 export default Promote;

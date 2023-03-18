@@ -34,7 +34,7 @@ function App() {
   const location = useLocation();
 
   useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search);
+    ReactGA.pageview(`${location.pathname}${location.search}_App`);
   }, [location]);
   return (
     <>

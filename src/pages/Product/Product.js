@@ -196,7 +196,6 @@ const Image = styled.img`
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
-<<<<<<< HEAD
   // const location = useLocation();
 
   // useEffect(() => {
@@ -209,20 +208,6 @@ function Product() {
   //   // });
   //   ReactGA.pageview(location.pathname + location.search);
   // }, [location]);
-=======
-  const location = useLocation();
-
-  useEffect(() => {
-    ReactGA.initialize('UA-000000-01', {
-      debug: true,
-      titleCase: false,
-      gaOptions: {
-        userId: 123,
-      },
-    });
-    ReactGA.pageview(location.pathname + location.search);
-  }, [location]);
->>>>>>> 6fb3b33 (feat: embed GA code to get product detail site traffic.)
 
   useEffect(() => {
     async function getProduct() {

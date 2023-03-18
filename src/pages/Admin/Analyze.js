@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro';
-import { useState } from 'react';
-// import SideBar from './SideBar';
+import { useState, useRef, useEffect } from 'react';
+import { lineChart } from './svg/lineChart';
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -100,8 +100,8 @@ function Analyze() {
       .fill('')
       .map((element, index) => (index === 0 ? 'large' : 'medium'))
   );
-  console.log(blockSize);
-
+  const blockData = [0, 1, 2, 3, 4];
+  const titles = ['交易總額', '流量', '客單價', '轉換率', '回購率'];
   const handleResize = (blockIndex) => {
     setBlockSize(
       blockSize.map((size, index) =>
@@ -110,8 +110,20 @@ function Analyze() {
     );
   };
 
-  const blockData = [0, 1, 2, 3, 4];
-  const titles = ['交易總額', '流量', '客單價', '轉換率', '回購率'];
+  const svgRef = useRef(null);
+
+  useEffect(() => {
+    // 定義資料
+    const data = [
+      { year: 2010, value: 10 },
+      { year: 2011, value: 40 },
+      { year: 2012, value: 30 },
+      { year: 2013, value: 65 },
+      { year: 2014, value: 50 },
+    ];
+
+    lineChart(data, svgRef.current);
+  }, [svgRef]);
 
   return (
     <>
@@ -135,9 +147,17 @@ function Analyze() {
                 {blockSize[index] === 'large' ? '縮' : '展'}
               </Resize>
             </TopBar>
-            <Chart size={blockSize[index]}>圖表</Chart>
+            <Chart size={blockSize[index]}></Chart>
           </Block>
         ))}
+
+        <svg ref={svgRef} width={800} height={500}>
+          <g transform="translate(50, 10)">
+            <text x={0} y={10} textAnchor="middle">
+              Line Chart
+            </text>
+          </g>
+        </svg>
       </Wrapper>
     </>
   );

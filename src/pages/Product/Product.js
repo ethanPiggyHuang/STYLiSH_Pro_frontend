@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+// import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import ReactGA from 'react-ga';
 
 import api from '../../utils/api';
 import ProductVariants from './ProductVariants';
@@ -193,6 +196,18 @@ const Image = styled.img`
 function Product() {
   const [product, setProduct] = useState();
   const { id } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.initialize('UA-000000-01', {
+      debug: true,
+      titleCase: false,
+      gaOptions: {
+        userId: 123,
+      },
+    });
+    ReactGA.pageview(location.pathname + location.search);
+  }, [location]);
 
   useEffect(() => {
     async function getProduct() {

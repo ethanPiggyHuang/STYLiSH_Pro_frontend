@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
-
+import ProductRating from './Rating';
 import api from '../../utils/api';
 
 const Wrapper = styled.div`
@@ -142,7 +142,8 @@ function Products() {
       window.removeEventListener('scroll', scrollHandler);
     };
   }, [keyword, category]);
-
+  //todo 需改成變數
+  const productRating = 2;
   return (
     <Wrapper>
       {products.map(({ id, main_image, colors, title, price }) => (
@@ -155,6 +156,8 @@ function Products() {
           </ProductColors>
           <ProductTitle>{title}</ProductTitle>
           <ProductPrice>TWD.{price}</ProductPrice>
+
+          <ProductRating rating={productRating}></ProductRating>
         </Product>
       ))}
       {isLoading && <Loading type="spinningBubbles" color="#313538" />}

@@ -1,6 +1,5 @@
 const api = {
   hostname: 'https://side-project2023.online/api/1.0',
-
   async getProducts(category, paging) {
     const response = await fetch(
       `${this.hostname}/products/${category}?paging=${paging}`

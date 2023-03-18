@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro';
+import { useState } from 'react';
 // import SideBar from './SideBar';
 
 const Wrapper = styled.div`
@@ -54,15 +55,28 @@ const TimeButtons = styled.div`
   height: 50px;
   width: 200px;
   display: flex;
+  justify-content: space-around;
 
   @media screen and (max-width: 1279px) {
   }
 `;
 
 const TimeButton = styled.div`
+  background-color: #f1f1f1;
+  height: 50px;
+  display: flex;
+  width: calc(100% / 3);
+  justify-content: center;
+  align-items: center;
+
+  @media screen and (max-width: 1279px) {
+  }
+`;
+
+const Resize = styled.div`
   background-color: lightgrey;
   height: 50px;
-  width: 200px;
+  width: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -81,70 +95,49 @@ const Chart = styled.div`
 
 function Analyze() {
   //if (!product) return null;
+  const [blockSize, setBlockSize] = useState(
+    new Array(5)
+      .fill('')
+      .map((element, index) => (index === 0 ? 'large' : 'medium'))
+  );
+  console.log(blockSize);
+
+  const handleResize = (blockIndex) => {
+    setBlockSize(
+      blockSize.map((size, index) =>
+        index === blockIndex ? (size === 'large' ? 'medium' : 'large') : size
+      )
+    );
+  };
+
+  const blockData = [0, 1, 2, 3, 4];
+  const titles = ['交易總額', '流量', '客單價', '轉換率', '回購率'];
 
   return (
     <>
       <Wrapper>
-        <Block size={'large'}>
-          <TopBar>
-            <Title>總訂單金額</Title>
-            <Amount>總金額：元</Amount>
-            <TimeButtons>
-              <TimeButton>月</TimeButton>
-              <TimeButton>週</TimeButton>
-              <TimeButton>日</TimeButton>
-            </TimeButtons>
-          </TopBar>
-          <Chart size={'large'}>圖表</Chart>
-        </Block>
-        <Block size={'medium'}>
-          <TopBar>
-            <Title>流量</Title>
-            <Amount>總金額：元</Amount>
-            <TimeButtons>
-              <TimeButton>月</TimeButton>
-              <TimeButton>週</TimeButton>
-              <TimeButton>日</TimeButton>
-            </TimeButtons>
-          </TopBar>
-          <Chart size={'medium'}>圖表</Chart>
-        </Block>
-        <Block size={'medium'}>
-          <TopBar>
-            <Title>客單價</Title>
-            <Amount>總金額：元</Amount>
-            <TimeButtons>
-              <TimeButton>月</TimeButton>
-              <TimeButton>週</TimeButton>
-              <TimeButton>日</TimeButton>
-            </TimeButtons>
-          </TopBar>
-          <Chart size={'medium'}>圖表</Chart>
-        </Block>
-        <Block size={'medium'}>
-          <TopBar>
-            <Title>轉換率</Title>
-            <Amount>總金額：元</Amount>
-            <TimeButtons>
-              <TimeButton>月</TimeButton>
-              <TimeButton>週</TimeButton>
-              <TimeButton>日</TimeButton>
-            </TimeButtons>
-          </TopBar>
-          <Chart size={'medium'}>圖表</Chart>
-        </Block>
-        <Block size={'medium'}>
-          <TopBar>
-            <Title>回購率</Title>
-            <Amount>總金額：元</Amount>
-            <TimeButtons>
-              <TimeButton>月</TimeButton>
-              <TimeButton>週</TimeButton>
-              <TimeButton>日</TimeButton>
-            </TimeButtons>
-          </TopBar>
-          <Chart size={'medium'}>圖表</Chart>
-        </Block>
+        {blockData.map((element, index) => (
+          <Block size={blockSize[index]} key={index}>
+            <TopBar>
+              <Title>{titles[index]}</Title>
+              <Amount>總金額：元</Amount>
+              <TimeButtons>
+                <TimeButton>月</TimeButton>
+                <TimeButton>週</TimeButton>
+                <TimeButton>日</TimeButton>
+              </TimeButtons>
+              <Resize
+                size={blockSize[index]}
+                onClick={() => {
+                  handleResize(index);
+                }}
+              >
+                {blockSize[index] === 'large' ? '縮' : '展'}
+              </Resize>
+            </TopBar>
+            <Chart size={blockSize[index]}>圖表</Chart>
+          </Block>
+        ))}
       </Wrapper>
     </>
   );

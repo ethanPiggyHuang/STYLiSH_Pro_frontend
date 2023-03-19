@@ -20,6 +20,7 @@ const api = {
     const response = await fetch(`${this.hostname}/products/details?id=${id}`);
     return await response.json();
   },
+
   async checkout(data, jwtToken) {
     const response = await fetch(`${this.hostname}/order/checkout`, {
       body: JSON.stringify(data),
@@ -48,6 +49,12 @@ const api = {
         Authorization: `Bearer ${jwtToken}`,
       }),
     });
+    return await response.json();
+  },
+  async getFuzzys() {
+    const response = await fetch(
+      `https://virtserver.swaggerhub.com/ORIN29377053_1/stylish/1.0.0/api/1.0/products/fuzzysearchs`
+    );
     return await response.json();
   },
 };

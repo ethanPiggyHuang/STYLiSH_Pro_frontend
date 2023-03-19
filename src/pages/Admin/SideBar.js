@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   width: 200px;
-  height: auto;
+  height: 500px;
   margin: 0 0;
   background-color: #313538;
   color: #f5f5f5;
@@ -12,8 +12,6 @@ const Wrapper = styled.div`
 `;
 
 function SideBar() {
-  //if (!product) return null;
-
   return <Wrapper>S</Wrapper>;
 }
 

@@ -2,8 +2,21 @@ import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
 import { lineChart } from './svg/lineChart';
 import { MyD3Component } from './svg/MyD3Component';
+import SideBar from './SideBar';
 
 const Wrapper = styled.div`
+  ${'' /* max-width: 960px; */}
+  margin: 0 auto;
+  display: flex;
+  justify-content: left;
+  ${'' /* flex-wrap: wrap; */}
+
+  @media screen and (max-width: 1279px) {
+    padding: 0 0 32px;
+  }
+`;
+
+const Blocks = styled.div`
   max-width: 960px;
   margin: 0 auto;
   display: flex;
@@ -127,8 +140,9 @@ function Analyze({ data }) {
   }, [svgRef]);
 
   return (
-    <>
-      <Wrapper>
+    <Wrapper>
+      <SideBar />
+      <Blocks>
         {blockData.map((element, index) => (
           <Block size={blockSize[index]} key={index}>
             <TopBar>
@@ -168,8 +182,8 @@ function Analyze({ data }) {
             { year: 2014, value: 50 },
           ]}
         /> */}
-      </Wrapper>
-    </>
+      </Blocks>
+    </Wrapper>
   );
 }
 

@@ -136,7 +136,7 @@ const Table = () => {
   ];
 
   const [rows, setRows] = useState([...initialRows]); // replace [...] with your rows array
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(rows.map(() => ''));
   const columns = [
     { field: 'id', headerName: '排名', width: 100 },
     { field: 'name', headerName: '商品名稱', width: 130 },
@@ -193,6 +193,8 @@ const Table = () => {
       renderCell: (params) => {
         const onChange = (e) => {
           setSelectedOption(e.target.value);
+          params.row.isSelected = true;
+          e.stopPropagation();
         };
 
         return (

@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
 import { lineChart } from './svg/lineChart';
-import { MyD3Component } from './svg/MyD3Component';
+import { MyC3Component } from './svg/MyC3Component';
 import SideBar from './SideBar';
 
 const Wrapper = styled.div`
@@ -218,6 +218,7 @@ function Analyze({ data }) {
             { year: 2014, value: 50 },
           ]}
         /> */}
+        <MyC3Component />
       </Blocks>
       {/* <button onClick={() => getOrders()}>測試POST</button> */}
     </Wrapper>

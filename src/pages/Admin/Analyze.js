@@ -5,11 +5,9 @@ import { MyD3Component } from './svg/MyD3Component';
 import SideBar from './SideBar';
 
 const Wrapper = styled.div`
-  ${'' /* max-width: 960px; */}
   margin: 0 auto;
   display: flex;
   justify-content: left;
-  ${'' /* flex-wrap: wrap; */}
 
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;

@@ -28,6 +28,15 @@ const GlobalStyle = createGlobalStyle`
       padding: 102px 0 208px;
     }
   }
+
+  a {
+    text-decoration: none;
+
+    &:visited, &:link {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
 `;
 
 function App() {

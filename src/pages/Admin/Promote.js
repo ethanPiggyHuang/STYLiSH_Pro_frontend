@@ -13,7 +13,8 @@ import {
   faCompress,
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
-
+import SideBar from './SideBar';
+import ChatComponet from '../Home/ChatCustomer';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // import {
 //   faArrowUp,
@@ -23,11 +24,9 @@ import {
 //import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Wrapper = styled.div`
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 20px 0 49px;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: left;
 
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;
@@ -364,6 +363,7 @@ function Promote() {
 
   return (
     <Wrapper>
+      <SideBar />
       <Rank>
         <RankTitle>
           <Title>| 暢銷排名</Title>
@@ -371,30 +371,7 @@ function Promote() {
         </RankTitle>
 
         <Table></Table>
-        <FixedImage
-          src={chatIcon}
-          alt="Chat Icon"
-          onClick={handleChatboxToggle}
-        />
-        <Chat isVisible={isChatboxVisible} isExpanded={isExpanded}>
-          <ChatHeader onClick={toggleExpand}>
-            <StatusIndicator isOnline={true} />
-            客服在線上
-            <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
-          </ChatHeader>
-          <ChatMessages>
-            <UserImage></UserImage>
-            <CustomerMessage></CustomerMessage>
-            <AdminImage></AdminImage>
-            <Reply></Reply>
-            <ChatInputContainer>
-              <ChatInput type="text" placeholder="什麼時候會進貨呢?" />
-              <SendButton>
-                <FontAwesomeIcon icon={faPaperPlane} />
-              </SendButton>
-            </ChatInputContainer>
-          </ChatMessages>
-        </Chat>
+        <ChatComponet />
 
         {/* <Header>
           <Label column="1">排名</Label>

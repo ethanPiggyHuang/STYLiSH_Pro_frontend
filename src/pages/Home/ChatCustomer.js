@@ -162,12 +162,13 @@ function ChatComponet() {
           <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
         </ChatHeader>
         <ChatMessages>
+          親,有什麼可以幫你呢?
           <UserImage></UserImage>
           <CustomerMessage></CustomerMessage>
           <AdminImage></AdminImage>
           <Reply></Reply>
           <ChatInputContainer>
-            <ChatInput type="text" placeholder="" />
+            <ChatInput type="text" placeholder="什麼時候會進貨呢?" />
             <SendButton>
               <FontAwesomeIcon icon={faPaperPlane} />
             </SendButton>

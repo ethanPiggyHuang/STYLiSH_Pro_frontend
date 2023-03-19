@@ -9,11 +9,7 @@ import Product from './pages/Product/Product';
 import Profile from './pages/Profile/Profile';
 import Promote from './pages/Admin/Promote';
 import Analyze from './pages/Admin/Analyze';
-<<<<<<< HEAD
 import Orders from './pages/Admin/Orders';
-=======
-import Order from './pages/Admin/Order';
->>>>>>> feature/casey-promote
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

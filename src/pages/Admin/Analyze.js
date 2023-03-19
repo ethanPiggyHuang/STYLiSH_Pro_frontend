@@ -114,7 +114,7 @@ function Analyze({ data }) {
   const svgRef = useRef(null);
 
   useEffect(() => {
-    // 定義資料
+    // 定義資料;
     // const data = [
     //   { year: 2010, value: 10 },
     //   { year: 2011, value: 45 },
@@ -152,14 +152,14 @@ function Analyze({ data }) {
           </Block>
         ))}
 
-        {/* <svg ref={svgRef} width={800} height={500}>
+        <svg ref={svgRef} width={800} height={500}>
           <g transform="translate(50, 10)">
             <text x={0} y={10} textAnchor="middle">
               Line Chart
             </text>
           </g>
-        </svg> */}
-        <MyD3Component
+        </svg>
+        {/* <MyD3Component
           data={[
             { year: 2010, value: 10 },
             { year: 2011, value: 45 },
@@ -167,7 +167,7 @@ function Analyze({ data }) {
             { year: 2013, value: 65 },
             { year: 2014, value: 50 },
           ]}
-        />
+        /> */}
       </Wrapper>
     </>
   );

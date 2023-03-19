@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 export const lineChart = (data, svgRefCurrent) => {
   // 設定 SVG 寬度和高度
   const width = 500;
-  const height = 50;
+  const height = 400;
 
   // 創建 SVG 元素
   const svg = d3

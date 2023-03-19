@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import fb from '../utils/fb';
 import api from '../utils/api';
 
@@ -40,6 +35,7 @@ export const AuthContextProvider = ({ children }) => {
     const checkAuthStatus = async () => {
       await fb.init();
       const response = await fb.getLoginStatus();
+
       if (response.status === 'connected') {
         handleLoginResponse(response);
         setLoading(false);
@@ -47,7 +43,7 @@ export const AuthContextProvider = ({ children }) => {
         window.localStorage.removeItem('jwtToken');
         setLoading(false);
       }
-    }
+    };
     checkAuthStatus();
   }, [handleLoginResponse]);
 
@@ -63,7 +59,7 @@ export const AuthContextProvider = ({ children }) => {
       setLoading(false);
       return null;
     }
-  }
+  };
 
   const logout = async () => {
     setLoading(true);
@@ -73,7 +69,7 @@ export const AuthContextProvider = ({ children }) => {
     setJwtToken();
     window.localStorage.removeItem('jwtToken');
     setLoading(false);
-  }
+  };
 
   return (
     <AuthContext.Provider
@@ -89,4 +85,4 @@ export const AuthContextProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-}
+};

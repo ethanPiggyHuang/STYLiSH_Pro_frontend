@@ -161,6 +161,20 @@ function Analyze({ data }) {
   //     .then((res) => console.log(res));
   // };
 
+  // const getOrders = () => {
+  //   fetch('https://side-project2023.online/api/1.0/report/order/detail')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const newArr = data.data
+  //         .reduce((acc, cur) => {
+  //           acc = [...acc, cur.order_detail];
+  //           return acc;
+  //         }, [])
+  //         .flat(2);
+  //       console.log(newArr);
+  //     });
+  // };
+
   return (
     <Wrapper>
       <SideBar />
@@ -205,7 +219,7 @@ function Analyze({ data }) {
           ]}
         /> */}
       </Blocks>
-      {/* <button onClick={() => tryPost()}>測試POST</button> */}
+      {/* <button onClick={() => getOrders()}>測試POST</button> */}
     </Wrapper>
   );
 }

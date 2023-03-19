@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
-import ProductRating from './Rating';
+
+import StarRating from './Star';
 import api from '../../utils/api';
 import chatIcon from './chat.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -87,7 +88,7 @@ const ProductPrice = styled.div`
   letter-spacing: 4px;
   color: #3f3a3a;
   line-height: 24px;
-
+  margin-bottom: 10px;
   @media screen and (max-width: 1279px) {
     margin-top: 8px;
     font-size: 12px;
@@ -254,9 +255,8 @@ function Products() {
             ))}
           </ProductColors>
           <ProductTitle>{title}</ProductTitle>
-          <ProductPrice>TWD.{price}</ProductPrice>
-
-          <ProductRating rating={productRating}></ProductRating>
+          <ProductPrice uctPrice>TWD.{price}</ProductPrice>
+          <StarRating></StarRating>
         </Product>
       ))}
       <FixedImage

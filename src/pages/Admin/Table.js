@@ -32,6 +32,19 @@ const Table = () => {
       });
   };
 
+  const getRatings = () => {
+    fetch('https://side-project2023.online/api/1.0/report/order/getevaluate', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   const tryGet = () => {
     fetch('https://side-project2023.online/api/1.0/report/order/detail', {
       method: 'get',
@@ -264,6 +277,7 @@ const Table = () => {
     <div style={{ height: '80%', width: '100%' }}>
       <button onClick={() => tryGet()}>開始排名</button>
       <button onClick={() => getHotData()}>get hot data</button>
+      <button onClick={() => getRatings()}>get rating</button>
       <DataGrid
         rows={rows}
         columns={columns}

@@ -134,9 +134,15 @@ const Table = () => {
       state: 'even',
     },
   ];
+  const [rows, setRows] = useState([...initialRows]);
+  const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
+  const handleSelectChange = (rowIndex, e) => {
+    const newSelectedOptions = [...selectedOptions];
+    newSelectedOptions[rowIndex] = e.target.value;
+    setSelectedOptions(newSelectedOptions);
+    e.stopPropagation();
+  };
 
-  const [rows, setRows] = useState([...initialRows]); // replace [...] with your rows array
-  const [selectedOption, setSelectedOption] = useState(rows.map(() => ''));
   const columns = [
     { field: 'id', headerName: '排名', width: 100 },
     { field: 'name', headerName: '商品名稱', width: 130 },
@@ -191,14 +197,13 @@ const Table = () => {
       width: 200,
       responsive: true,
       renderCell: (params) => {
-        const onChange = (e) => {
-          setSelectedOption(e.target.value);
-          params.row.isSelected = true;
-          e.stopPropagation();
-        };
+        const rowIndex = params.row.id;
 
         return (
-          <StyledSelect value={selectedOption} onChange={onChange}>
+          <StyledSelect
+            value={selectedOptions[rowIndex]}
+            onChange={(e) => handleSelectChange(rowIndex, e)}
+          >
             <MenuItem value="">選擇折數</MenuItem>
             <MenuItem value="option1">9折</MenuItem>
             <MenuItem value="option2">8折</MenuItem>

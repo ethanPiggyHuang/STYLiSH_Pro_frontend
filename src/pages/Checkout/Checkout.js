@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import api from '../../utils/api';
 import tappay from '../../utils/tappay';
@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
 import Button from '../../components/Button';
 import Cart from './Cart';
+import Recommend from './Recommend';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -138,7 +139,7 @@ const FormControl = styled.input`
   width: 574px;
   height: 30px;
   border-radius: 8px;
-  border: solid 1px ${({ invalid }) => invalid ? '#CB4042' : '#979797'};
+  border: solid 1px ${({ invalid }) => (invalid ? '#CB4042' : '#979797')};
 
   @media screen and (max-width: 1279px) {
     margin-top: 10px;
@@ -306,7 +307,7 @@ function Checkout() {
         cardExpirationDateRef.current,
         cardCCVRef.current
       );
-    }
+    };
     setupTappay();
   }, []);
 
@@ -319,7 +320,7 @@ function Checkout() {
 
   async function checkout() {
     try {
-      setLoading(true);      
+      setLoading(true);
 
       const token = isLogin ? jwtToken : await login();
 
@@ -332,28 +333,30 @@ function Checkout() {
         window.alert('尚未選購商品');
         return;
       }
-  
+
       if (Object.values(recipient).some((value) => !value)) {
         window.alert('請填寫完整訂購資料');
-        setInvalidFields(Object.keys(recipient).filter(key => !recipient[key]))
+        setInvalidFields(
+          Object.keys(recipient).filter((key) => !recipient[key])
+        );
         formRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
+          behavior: 'smooth',
+          block: 'center',
         });
         return;
       }
-  
+
       if (!tappay.canGetPrime()) {
         window.alert('付款資料輸入有誤');
         return;
       }
-  
+
       const result = await tappay.getPrime();
       if (result.status !== 0) {
         window.alert('付款資料輸入有誤');
         return;
       }
-  
+
       const { data } = await api.checkout(
         {
           prime: result.card.prime,
@@ -382,6 +385,7 @@ function Checkout() {
   return (
     <Wrapper>
       <Cart />
+      <Recommend />
       <GrayBlock>
         <Label>配送國家</Label>
         <Select>
@@ -461,7 +465,9 @@ function Checkout() {
         <Currency>NT.</Currency>
         <PriceValue>{subtotal + freight}</PriceValue>
       </TotalPrice>
-      <Button loading={loading} onClick={checkout}>確認付款</Button>
+      <Button loading={loading} onClick={checkout}>
+        確認付款
+      </Button>
     </Wrapper>
   );
 }

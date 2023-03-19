@@ -206,7 +206,7 @@ function Product() {
   //   //     userId: 123,
   //   //   },
   //   // });
-  //   ReactGA.pageview(location.pathname + location.search);
+  //   ReactGA.pageview(`${location.pathname}${location.search}_Products`);
   // }, [location]);
 
   useEffect(() => {

@@ -1,6 +1,7 @@
 import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
 import { lineChart } from './svg/lineChart';
+import { MyD3Component } from './svg/MyD3Component';
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -93,7 +94,7 @@ const Chart = styled.div`
   }
 `;
 
-function Analyze() {
+function Analyze({ data }) {
   //if (!product) return null;
   const [blockSize, setBlockSize] = useState(
     new Array(5)
@@ -114,13 +115,13 @@ function Analyze() {
 
   useEffect(() => {
     // 定義資料
-    const data = [
-      { year: 2010, value: 10 },
-      { year: 2011, value: 40 },
-      { year: 2012, value: 30 },
-      { year: 2013, value: 65 },
-      { year: 2014, value: 50 },
-    ];
+    // const data = [
+    //   { year: 2010, value: 10 },
+    //   { year: 2011, value: 45 },
+    //   { year: 2012, value: 10 },
+    //   { year: 2013, value: 65 },
+    //   { year: 2014, value: 50 },
+    // ];
 
     lineChart(data, svgRef.current);
   }, [svgRef]);
@@ -151,13 +152,22 @@ function Analyze() {
           </Block>
         ))}
 
-        <svg ref={svgRef} width={800} height={500}>
+        {/* <svg ref={svgRef} width={800} height={500}>
           <g transform="translate(50, 10)">
             <text x={0} y={10} textAnchor="middle">
               Line Chart
             </text>
           </g>
-        </svg>
+        </svg> */}
+        <MyD3Component
+          data={[
+            { year: 2010, value: 10 },
+            { year: 2011, value: 45 },
+            { year: 2012, value: 10 },
+            { year: 2013, value: 65 },
+            { year: 2014, value: 50 },
+          ]}
+        />
       </Wrapper>
     </>
   );

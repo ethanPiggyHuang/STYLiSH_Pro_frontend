@@ -12,6 +12,14 @@ import Analyze from './pages/Admin/Analyze';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+const data = [
+  { year: 2010, value: 10 },
+  { year: 2011, value: 15 },
+  { year: 2012, value: 10 },
+  { year: 2013, value: 65 },
+  { year: 2014, value: 50 },
+];
+
 root.render(
   <BrowserRouter>
     <Routes>
@@ -22,7 +30,7 @@ root.render(
         <Route path="thankyou" element={<ThankYou />} />
         <Route path="profile" element={<Profile />} />
         <Route path="admin/promote" element={<Promote />} />
-        <Route path="admin/analyze" element={<Analyze />} />
+        <Route path="admin/analyze" element={<Analyze data={data} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

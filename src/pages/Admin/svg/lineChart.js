@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 export const lineChart = (data, svgRefCurrent) => {
   // 設定 SVG 寬度和高度
   const width = 500;
-  const height = 300;
+  const height = 50;
 
   // 創建 SVG 元素
   const svg = d3
@@ -26,7 +26,7 @@ export const lineChart = (data, svgRefCurrent) => {
 
   // 創建 x 軸和 y 軸
   const xAxis = d3.axisBottom(x);
-  const yAxis = d3.axisLeft(y);
+  const yAxis = d3.axisLeft(y).ticks(5).tickValues([1, 2, 3, 4, 5]);
 
   // 繪製 x 軸和 y 軸
   svg.append('g').attr('transform', `translate(0, ${height})`).call(xAxis);
@@ -47,6 +47,8 @@ export const lineChart = (data, svgRefCurrent) => {
     .attr('stroke-width', 2)
     .attr('d', line);
 
+  svg.exit().remove();
+
   // 添加標籤
   svg
     .append('text')
@@ -62,4 +64,6 @@ export const lineChart = (data, svgRefCurrent) => {
     .attr('y', -40)
     .style('text-anchor', 'middle')
     .text('Value');
+
+  // svg.scaleLinear().domain([10, 130]).range([0, 960]);
 };

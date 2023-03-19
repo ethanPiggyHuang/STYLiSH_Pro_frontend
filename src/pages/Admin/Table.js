@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { MenuItem, Select, Button } from '@mui/material';
+import { TextField, MenuItem, Select, Button } from '@mui/material';
 import styled from 'styled-components';
 
 const StyledSelect = styled(Select)`
@@ -136,10 +136,18 @@ const Table = () => {
   ];
   const [rows, setRows] = useState([...initialRows]);
   const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
+  const [campaignTimeOptions, setCampaignTimeOptions] = useState({});
   const handleSelectChange = (rowIndex, e) => {
-    const newSelectedOptions = [...selectedOptions];
-    newSelectedOptions[rowIndex] = e.target.value;
-    setSelectedOptions(newSelectedOptions);
+    const newDiscountOptions = [...selectedOptions];
+    newDiscountOptions[rowIndex] = e.target.value;
+    setSelectedOptions(newDiscountOptions);
+    e.stopPropagation();
+  };
+
+  const handleCampaignTime = (rowIndex, e) => {
+    const newCampaignTimeOptions = [...campaignTimeOptions];
+    newCampaignTimeOptions[rowIndex] = e.target.value;
+    setCampaignTimeOptions(newCampaignTimeOptions);
     e.stopPropagation();
   };
 
@@ -194,7 +202,7 @@ const Table = () => {
       field: 'discount',
       headerName: '選擇折扣',
       sortable: false,
-      width: 200,
+      width: 130,
       responsive: true,
       renderCell: (params) => {
         const rowIndex = params.row.id;
@@ -216,7 +224,7 @@ const Table = () => {
       field: 'action',
       headerName: '促銷',
       sortable: false,
-      width: 90,
+      width: 70,
       responsive: true,
       renderCell: (params) => {
         const onClick = (e) => {
@@ -228,6 +236,28 @@ const Table = () => {
         };
 
         return <StyledButton onClick={onClick}>促銷</StyledButton>;
+      },
+    },
+    {
+      field: 'campaignTime',
+      headerName: 'deadline',
+      sortable: false,
+      width: 200,
+      responsive: true,
+      renderCell: (params) => {
+        const rowIndex = params.row.id;
+
+        return (
+          <StyledSelect
+            value={campaignTimeOptions[rowIndex]}
+            onChange={(e) => handleCampaignTime(rowIndex, e)}
+          >
+            <MenuItem value="">選擇天數</MenuItem>
+            <MenuItem value="option1">1天</MenuItem>
+            <MenuItem value="option2">3天</MenuItem>
+            <MenuItem value="option3">7天</MenuItem>
+          </StyledSelect>
+        );
       },
     },
   ];

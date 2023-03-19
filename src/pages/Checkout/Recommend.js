@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 
-import { CartContext } from '../../context/cartContext';
 import api from '../../utils/api';
+import { CartContext } from '../../context/cartContext';
 
 const Wrapper = styled.div`
   margin-top: 10px;
@@ -131,54 +131,53 @@ const AddToCartButton = styled.div`
 `;
 
 function Recommend() {
-  // const { cartItems, setCartItems } = useContext(CartContext);
+  const { cartItems, setCartItems } = useContext(CartContext);
+  console.log(cartItems); //TODO: 根據 cart item 名稱去抓 fuzzies
 
-  // 接 https://virtserver.swaggerhub.com/ORIN29377053_1/stylish/1.0.0/api/1.0/products/fuzzysearchs
   const [recommentItems, setRecommentItems] = useState([]);
-  console.log(recommentItems);
 
   useEffect(() => {
     async function getFuzzys() {
-      const { data } = await api.getFuzzys();
+      const { data } = await api.getFuzzys('女'); //TODO:
       setRecommentItems(data);
     }
     getFuzzys();
   }, []);
 
-  const fuzzys = () => {
-    setRecommentItems([
-      ...recommentItems,
-      {
-        id: 201807242222,
-        category: 'men',
-        title: '經典商務西裝',
-        description: '厚薄：薄\r\n彈性：無',
-        price: 3999,
-        texture: '棉 100%',
-        wash: '手洗，溫水',
-        place: '中國',
-        node: '實品顏色依單品照為主',
-        story:
-          'O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.',
-        main_image:
-          'https://api.appworks-school.tw/assets/201807202140/main.jpg',
-        variants: [
-          {
-            color_code: '334455',
-            size: 'S',
-            stock: 9,
-          },
-        ],
-        colors: [
-          {
-            code: '334455',
-            name: '深藍',
-          },
-        ],
-        sizes: ['S'],
-      },
-    ]);
-  };
+  // const fuzzys = () => {
+  //   setRecommentItems([
+  //     ...recommentItems,
+  //     {
+  //       id: 201807242222,
+  //       category: 'men',
+  //       title: '經典商務西裝',
+  //       description: '厚薄：薄\r\n彈性：無',
+  //       price: 3999,
+  //       texture: '棉 100%',
+  //       wash: '手洗，溫水',
+  //       place: '中國',
+  //       node: '實品顏色依單品照為主',
+  //       story:
+  //         'O.N.S is all about options, which is why we took our staple polo shirt and upgraded it with slubby linen jersey, making it even lighter for those who prefer their summer style extra-breezy.',
+  //       main_image:
+  //         'https://api.appworks-school.tw/assets/201807202140/main.jpg',
+  //       variants: [
+  //         {
+  //           color_code: '334455',
+  //           size: 'S',
+  //           stock: 9,
+  //         },
+  //       ],
+  //       colors: [
+  //         {
+  //           code: '334455',
+  //           name: '深藍',
+  //         },
+  //       ],
+  //       sizes: ['S'],
+  //     },
+  //   ]);
+  // };
 
   return (
     <Wrapper>
@@ -205,7 +204,7 @@ function Recommend() {
           ))}
         </Items>
       )}
-      <button onClick={() => fuzzys()}>測試</button>
+      {/* <button onClick={() => fuzzys()}>測試</button> */}
     </Wrapper>
   );
 }

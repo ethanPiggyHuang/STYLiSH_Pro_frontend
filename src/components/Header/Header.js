@@ -243,7 +243,7 @@ const categories = [
 
 function Header() {
   const [inputValue, setInputValue] = useState('');
-  const { user } = useContext(AuthContext)
+  const { user } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -292,6 +292,10 @@ function Header() {
         <PageLink to="/profile">
           <PageLinkProfileIcon icon={profile} url={user?.picture} />
           <PageLinkText>會員</PageLinkText>
+        </PageLink>
+        <PageLink to="/admin/analyze">
+          <PageLinkProfileIcon icon={profile} />
+          <PageLinkText>後台</PageLinkText>
         </PageLink>
       </PageLinks>
     </Wrapper>

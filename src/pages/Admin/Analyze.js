@@ -137,6 +137,30 @@ function Analyze({ data }) {
     lineChart(data, svgRef.current);
   }, [svgRef]);
 
+  // const headers = {
+  //   'Content-Type': 'application/json',
+  //   // Accept: 'application/json',
+  //   // Authorization: `Bearer ${token}`,
+  // };
+
+  const body = {
+    id: '201807242222',
+    discount: '0.8',
+    deadline: '2023-03-20',
+  };
+
+  // const tryPost = () => {
+  //   fetch('https://side-project2023.online/api/1.0/report/hot/add', {
+  //     method: 'POST',
+  //     headers: new Headers({
+  //       'Content-Type': 'application/json',
+  //     }),
+  //     body: JSON.stringify(body),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => console.log(res));
+  // };
+
   return (
     <Wrapper>
       <SideBar />
@@ -181,6 +205,7 @@ function Analyze({ data }) {
           ]}
         /> */}
       </Blocks>
+      {/* <button onClick={() => tryPost()}>測試POST</button> */}
     </Wrapper>
   );
 }

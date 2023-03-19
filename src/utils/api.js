@@ -51,9 +51,10 @@ const api = {
     });
     return await response.json();
   },
-  async getFuzzys() {
+  async getFuzzys(keyword) {
     const response = await fetch(
-      `https://virtserver.swaggerhub.com/ORIN29377053_1/stylish/1.0.0/api/1.0/products/fuzzysearchs`
+      // domain 要改成 https://side-project2023.online/api/1.0/products/fuzzysearchs
+      `https://side-project2023.online/api/1.0/products/fuzzysearchs?keyword=${keyword}`
     );
     return await response.json();
   },

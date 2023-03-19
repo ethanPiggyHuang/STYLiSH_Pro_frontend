@@ -33,6 +33,7 @@ root.render(
         <Route path="admin/promote" element={<Promote />} />
         <Route path="admin/analyze" element={<Analyze data={data} />} />
         <Route path="admin/orders" element={<Orders />} />
+        <Route path="admin" element={<Navigate to="admin/analyze" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

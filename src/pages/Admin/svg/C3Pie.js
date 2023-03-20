@@ -26,7 +26,7 @@ export const C3Pie = () => {
             )
           )
         );
-        console.log();
+        console.log(data.data);
       });
   }, []);
 

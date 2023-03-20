@@ -47,7 +47,7 @@ const ProductName = styled.div`
 `;
 
 const ProductQty = styled.div`
-  width: 150px;
+  width: 50px;
 `;
 
 const ProductPrice = styled.div`
@@ -55,23 +55,67 @@ const ProductPrice = styled.div`
 `;
 
 const ProductDetail = styled.div`
-  flex-grow: 150px;
+  width: 150px;
+  cursor: ${({ index }) => (index !== 0 ? 'pointer' : '')};
 `;
 const ProductContact = styled.div`
-  flex-grow: 150px;
+  width: 150px;
+  cursor: ${({ index }) => (index !== 0 ? 'pointer' : '')};
+`;
+const ProductRate = styled.div`
+  width: 200px;
+  text-align: left;
+  color: ${({ index }) => (index !== 0 ? 'red' : '')};
+  cursor: ${({ index }) => (index !== 0 ? 'pointer' : '')};
+`;
+
+const ItemQuantitySelect = styled.select`
+  width: 80px;
+  height: 30px;
+  padding-left: 17px;
+  border-radius: 8px;
+  border: solid 1px #979797;
+  background-color: #f3f3f3;
+  visibility: ${({ index }) => (index === 0 ? 'hidden' : '')};
+  @media screen and (max-width: 1279px) {
+    margin-top: 12px;
+  }
 `;
 
 export default function PersonalOrder() {
   const [orderList, setOrderList] = useState([]);
-  console.log(orderList);
+  const [rankList, setRankList] = useState(0);
+  // console.log(orderList);
   useEffect(() => {
     fetch('https://side-project2023.online/api/1.0/report/order/detail')
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data.data);ss
         setOrderList(data.data);
       });
   }, []);
+
+  const handleRate = (order, orderDetail, rank) => {
+    const body = {
+      order_id: order.order_id,
+      evaluate: [
+        {
+          product_id: orderDetail.id,
+          rank: rank,
+        },
+      ],
+      comment: '物流很爛',
+    };
+    console.log(rank);
+    fetch('https://side-project2023.online/api/1.0/report/order/evaluate', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res));
+  };
   return (
     <Orders>
       <Socket></Socket>
@@ -85,37 +129,49 @@ export default function PersonalOrder() {
           <ProductPrice>小計</ProductPrice>
           <ProductDetail>詳細資訊</ProductDetail>
           <ProductContact>聯絡客服</ProductContact>
+          <ItemQuantitySelect index={0}></ItemQuantitySelect>
+          <ProductRate index={0}>評價區</ProductRate>
         </Order>
         {orderList.length !== 0 &&
-          orderList.map((order) => {
-            return (
-              <Order>
-                <OrderId>{order.id}</OrderId>
-                <ProductName>商品名稱</ProductName>
-                <ProductQty>數量</ProductQty>
-                <ProductPrice>小計</ProductPrice>
-                <ProductDetail>詳細資訊</ProductDetail>
-                <ProductContact>聯絡客服</ProductContact>
+          orderList.map((order) =>
+            order.order_detail.map((orderDetail, index) => (
+              <Order key={`${order.order_id}${index}`}>
+                <OrderId>{order.order_id}</OrderId>
+                <ProductName>{orderDetail.name}</ProductName>
+                <ProductQty>{orderDetail.qty}</ProductQty>
+                <ProductPrice>{orderDetail.price}</ProductPrice>
+                <ProductDetail
+                  onClick={() => {
+                    alert('功能還沒寫，別亂按～');
+                  }}
+                >
+                  詳細資訊
+                </ProductDetail>
+                <ProductContact
+                  onClick={() => {
+                    alert('功能還沒寫，別亂按～');
+                  }}
+                >
+                  聯絡客服
+                </ProductContact>
+                <ItemQuantitySelect
+                  value={rankList}
+                  onChange={(e) => setRankList(e.target.value)}
+                >
+                  {[0, 1, 2, 3, 4, 5].map((_, index) => (
+                    <option key={index}>{index}</option>
+                  ))}
+                </ItemQuantitySelect>
+                <ProductRate
+                  onClick={() => {
+                    handleRate(order, orderDetail, rankList);
+                  }}
+                >
+                  送出評價
+                </ProductRate>
               </Order>
-            );
-          })}
-
-        <Order>
-          <OrderId>1</OrderId>
-          <ProductName>女版休閒經典裙子</ProductName>
-          <ProductQty>100</ProductQty>
-          <ProductPrice>20220</ProductPrice>
-          <ProductDetail>詳細資訊</ProductDetail>
-          <ProductContact>聯絡客服</ProductContact>
-        </Order>
-        <Order>
-          <OrderId>2</OrderId>
-          <ProductName>女版休閒經典裙子</ProductName>
-          <ProductQty>100</ProductQty>
-          <ProductPrice>20220</ProductPrice>
-          <ProductDetail>詳細資訊</ProductDetail>
-          <ProductContact>聯絡客服</ProductContact>
-        </Order>
+            ))
+          )}
       </OrderTable>
     </Orders>
   );

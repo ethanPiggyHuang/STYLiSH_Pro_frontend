@@ -160,43 +160,47 @@ export default function PersonalOrder() {
         </Order>
         {orderList.length !== 0 &&
           orderList.map((order) =>
-            order.order_detail.map((orderDetail, index) => (
-              <Order key={`${order.order_id}${index}`}>
-                <OrderId>{order.order_id}</OrderId>
-                <ProductName>{orderDetail.name}</ProductName>
-                <ProductQty>{orderDetail.qty}</ProductQty>
-                <ProductPrice>{orderDetail.price}</ProductPrice>
-                <ProductDetail
-                  onClick={() => {
-                    alert('功能還沒寫，別亂按～');
-                  }}
-                >
-                  詳細資訊
-                </ProductDetail>
-                <ProductContact
-                  onClick={() => {
-                    alert('功能還沒寫，別亂按～');
-                  }}
-                >
-                  聯絡客服
-                </ProductContact>
-                <ItemQuantitySelect
-                  value={rankList}
-                  onChange={(e) => setRankList(e.target.value)}
-                >
-                  {[0, 1, 2, 3, 4, 5].map((_, index) => (
-                    <option key={index}>{index}</option>
-                  ))}
-                </ItemQuantitySelect>
-                <ProductRate
-                  onClick={() => {
-                    handleRate(order, orderDetail, rankList);
-                  }}
-                >
-                  送出評價
-                </ProductRate>
-              </Order>
-            ))
+            order.order_detail.map((orderDetail, index) =>
+              orderDetail.qty ? (
+                <Order key={`${order.order_id}${index}`}>
+                  <OrderId>{order.order_id}</OrderId>
+                  <ProductName>{orderDetail.name}</ProductName>
+                  <ProductQty>{orderDetail.qty}</ProductQty>
+                  <ProductPrice>{orderDetail.price}</ProductPrice>
+                  <ProductDetail
+                    onClick={() => {
+                      alert('功能還沒寫，別亂按～');
+                    }}
+                  >
+                    詳細資訊
+                  </ProductDetail>
+                  <ProductContact
+                    onClick={() => {
+                      alert('功能還沒寫，別亂按～');
+                    }}
+                  >
+                    聯絡客服
+                  </ProductContact>
+                  <ItemQuantitySelect
+                    value={rankList}
+                    onChange={(e) => setRankList(e.target.value)}
+                  >
+                    {[0, 1, 2, 3, 4, 5].map((_, index) => (
+                      <option key={index}>{index}</option>
+                    ))}
+                  </ItemQuantitySelect>
+                  <ProductRate
+                    onClick={() => {
+                      handleRate(order, orderDetail, rankList);
+                    }}
+                  >
+                    送出評價
+                  </ProductRate>
+                </Order>
+              ) : (
+                ''
+              )
+            )
           )}
       </OrderTable>
     </Orders>

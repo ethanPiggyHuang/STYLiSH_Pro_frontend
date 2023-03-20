@@ -22,7 +22,6 @@ const MemberInfo = styled.div`
   text-align: center;
   position: fixed;
   width: 300px;
-  ${'' /* left: 30px; */}
 
   ${
     '' /* ${({ isLogin }) =>

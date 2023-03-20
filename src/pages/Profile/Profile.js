@@ -1,15 +1,39 @@
 import { useContext } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import ReactLoading from 'react-loading';
 
 import { AuthContext } from '../../context/authContext';
+import PersonalOrder from './PersonalOrder';
 
 const Wrapper = styled.div`
+  padding: 0ss 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+`;
+
+const MemberInfo = styled.div`
   padding: 60px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  ${({ isLogin }) => (isLogin ? 'position: fixed; left: 30px;' : '')}
+
+  ${'' /* transition: width 2s ease-out 2s; */}
+  ${'' /* animation: move 5s 1; */}
+  ${
+    '' /* @keyframes move {
+    from {
+      left: 0;
+    }
+    to {
+      left: 50px;
+    }
+  } */
+  }
 `;
 
 const Title = styled.div`
@@ -40,26 +64,24 @@ function Profile() {
 
   const renderContent = () => {
     if (loading) return <Loading type="spinningBubbles" color="#313538" />;
-    if (isLogin) return (
-      <>
-        <Photo src={user.picture} />
-        <Content>{user.name}</Content>
-        <Content>{user.email}</Content>
-        <LogoutButton
-          onClick={logout}
-        >
-          登出
-        </LogoutButton>
-      </>
-    );
-    return (
-      <LogoutButton onClick={login}>登入</LogoutButton>
-    );
-  }
+    if (isLogin)
+      return (
+        <>
+          <Photo src={user.picture} />
+          <Content>{user.name}</Content>
+          <Content>{user.email}</Content>
+          <LogoutButton onClick={logout}>登出</LogoutButton>
+        </>
+      );
+    return <LogoutButton onClick={login}>登入</LogoutButton>;
+  };
   return (
     <Wrapper>
-      <Title>會員基本資訊</Title>
-      {renderContent()}
+      <MemberInfo isLogin={isLogin}>
+        <Title>會員基本資訊</Title>
+        {renderContent()}
+      </MemberInfo>
+      {isLogin && <PersonalOrder />}
     </Wrapper>
   );
 }

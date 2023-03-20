@@ -33,13 +33,13 @@ const ProductRatingIcon = styled.span`
 `;
 
 const ProductRating = ({ rating }) => {
-  console.log(rating);
+  // console.log(rating);
   const MAX_RATING = 5;
   const highlightedStars = Math.round(rating * 2) / 2;
-  console.log(highlightedStars);
+  // console.log(highlightedStars);
   const fullStars = Math.floor(highlightedStars);
   const hasHalfStar = highlightedStars % 1 !== 0;
-  console.log(hasHalfStar);
+  // console.log(hasHalfStar);
   // Generate an array of star icons with appropriate highlighting
   const stars = Array(MAX_RATING)
     .fill(0)

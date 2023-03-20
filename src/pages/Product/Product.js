@@ -199,14 +199,14 @@ function Product() {
   // const location = useLocation();
 
   // useEffect(() => {
-  //   // ReactGA.initialize('UA-000000-01', {
-  //   //   debug: true,
-  //   //   titleCase: false,
-  //   //   gaOptions: {
-  //   //     userId: 123,
-  //   //   },
-  //   // });
-  //   ReactGA.pageview(`${location.pathname}${location.search}_Products`);
+  //   ReactGA.initialize('UA-000000-01', {
+  //     debug: true,
+  //     titleCase: false,
+  //     gaOptions: {
+  //       userId: 123,
+  //     },
+  //   });
+  //   ReactGA.pageview(location.pathname + location.search);
   // }, [location]);
 
   useEffect(() => {

@@ -18,7 +18,7 @@ export const MyD3Component = ({ data }) => {
 
       // 創建 SVG 元素
       const svg = d3
-        .select(d3Container)
+        .select(svgRefCurrent)
         .append('svg')
         .attr('width', width)
         .attr('height', height);

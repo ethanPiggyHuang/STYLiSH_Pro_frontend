@@ -11,6 +11,36 @@ const StyledButton = styled(Button)`
   padding: 5px 15px;
 `;
 
+const OnSale = styled.div`
+  padding: 5px 15px;
+`;
+
+const DataWrap = styled.div`
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+`;
+
+const Title = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const Subtitle = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const Info = styled.p`
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
 const Table = () => {
   const initialRows = [];
   const [rows, setRows] = useState([...initialRows]);
@@ -18,6 +48,7 @@ const Table = () => {
   const [campaignTimeOptions, setCampaignTimeOptions] = useState(
     rows.map(() => '')
   );
+  const [hotData, setHotData] = useState([]);
 
   const getHotData = () => {
     fetch('https://side-project2023.online/api/1.0/report/hot/list', {
@@ -29,6 +60,8 @@ const Table = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
+        console.log(data.data[0].discount);
+        setHotData(data);
       });
   };
 
@@ -205,6 +238,29 @@ const Table = () => {
         );
       },
     },
+
+    {
+      field: 'campaignTime',
+      headerName: 'deadline',
+      sortable: false,
+      width: 200,
+      responsive: true,
+      renderCell: (params) => {
+        const rowIndex = params.row.id;
+
+        return (
+          <StyledSelect
+            value={campaignTimeOptions[rowIndex]}
+            onChange={(e) => handleCampaignTime(rowIndex, e)}
+          >
+            <MenuItem value="">選擇天數</MenuItem>
+            <MenuItem value="option1">1天</MenuItem>
+            <MenuItem value="option2">3天</MenuItem>
+            <MenuItem value="option3">7天</MenuItem>
+          </StyledSelect>
+        );
+      },
+    },
     {
       field: 'action',
       headerName: '促銷',
@@ -249,40 +305,27 @@ const Table = () => {
         return <StyledButton onClick={onClick}>促銷</StyledButton>;
       },
     },
-    {
-      field: 'campaignTime',
-      headerName: 'deadline',
-      sortable: false,
-      width: 200,
-      responsive: true,
-      renderCell: (params) => {
-        const rowIndex = params.row.id;
-
-        return (
-          <StyledSelect
-            value={campaignTimeOptions[rowIndex]}
-            onChange={(e) => handleCampaignTime(rowIndex, e)}
-          >
-            <MenuItem value="">選擇天數</MenuItem>
-            <MenuItem value="option1">1天</MenuItem>
-            <MenuItem value="option2">3天</MenuItem>
-            <MenuItem value="option3">7天</MenuItem>
-          </StyledSelect>
-        );
-      },
-    },
   ];
 
   return (
     <div style={{ height: '80%', width: '100%' }}>
-      <button onClick={() => tryGet()}>開始排名</button>
-      <button onClick={() => getHotData()}>get hot data</button>
-      <button onClick={() => getRatings()}>get rating</button>
       <DataGrid
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
       />
+      <OnSale>
+        <Title>Hot Data</Title>
+        <button onClick={getHotData}>Get Hot Data</button>
+        {hotData.data &&
+          hotData.data.map((item) => (
+            <DataWrap key={item.id}>
+              <Subtitle>ID: {item.id}</Subtitle>
+              <Info>Discount: {item.discount}</Info>
+              <Info>Deadline: {item.deadline}</Info>
+            </DataWrap>
+          ))}
+      </OnSale>
     </div>
   );
 };

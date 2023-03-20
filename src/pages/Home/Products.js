@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ReactLoading from 'react-loading';
-
+import Socket from './Socket';
 import StarRating from './Star';
 import api from '../../utils/api';
 import chatIcon from './chat.png';
@@ -246,6 +246,7 @@ function Products() {
   const productRating = 2;
   return (
     <Wrapper>
+      <Socket></Socket>
       {products.map(({ id, main_image, colors, title, price }) => (
         <Product key={id} to={`/products/${id}`}>
           <ProductImage src={main_image} />
@@ -259,7 +260,7 @@ function Products() {
           <StarRating></StarRating>
         </Product>
       ))}
-      <FixedImage
+      {/* <FixedImage
         src={chatIcon}
         alt="Chat Icon"
         onClick={handleChatboxToggle}
@@ -280,7 +281,7 @@ function Products() {
             </SendButton>
           </ChatInputContainer>
         </ChatMessages>
-      </Chat>
+      </Chat> */}
       {isLoading && <Loading type="spinningBubbles" color="#313538" />}
     </Wrapper>
   );

@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import ReactDom from 'react-dom';
+import { io } from 'socket.io-client';
 import styled, { createdGlobalStyle } from 'styled-components/macro';
 import chatIcon from './chat.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,7 +41,7 @@ const AdminImage = styled.img`
 `;
 
 const Chat = styled.div`
-  z-index: 100;
+  z-index: 2;
   position: fixed;
   bottom: 90px;
   left: 80px;
@@ -134,10 +135,82 @@ const SendButton = styled.button`
   right: 5px;
 `;
 
-function ChatComponet() {
+export const Socket = () => {
+  const [userId, setUserId] = useState('');
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isSupportOnline, setIsSupportOnline] = useState(false);
+  const socketRef = useRef();
   const [itemState, setItemState] = useState('UP');
   const [isChatboxVisible, setIsChatboxVisible] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+
+  useEffect(() => {
+    socketRef.current = io('https://side-project2023.online/');
+    // socketRef.current = io("http://localhost:4000/");
+
+    socketRef.current.on('chat message', (data) => {
+      const { message, sender, timestamp } = data;
+      const formattedTime = timestamp.toLocaleString('en-US');
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text: message,
+          sender,
+          time: formattedTime,
+        },
+      ]);
+    });
+
+    socketRef.current.on('support-status', (isOnline) => {
+      setIsSupportOnline(isOnline);
+    });
+
+    return () => {
+      socketRef.current.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      socketRef.current.emit('check-support-status');
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const handleUserIdChange = (e) => {
+    setUserId(e.target.value);
+    socketRef.current.emit('register', e.target.value);
+  };
+
+  const handleSendMessage = () => {
+    const timestamp = new Date();
+    const formattedTime = timestamp.toLocaleString('en-US');
+    console.log(formattedTime); // Outputs: Mon 02:47 AM GMTs
+    if (userId === 'customer-support') {
+      const recipientId = prompt('Enter the user ID to reply:');
+      socketRef.current.emit('chat message', {
+        id: recipientId,
+        message,
+        formattedTime,
+      });
+    } else {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          text: message,
+          sender: 'Me',
+          time: formattedTime,
+        },
+      ]);
+      socketRef.current.emit('chat message', { message });
+    }
+
+    setMessage('');
+  };
 
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
@@ -150,7 +223,7 @@ function ChatComponet() {
   };
 
   return (
-    <>
+    <div>
       <FixedImage
         src={chatIcon}
         alt="Chat Icon"
@@ -158,25 +231,58 @@ function ChatComponet() {
       />
       <Chat isVisible={isChatboxVisible} isExpanded={isExpanded}>
         <ChatHeader onClick={toggleExpand}>
-          <StatusIndicator isOnline={true} />
+          <StatusIndicator
+            id="support-status-light"
+            isSupportOnline={true}
+            style={{
+              backgroundColor: isSupportOnline ? 'green' : 'red',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+            }}
+          />
           客服在線上
           <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
         </ChatHeader>
+
         <ChatMessages>
+          <input
+            type="text"
+            value={userId}
+            onChange={handleUserIdChange}
+            placeholder="Enter user ID"
+          />
           <UserImage></UserImage>
-          <CustomerMessage></CustomerMessage>
+          {messages.map((msg, index) => {
+            console.log('msg sender: ' + msg.sender);
+            if (msg.sender === 'Me') {
+              console.log('me');
+              return <CustomerMessage key={index}>{msg.text}</CustomerMessage>;
+            } else if (msg.sender === 'customer-support') {
+              console.log('customer-support');
+              return <Reply key={index}>{msg.text}</Reply>;
+            }
+          })}
+
           <AdminImage></AdminImage>
           <Reply></Reply>
           <ChatInputContainer>
-            <ChatInput type="text" placeholder="" />
+            <ChatInput
+              type="text"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter message"
+            />
             <SendButton>
-              <FontAwesomeIcon icon={faPaperPlane} />
+              <FontAwesomeIcon
+                onClick={handleSendMessage}
+                icon={faPaperPlane}
+              />
             </SendButton>
           </ChatInputContainer>
         </ChatMessages>
       </Chat>
-    </>
+    </div>
   );
-}
-
-export default ChatComponet;
+};
+export default Socket;

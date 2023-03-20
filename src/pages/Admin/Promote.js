@@ -371,6 +371,10 @@ function Promote() {
         </RankTitle>
 
         <Table></Table>
+        <RankTitle>
+          <Title>| 正在促銷</Title>
+          <Split></Split>
+        </RankTitle>
         <ChatComponet />
 
         {/* <Header>

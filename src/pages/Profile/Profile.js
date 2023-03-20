@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import styled from 'styled-components/macro';
 import ReactLoading from 'react-loading';
-
+import Socket from '../Home/Socket';
 import { AuthContext } from '../../context/authContext';
 import PersonalOrder from './PersonalOrder';
 
@@ -77,6 +77,7 @@ function Profile() {
   };
   return (
     <Wrapper>
+      <Socket></Socket>
       <MemberInfo isLogin={isLogin}>
         <Title>會員基本資訊</Title>
         {renderContent()}

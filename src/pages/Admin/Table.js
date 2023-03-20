@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import { MenuItem, Select, Button } from '@mui/material';
+import { TextField, MenuItem, Select, Button } from '@mui/material';
 import styled from 'styled-components';
 
 const StyledSelect = styled(Select)`
@@ -11,140 +11,172 @@ const StyledButton = styled(Button)`
   padding: 5px 15px;
 `;
 
-const Table = () => {
-  const initialRows = [
-    {
-      id: 1,
-      name: 'Cotton T-Shirt',
-      ID: 100001,
-      amount: 35,
-      total: 2000,
-      state: 'up',
-    },
-    {
-      id: 2,
-      name: 'Denim Jacket',
-      ID: 100002,
-      amount: 42,
-      total: 2000,
-      state: 'up',
-    },
-    {
-      id: 3,
-      name: 'Leather Boots',
-      ID: 100003,
-      amount: 45,
-      total: 3000,
-      state: 'down',
-    },
-    {
-      id: 4,
-      name: 'Suede Skirt',
-      ID: 100004,
-      amount: 20,
-      total: 1500,
-      state: 'down',
-    },
-    {
-      id: 5,
-      name: 'Silk Scarf',
-      ID: 100005,
-      amount: 10,
-      total: 800,
-      state: 'down',
-    },
-    {
-      id: 6,
-      name: 'Wool Sweater',
-      ID: 100006,
-      amount: 25,
-      total: 1800,
-      state: 'down',
-    },
-    {
-      id: 7,
-      name: 'Canvas Sneakers',
-      ID: 100007,
-      amount: 30,
-      total: 2500,
-      state: 'even',
-    },
-    {
-      id: 8,
-      name: 'Cashmere Cardigan',
-      ID: 100008,
-      amount: 15,
-      total: 3000,
-      state: 'even',
-    },
-    {
-      id: 9,
-      name: 'Linen Blouse',
-      ID: 100009,
-      amount: 18,
-      total: 1200,
-      state: 'even',
-    },
-    {
-      id: 10,
-      name: 'Velvet Dress',
-      ID: 100010,
-      amount: 5,
-      total: 400,
-      state: 'even',
-    },
-    {
-      id: 11,
-      name: 'Nylon Windbreaker',
-      ID: 100011,
-      amount: 12,
-      total: 900,
-      state: 'even',
-    },
-    {
-      id: 12,
-      name: 'Polyester Pants',
-      ID: 100012,
-      amount: 22,
-      total: 2000,
-      state: 'even',
-    },
-    {
-      id: 13,
-      name: 'Rayon Shirt',
-      ID: 100013,
-      amount: 8,
-      total: 500,
-      state: 'even',
-    },
-    {
-      id: 14,
-      name: 'Satin Blouse',
-      ID: 100014,
-      amount: 16,
-      total: 1200,
-      state: 'even',
-    },
-    {
-      id: 15,
-      name: 'Tweed Jacket',
-      ID: 100015,
-      amount: 7,
-      total: 600,
-      state: 'even',
-    },
-  ];
+const OnSale = styled.div`
+  padding: 5px 15px;
+`;
 
-  const [rows, setRows] = useState([...initialRows]); // replace [...] with your rows array
-  const [selectedOption, setSelectedOption] = useState(rows.map(() => ''));
+const DataWrap = styled.div`
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+`;
+
+const Title = styled.h2`
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`;
+
+const Subtitle = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+`;
+
+const Info = styled.p`
+  font-size: 16px;
+  margin-bottom: 5px;
+`;
+
+const Table = () => {
+  const initialRows = [];
+  const [rows, setRows] = useState([...initialRows]);
+  const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
+  const [campaignTimeOptions, setCampaignTimeOptions] = useState(
+    rows.map(() => '')
+  );
+  const [hotData, setHotData] = useState([]);
+
+  const getHotData = () => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        console.log(data.data[0].discount);
+        setHotData(data);
+      });
+  };
+
+  const getRatings = () => {
+    fetch('https://side-project2023.online/api/1.0/report/order/getevaluate', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
+  const tryGet = () => {
+    fetch('https://side-project2023.online/api/1.0/report/order/detail', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data); // Log the response data
+        // Save the response data to a variable for later use
+
+        console.log(data);
+        const newArr = data.data
+          .reduce((acc, cur) => {
+            acc = [...acc, cur.order_detail];
+            return acc;
+          }, [])
+          .flat(2);
+        console.log(newArr);
+        const idQty = newArr.reduce((acc, cur) => {
+          const id = cur.id;
+          const qty = cur.qty;
+          if (!acc[id]) {
+            acc[id] = qty;
+          } else {
+            acc[id] += qty;
+          }
+          return acc;
+        }, {});
+        console.log(idQty);
+        const rankedItems = newArr.reduce((acc, item) => {
+          const index = acc.findIndex((obj) => obj.id === item.id);
+
+          if (index !== -1) {
+            acc[index].amount += item.qty;
+            acc[index].total += item.qty * acc[index].price;
+          } else {
+            acc.push({
+              id: item.id,
+              name: item.name,
+              amount: item.qty,
+              price: item.price,
+              total: item.qty * item.price,
+              state: 'up', // example state
+            });
+          }
+
+          return acc;
+        }, []);
+
+        rankedItems.sort((a, b) => b.amount - a.amount);
+
+        rankedItems.forEach((item, index) => {
+          item.rank = index + 1;
+        });
+
+        console.log(rankedItems);
+
+        setRows(rankedItems);
+      });
+  };
+
+  const tryPost = (body) => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/add', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res));
+  };
+
+  const handleSelectChange = (rowIndex, e) => {
+    const newDiscountOptions = [...selectedOptions];
+    newDiscountOptions[rowIndex] = e.target.value;
+    setSelectedOptions(newDiscountOptions);
+    e.stopPropagation();
+  };
+
+  const handleCampaignTime = (rowIndex, e) => {
+    const newCampaignTimeOptions = [...campaignTimeOptions];
+    newCampaignTimeOptions[rowIndex] = e.target.value;
+    setCampaignTimeOptions(newCampaignTimeOptions);
+    e.stopPropagation();
+    console.log(newCampaignTimeOptions);
+  };
+
   const columns = [
-    { field: 'id', headerName: '排名', width: 100 },
-    { field: 'name', headerName: '商品名稱', width: 130 },
-    { field: 'ID', headerName: 'ID', width: 130 },
+    { field: 'rank', headerName: 'Rank', width: 70 },
+    { field: 'id', headerName: 'ID', width: 120 },
+    { field: 'name', headerName: '商品名稱', width: 150 },
+
     {
       field: 'amount',
       headerName: '數量',
-      width: 120,
+      width: 100,
       responsive: true,
     },
     {
@@ -188,21 +220,43 @@ const Table = () => {
       field: 'discount',
       headerName: '選擇折扣',
       sortable: false,
+      width: 130,
+      responsive: true,
+      renderCell: (params) => {
+        const rowIndex = params.row.id;
+
+        return (
+          <StyledSelect
+            value={selectedOptions[rowIndex]}
+            onChange={(e) => handleSelectChange(rowIndex, e)}
+          >
+            <MenuItem value="">選擇折數</MenuItem>
+            <MenuItem value="0.9">9折</MenuItem>
+            <MenuItem value="0.8">8折</MenuItem>
+            <MenuItem value="0.5">打到骨折5折</MenuItem>
+          </StyledSelect>
+        );
+      },
+    },
+
+    {
+      field: 'campaignTime',
+      headerName: 'deadline',
+      sortable: false,
       width: 200,
       responsive: true,
       renderCell: (params) => {
-        const onChange = (e) => {
-          setSelectedOption(e.target.value);
-          params.row.isSelected = true;
-          e.stopPropagation();
-        };
+        const rowIndex = params.row.id;
 
         return (
-          <StyledSelect value={selectedOption} onChange={onChange}>
-            <MenuItem value="">選擇折數</MenuItem>
-            <MenuItem value="option1">9折</MenuItem>
-            <MenuItem value="option2">8折</MenuItem>
-            <MenuItem value="option3">打到骨折5折</MenuItem>
+          <StyledSelect
+            value={campaignTimeOptions[rowIndex]}
+            onChange={(e) => handleCampaignTime(rowIndex, e)}
+          >
+            <MenuItem value="">選擇天數</MenuItem>
+            <MenuItem value="option1">1天</MenuItem>
+            <MenuItem value="option2">3天</MenuItem>
+            <MenuItem value="option3">7天</MenuItem>
           </StyledSelect>
         );
       },
@@ -211,15 +265,41 @@ const Table = () => {
       field: 'action',
       headerName: '促銷',
       sortable: false,
-      width: 90,
+      width: 70,
       responsive: true,
       renderCell: (params) => {
         const onClick = (e) => {
           e.stopPropagation(); // don't select this row after clicking
 
           const thisRow = params.row;
+          console.log(thisRow);
+          const selectedDiscount = selectedOptions[thisRow.id];
+          const selectedDate = campaignTimeOptions[thisRow.id];
 
-          return alert(JSON.stringify(thisRow, null, 4));
+          console.log('Selected discount:', selectedDiscount);
+          console.log('Selected date:', selectedDate);
+          const date = new Date();
+          if (selectedDate === 'option1') {
+            date.setDate(date.getDate() + 1);
+          } else if (selectedDate === 'option2') {
+            date.setDate(date.getDate() + 3);
+          } else if (selectedDate === 'option3') {
+            date.setDate(date.getDate() + 7);
+          }
+          console.log(date);
+          const formattedDate = date
+            .toISOString()
+            .substring(0, 10)
+            .replace('T', ' ');
+          console.log(formattedDate); // outputs "2023-03-22"
+          const discountPost = {
+            id: thisRow.id,
+            discount: selectedDiscount,
+            deadline: formattedDate,
+          };
+          console.log(formattedDate);
+          tryPost(discountPost);
+          return console.log(discountPost);
         };
 
         return <StyledButton onClick={onClick}>促銷</StyledButton>;
@@ -234,6 +314,18 @@ const Table = () => {
         columns={columns}
         components={{ Toolbar: GridToolbar }}
       />
+      <OnSale>
+        <Title>Hot Data</Title>
+        <button onClick={getHotData}>Get Hot Data</button>
+        {hotData.data &&
+          hotData.data.map((item) => (
+            <DataWrap key={item.id}>
+              <Subtitle>ID: {item.id}</Subtitle>
+              <Info>Discount: {item.discount}</Info>
+              <Info>Deadline: {item.deadline}</Info>
+            </DataWrap>
+          ))}
+      </OnSale>
     </div>
   );
 };

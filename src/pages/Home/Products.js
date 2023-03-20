@@ -214,6 +214,8 @@ function Products() {
   const [isChatboxVisible, setIsChatboxVisible] = useState(false);
   const keyword = searchParams.get('keyword');
   const category = searchParams.get('category') || 'all';
+  const [ratings, setRatings] = useState([]);
+  // console.log('r', ratings);
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
@@ -282,7 +284,14 @@ function Products() {
     };
   }, [keyword, category]);
   //todo 需改成變數
-  const productRating = 2;
+  useEffect(() => {
+    fetch(`https://side-project2023.online/api/1.0/report/order/getevaluate`)
+      .then((res) => res.json())
+      .then((data) => {
+        setRatings(data.data);
+      });
+  }, []);
+
   return (
     <Wrapper>
       <Socket></Socket>
@@ -302,10 +311,11 @@ function Products() {
             </ProductColors>
             <ProductTitle>{title}</ProductTitle>
             <ProductPrice $isPromoted={isPromoted}>TWD.{price}</ProductPrice>
-            <StarRating></StarRating>
+            <StarRating id={id.toString()} ratings={ratings} />
           </Product>
         );
       })}
+
       {/* <FixedImage
         src={chatIcon}
         alt="Chat Icon"

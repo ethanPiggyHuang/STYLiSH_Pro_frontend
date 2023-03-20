@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { faStar, faStarHalf } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +9,7 @@ function GetStars({ rating }) {
 
   // console.log(fullStars);
   // console.log(hasHalfStar);
+
   return (
     <div>
       <span>{rating.toFixed(1)} </span>
@@ -20,10 +21,16 @@ function GetStars({ rating }) {
   );
 }
 
-function StarRating() {
+function StarRating({ id, ratings }) {
   return (
     <div>
-      <GetStars rating={2.5} />
+      {ratings.length === 0 ? (
+        ''
+      ) : (
+        <GetStars
+          rating={ratings.find((item) => item.product_id === id).rank}
+        />
+      )}
     </div>
   );
 }

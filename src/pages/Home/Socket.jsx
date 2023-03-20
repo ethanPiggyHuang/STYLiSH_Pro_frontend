@@ -252,20 +252,28 @@ export const Socket = () => {
             onChange={handleUserIdChange}
             placeholder="Enter user ID"
           />
-          <UserImage></UserImage>
+
           {messages.map((msg, index) => {
             console.log('msg sender: ' + msg.sender);
             if (msg.sender === 'Me') {
               console.log('me');
-              return <CustomerMessage key={index}>{msg.text}</CustomerMessage>;
+              return (
+                <>
+                  <UserImage></UserImage>
+                  <CustomerMessage key={index}>{msg.text}</CustomerMessage>
+                </>
+              );
             } else if (msg.sender === 'customer-support') {
               console.log('customer-support');
-              return <Reply key={index}>{msg.text}</Reply>;
+              return (
+                <>
+                  <AdminImage></AdminImage>
+                  <Reply key={index}>{msg.text}</Reply>;
+                </>
+              );
             }
           })}
 
-          <AdminImage></AdminImage>
-          <Reply></Reply>
           <ChatInputContainer>
             <ChatInput
               type="text"

@@ -34,7 +34,6 @@ const Wrapper = styled.div`
 `;
 
 const Rank = styled.div`
-  max-width: 960px;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
@@ -371,10 +370,7 @@ function Promote() {
         </RankTitle>
 
         <Table></Table>
-        <RankTitle>
-          <Title>| 正在促銷</Title>
-          <Split></Split>
-        </RankTitle>
+
         <ChatComponet />
 
         {/* <Header>

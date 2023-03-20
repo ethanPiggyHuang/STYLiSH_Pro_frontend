@@ -104,6 +104,8 @@ const ExpandIcon = styled(FontAwesomeIcon)``;
 const CustomerMessage = styled.div`
   width: 150px;
   height: 50px;
+  margin: 5px;
+  color: white;
   background-color: #bcaaa4;
   border-radius: 10px; /* Set the radius to your desired value */
   padding: 10px; /* Set the padding */

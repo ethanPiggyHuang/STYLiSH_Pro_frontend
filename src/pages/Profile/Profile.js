@@ -82,7 +82,8 @@ function Profile() {
         <Title>會員基本資訊</Title>
         {renderContent()}
       </MemberInfo>
-      {isLogin && <PersonalOrder />}
+      {/* {isLogin && <PersonalOrder />} */}
+      <PersonalOrder />
     </Wrapper>
   );
 }

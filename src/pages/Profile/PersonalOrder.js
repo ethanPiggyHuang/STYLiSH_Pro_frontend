@@ -105,7 +105,7 @@ export default function PersonalOrder() {
       ],
       comment: '物流很爛',
     };
-    console.log(rank);
+    console.log(order.order_id, orderDetail.id, rank);
     fetch('https://side-project2023.online/api/1.0/report/order/evaluate', {
       method: 'POST',
       headers: new Headers({

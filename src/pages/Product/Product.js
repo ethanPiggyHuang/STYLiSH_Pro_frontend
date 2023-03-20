@@ -218,7 +218,7 @@ function Product() {
     getProduct();
   }, [id]);
 
-  if (!product) return null;
+  if (!product || !id) return null;
 
   return (
     <Wrapper>

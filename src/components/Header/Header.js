@@ -11,6 +11,8 @@ import profileMobile from './profile-mobile.png';
 import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
 
+import api from '../../utils/api';
+
 const Wrapper = styled.div`
   position: fixed;
   top: 0;
@@ -101,7 +103,7 @@ const CategoryLink = styled.a`
 
 const SearchInput = styled.input`
   height: 40px;
-  width: 214px;
+  width: 254px;
   border: none;
   outline: none;
   margin-left: auto;
@@ -110,7 +112,7 @@ const SearchInput = styled.input`
   border: solid 1px #979797;
   background-image: url(${search});
   background-size: 44px;
-  background-position: 160px center;
+  background-position: 200px center;
   background-repeat: no-repeat;
   font-size: 20px;
   line-height: 24px;
@@ -130,6 +132,30 @@ const SearchInput = styled.input`
       width: calc(100% - 20px);
       border: solid 1px #979797;
     }
+  }
+`;
+
+const AutoFilleds = styled.ul`
+  width: 254px;
+  position: absolute;
+  right: 312px;
+  top: 65px;
+  background: #f1f1f1;
+`;
+
+const Autofilled = styled.li`
+  color: #888888;
+  font-size: 20px;
+  padding: 10px 20px;
+
+  &:hover {
+    background-color: #cccccc;
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 1279px) {
+    display: block;
+    color: white;
   }
 `;
 
@@ -248,10 +274,21 @@ function Header() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const category = searchParams.get('category');
+  const [autoFilled, setAutoFilled] = useState([]);
 
   useEffect(() => {
     if (category) setInputValue('');
   }, [category]);
+
+  async function handleInput(keyword) {
+    const { data } = await api.getFuzzys(keyword);
+    if (data.length !== 0) {
+      // console.log(data.map((item) => item.title));
+      setAutoFilled(data.map((item) => item.title));
+    } else if (autoFilled !== 0) {
+      setAutoFilled([]);
+    }
+  }
 
   return (
     <Wrapper>
@@ -279,9 +316,22 @@ function Header() {
             navigate(`/?keyword=${inputValue}`);
           }
         }}
-        onChange={(e) => setInputValue(e.target.value)}
+        onChange={(e) => {
+          handleInput(e.target.value);
+          setInputValue(e.target.value);
+        }}
         value={inputValue}
       />
+      <AutoFilleds>
+        {autoFilled.length !== 0 &&
+          autoFilled.map((item, index) => {
+            return (
+              <Autofilled key={index} onClick={(e) => setInputValue(item)}>
+                {item}
+              </Autofilled>
+            );
+          })}
+      </AutoFilleds>
       <PageLinks>
         <PageLink to="/checkout">
           <PageLinkCartIcon icon={cart}>

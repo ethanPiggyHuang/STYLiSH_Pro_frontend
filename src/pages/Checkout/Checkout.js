@@ -8,6 +8,7 @@ import { AuthContext } from '../../context/authContext';
 import { CartContext } from '../../context/cartContext';
 import Button from '../../components/Button';
 import Cart from './Cart';
+import Socket from '../Home/Socket';
 import Recommend from './Recommend';
 
 const Wrapper = styled.div`
@@ -384,6 +385,7 @@ function Checkout() {
 
   return (
     <Wrapper>
+      <Socket />
       <Cart />
       <Recommend />
       <GrayBlock>

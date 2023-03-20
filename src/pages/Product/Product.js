@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import api from '../../utils/api';
 import ProductVariants from './ProductVariants';
+import Socket from '../Home/Socket';
 
 const Wrapper = styled.div`
   max-width: 960px;
@@ -221,6 +222,7 @@ function Product() {
 
   return (
     <Wrapper>
+      <Socket></Socket>
       <MainImage src={product.main_image} />
       <Details>
         <Title>{product.title}</Title>

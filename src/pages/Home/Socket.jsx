@@ -13,7 +13,7 @@ import {
 
 const FixedImage = styled.img`
   position: fixed;
-  bottom: 60px;
+  bottom: 120px;
   left: 30px;
   width: 50px;
   height: 50px;
@@ -43,10 +43,10 @@ const AdminImage = styled.img`
 const Chat = styled.div`
   z-index: 2;
   position: fixed;
-  bottom: 90px;
-  left: 80px;
-  width: 350px;
-  height: 300px;
+  bottom: 120px;
+  left: 100px;
+  width: 400px;
+  height: 450px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -241,7 +241,7 @@ export const Socket = () => {
               borderRadius: '50%',
             }}
           />
-          客服在線上
+          {isSupportOnline ? '客服在線上' : '客服下班嘍'}
           <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
         </ChatHeader>
 

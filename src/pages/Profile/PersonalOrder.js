@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import Socket from '../Home/Socket';
 
 const Title = styled.div`
   padding-bottom: 16px;
@@ -73,6 +74,7 @@ export default function PersonalOrder() {
   }, []);
   return (
     <Orders>
+      <Socket></Socket>
       <Title>訂單總覽</Title>
       {/* <TitleLeft>目前訂單</TitleLeft> */}
       <OrderTable>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { createdGlobalStyle } from 'styled-components/macro';
 import ReactLoading from 'react-loading';
 import Socket from './Socket';
 import StarRating from './Star';

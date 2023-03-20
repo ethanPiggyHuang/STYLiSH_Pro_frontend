@@ -5,7 +5,8 @@ import facebook from './facebook.png';
 import twitter from './twitter.png';
 
 const Wrapper = styled.div`
-  position: absolute;
+  position: fixed;
+  ${'' /* position: absolute; */}
   bottom: 0;
   width: 100%;
   background-color: #313538;

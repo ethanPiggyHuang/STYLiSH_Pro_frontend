@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { Reset } from 'styled-reset';
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import ReactGA from 'react-ga';
+// import { useEffect } from 'react';
+// import { useLocation } from 'react-router-dom';
+// import ReactGA from 'react-ga';
 
 import Footer from './components/Footer';
 import Header from './components/Header';
@@ -40,11 +40,11 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const location = useLocation();
+  // const location = useLocation();
 
-  useEffect(() => {
-    ReactGA.pageview(location.pathname + location.search, 'App');
-  }, [location]);
+  // useEffect(() => {
+  //   ReactGA.pageview(location.pathname + location.search);
+  // }, [location]);
   return (
     <>
       <Reset />

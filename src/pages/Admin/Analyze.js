@@ -1,7 +1,8 @@
 import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
 import { lineChart } from './svg/lineChart';
-import { MyD3Component } from './svg/MyD3Component';
+import { MyC3Component } from './svg/MyC3Component';
+import { C3Pie } from './svg/C3Pie';
 import SideBar from './SideBar';
 
 const Wrapper = styled.div`
@@ -137,6 +138,44 @@ function Analyze({ data }) {
     lineChart(data, svgRef.current);
   }, [svgRef]);
 
+  // const headers = {
+  //   'Content-Type': 'application/json',
+  //   // Accept: 'application/json',
+  //   // Authorization: `Bearer ${token}`,
+  // };
+
+  const body = {
+    id: '201807242222',
+    discount: '0.8',
+    deadline: '2023-03-20',
+  };
+
+  // const tryPost = () => {
+  //   fetch('https://side-project2023.online/api/1.0/report/hot/add', {
+  //     method: 'POST',
+  //     headers: new Headers({
+  //       'Content-Type': 'application/json',
+  //     }),
+  //     body: JSON.stringify(body),
+  //   })
+  //     .then((res) => res.json())
+  //     .then((res) => console.log(res));
+  // };
+
+  // const getOrders = () => {
+  //   fetch('https://side-project2023.online/api/1.0/report/order/detail')
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const newArr = data.data
+  //         .reduce((acc, cur) => {
+  //           acc = [...acc, cur.order_detail];
+  //           return acc;
+  //         }, [])
+  //         .flat(2);
+  //       console.log(newArr);
+  //     });
+  // };
+
   return (
     <Wrapper>
       <SideBar />
@@ -160,17 +199,20 @@ function Analyze({ data }) {
                 {blockSize[index] === 'large' ? '縮' : '展'}
               </Resize>
             </TopBar>
-            <Chart size={blockSize[index]}></Chart>
+            <Chart size={blockSize[index]}>
+              {index === 0 ? <MyC3Component /> : ''}
+              {index === 2 ? <C3Pie /> : ''}
+            </Chart>
           </Block>
         ))}
 
-        <svg ref={svgRef} width={800} height={500}>
+        {/* <svg ref={svgRef} width={800} height={500}>
           <g transform="translate(50, 10)">
             <text x={0} y={10} textAnchor="middle">
               Line Chart
             </text>
           </g>
-        </svg>
+        </svg> */}
         {/* <MyD3Component
           data={[
             { year: 2010, value: 10 },
@@ -181,6 +223,7 @@ function Analyze({ data }) {
           ]}
         /> */}
       </Blocks>
+      {/* <button onClick={() => getOrders()}>測試POST</button> */}
     </Wrapper>
   );
 }

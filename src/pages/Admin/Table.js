@@ -358,9 +358,9 @@ const Table = () => {
               <Info>Discount: {item.discount}</Info>
               <Info>Deadline: {item.deadline}</Info>
               <CancelButton
-                onclick={deleteHot(item.id, item.discount, item.deadline)}
+                onClick={() => deleteHot(item.id, item.discount, item.deadline)}
               >
-                Delete
+                結束促銷
               </CancelButton>
             </DataWrap>
           ))}

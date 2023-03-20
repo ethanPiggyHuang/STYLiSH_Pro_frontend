@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import styled, { createdGlobalStyle } from 'styled-components/macro';
+import styled, { css, createdGlobalStyle } from 'styled-components/macro';
+
 import ReactLoading from 'react-loading';
 import Socket from './Socket';
 import StarRating from './Star';
@@ -36,6 +37,11 @@ const Product = styled(Link)`
 const ProductImage = styled.img`
   width: 100%;
   vertical-align: middle;
+  ${(props) =>
+    props.$isPromoted &&
+    css`
+      border: 3px solid red;
+    `}
 `;
 
 const ProductColors = styled.div`
@@ -89,6 +95,14 @@ const ProductPrice = styled.div`
   color: #3f3a3a;
   line-height: 24px;
   margin-bottom: 10px;
+  ${(props) =>
+    props.$isPromoted &&
+    css`
+      color: red;
+      font-size: 32px;
+      font-weight: bold;
+      text-decoration: line-through;
+    `}
   @media screen and (max-width: 1279px) {
     margin-top: 8px;
     font-size: 12px;
@@ -185,6 +199,14 @@ const Loading = styled(ReactLoading)`
   margin: 0 auto;
 `;
 
+const PromoteBanner = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0px;
+`;
+
 function Products() {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -194,9 +216,26 @@ function Products() {
   const category = searchParams.get('category') || 'all';
 
   const [isOnline, setIsOnline] = useState(true);
-
+  const [hotData, setHotData] = useState([]);
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
+  };
+
+  const getHotData = () => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        const dataArray = data.data;
+        console.log(data.data[0].discount);
+        setHotData(dataArray);
+        console.log(hotData);
+      });
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -208,7 +247,7 @@ function Products() {
   useEffect(() => {
     let nextPaging = 0;
     let isFetching = false;
-
+    getHotData();
     async function fetchProducts() {
       isFetching = true;
       setIsLoading(true);
@@ -247,19 +286,26 @@ function Products() {
   return (
     <Wrapper>
       <Socket></Socket>
-      {products.map(({ id, main_image, colors, title, price }) => (
-        <Product key={id} to={`/products/${id}`}>
-          <ProductImage src={main_image} />
-          <ProductColors>
-            {colors.map(({ code }) => (
-              <ProductColor $colorCode={`#${code}`} key={code} />
-            ))}
-          </ProductColors>
-          <ProductTitle>{title}</ProductTitle>
-          <ProductPrice uctPrice>TWD.{price}</ProductPrice>
-          <StarRating></StarRating>
-        </Product>
-      ))}
+      {products.map(({ id, main_image, colors, title, price }) => {
+        const promote = hotData;
+        console.log(promote);
+        const isPromoted = promote.some((p) => p.id === id);
+        console.log(isPromoted);
+        return (
+          <Product key={id} to={`/products/${id}`}>
+            {isPromoted && <PromoteBanner>特價商品</PromoteBanner>}
+            <ProductImage src={main_image} $isPromoted={isPromoted} />
+            <ProductColors>
+              {colors.map(({ code }) => (
+                <ProductColor $colorCode={`#${code}`} key={code} />
+              ))}
+            </ProductColors>
+            <ProductTitle>{title}</ProductTitle>
+            <ProductPrice $isPromoted={isPromoted}>TWD.{price}</ProductPrice>
+            <StarRating></StarRating>
+          </Product>
+        );
+      })}
       {/* <FixedImage
         src={chatIcon}
         alt="Chat Icon"

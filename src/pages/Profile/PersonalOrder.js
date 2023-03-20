@@ -1,6 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components/macro';
 import Socket from '../Home/Socket';
+
+import { AuthContext } from '../../context/authContext';
+
+const Orders = styled.div`
+  padding-left: 300px;
+  padding-top: 60px;
+`;
 
 const Title = styled.div`
   padding-bottom: 16px;
@@ -16,12 +23,6 @@ const Title = styled.div`
 //   width: 150px;
 //   font-weight: normal;
 // `;
-
-const Orders = styled.div`
-  position: absolute;
-  left: 300px;
-  padding-top: 60px;
-`;
 
 const OrderTable = styled.div`
   margin-top: 24px;
@@ -85,16 +86,41 @@ const ItemQuantitySelect = styled.select`
 export default function PersonalOrder() {
   const [orderList, setOrderList] = useState([]);
   const [rankList, setRankList] = useState(0);
-  // console.log(orderList);
+  const { jwtToken, isLogin, login } = useContext(AuthContext);
+
   useEffect(() => {
-    fetch('https://side-project2023.online/api/1.0/report/order/detail')
-      .then((res) => res.json())
-      .then((data) => {
-        setOrderList(data.data);
-      });
-  }, []);
+    function getOrders() {
+      if (isLogin) {
+        fetch(`https://side-project2023.online/api/1.0/order/getorderbyid`, {
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const personOrders = data.data.map((order) => {
+              const rearrangeOrder = {
+                order_id: order.id,
+                order_detail: order.details.list,
+              };
+              return rearrangeOrder;
+            });
+            setOrderList(personOrders);
+          });
+      } else {
+        fetch('https://side-project2023.online/api/1.0/report/order/detail')
+          .then((res) => res.json())
+          .then((data) => {
+            setOrderList(data.data);
+          });
+      }
+    }
+    getOrders();
+  }, [isLogin]);
 
   const handleRate = (order, orderDetail, rank) => {
+    console.log(rank, typeof rank);
     const body = {
       order_id: order.order_id,
       evaluate: [
@@ -116,11 +142,11 @@ export default function PersonalOrder() {
       .then((res) => res.json())
       .then((res) => console.log(res));
   };
+
   return (
     <Orders>
       <Socket></Socket>
       <Title>訂單總覽</Title>
-      {/* <TitleLeft>目前訂單</TitleLeft> */}
       <OrderTable>
         <Order index={0}>
           <OrderId>訂單編號</OrderId>

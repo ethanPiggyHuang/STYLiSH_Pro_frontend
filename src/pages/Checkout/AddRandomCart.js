@@ -30,7 +30,7 @@ function AddRandomCart() {
     const detail = data.data;
 
     console.log(detail);
-    const randomQty = Math.floor(Math.random() * 6);
+    const randomQty = Math.floor(Math.random() * 6) + 1;
 
     const newCartItems = [
       ...cartItems,

@@ -7,8 +7,8 @@ function GetStars({ rating }) {
   const fullStars = Math.floor(rating);
   const hasHalfStar = rating - fullStars >= 0.5;
 
-  console.log(fullStars);
-  console.log(hasHalfStar);
+  // console.log(fullStars);
+  // console.log(hasHalfStar);
   return (
     <div>
       <span>{rating.toFixed(1)} </span>

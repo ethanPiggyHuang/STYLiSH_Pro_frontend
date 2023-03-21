@@ -322,13 +322,6 @@ export default function PersonalOrder() {
             // setHasReply(data.data.map((order) => order));
             getReplys(data.data.map((order) => order.id));
           });
-      } else {
-        // 要移植到 商家端
-        // fetch('https://side-project2023.online/api/1.0/report/order/detail')
-        //   .then((res) => res.json())
-        //   .then((data) => {
-        //     setOrderList(data.data);
-        //   });
       }
     }
     getOrders();
@@ -354,7 +347,7 @@ export default function PersonalOrder() {
           });
         });
     });
-    console.log('length', orderIds.length);
+    // console.log('length', orderIds.length);
   }
 
   function getIsEvaluated(orderId) {

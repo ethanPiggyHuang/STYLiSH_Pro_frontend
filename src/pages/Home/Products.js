@@ -34,16 +34,6 @@ const Product = styled(Link)`
   }
 `;
 
-const ProductImage = styled.img`
-  width: 100%;
-  vertical-align: middle;
-  ${(props) =>
-    props.$isPromoted &&
-    css`
-      border: 3px solid red;
-    `}
-`;
-
 const ProductColors = styled.div`
   margin-top: 20px;
   display: flex;
@@ -99,9 +89,8 @@ const ProductPrice = styled.div`
     props.$isPromoted &&
     css`
       color: red;
-      font-size: 32px;
+      font-size: 24px;
       font-weight: bold;
-      text-decoration: line-through;
     `}
   @media screen and (max-width: 1279px) {
     margin-top: 8px;
@@ -160,6 +149,10 @@ const ChatMessages = styled.div`
   overflow-y: auto;
 `;
 
+const ImageWrap = styled.div`
+  position: relative;
+`;
+
 const ChatInputContainer = styled.div`
   display: flex;
   align-items: center;
@@ -200,12 +193,49 @@ const Loading = styled(ReactLoading)`
 `;
 
 const PromoteBanner = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: absolute;
-  bottom: 0px;
+  top: 0px;
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  ${({ discount }) => {
+    const style = getPromoteBannerStyle(discount);
+    return `
+      background-color: ${style.backgroundColor};
+    `;
+  }}
 `;
+
+const ProductImage = styled.img`
+  width: 100%;
+  vertical-align: middle;
+  ${(props) =>
+    props.$isPromoted &&
+    `
+   
+`}
+`;
+const getPromoteBannerStyle = (discount) => {
+  if (discount === 0.5) {
+    return {
+      backgroundColor: 'red', // Change to desired color
+      content: '打到骨折',
+    };
+  } else if (discount === 0.8) {
+    return {
+      backgroundColor: 'orange', // Change to desired color
+      content: '特價商品',
+    };
+  } else if (discount === 0.9) {
+    return {
+      backgroundColor: '#EF9A9A', // Change to desired color
+      content: '九折特賣',
+    };
+  }
+};
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -292,56 +322,66 @@ function Products() {
       });
   }, []);
 
+  const PromotionalMessage = ({ discount }) => {
+    if (discount === 0.5) {
+      return <span>打到骨折</span>;
+    } else if (discount === 0.8) {
+      return <span>本季爆款八折特賣</span>;
+    } else if (discount === 0.9) {
+      return <span>9折特價</span>;
+    } else {
+      return <span>特價商品</span>;
+    }
+  };
+
   return (
     <Wrapper>
       <Socket></Socket>
       {products.map(({ id, main_image, colors, title, price }) => {
-        const promote = hotData;
-        {
-          /* console.log(promote); */
-        }
-        const isPromoted = promote.some((p) => p.id === id);
-        {
-          /* console.log(isPromoted); */
-        }
+        const promote = hotData.find((p) => p.id === id);
+        const newPrice = promote ? Math.floor(price * promote.discount) : price;
+        const isPromoted = !!promote;
+
         return (
           <Product key={id} to={`/products/${id}`}>
-            {isPromoted && <PromoteBanner>特價商品</PromoteBanner>}
-            <ProductImage src={main_image} $isPromoted={isPromoted} />
+            <ImageWrap>
+              <ProductImage src={main_image} $isPromoted={isPromoted} />
+              {isPromoted && (
+                <PromoteBanner discount={promote.discount}>
+                  <PromotionalMessage discount={promote.discount} />
+                </PromoteBanner>
+              )}
+            </ImageWrap>
+
             <ProductColors>
               {colors.map(({ code }) => (
                 <ProductColor $colorCode={`#${code}`} key={code} />
               ))}
             </ProductColors>
             <ProductTitle>{title}</ProductTitle>
-            <ProductPrice $isPromoted={isPromoted}>TWD.{price}</ProductPrice>
+            <ProductPrice $isPromoted={isPromoted}>
+              {isPromoted ? (
+                <>
+                  <span
+                    style={{
+                      textDecoration: 'line-through',
+                      color: '#3f3a3a',
+                      fontSize: '20px',
+                    }}
+                  >
+                    TWD.{price}
+                  </span>
+                  <span style={{ fontSize: '24px' }}>TWD.{newPrice}</span>
+                </>
+              ) : (
+                <span>TWD.{price}</span>
+              )}
+            </ProductPrice>
             <StarRating id={id.toString()} ratings={ratings} />
           </Product>
         );
       })}
 
-      {/* <FixedImage
-        src={chatIcon}
-        alt="Chat Icon"
-        onClick={handleChatboxToggle}
-      />
-      <Chat isVisible={isChatboxVisible} isExpanded={isExpanded}>
-        <ChatHeader onClick={toggleExpand}>
-          <StatusIndicator isOnline={true} />
-          客服在線上
-          <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
-        </ChatHeader>
-        <ChatMessages>
-          <p>Hello!</p>
-          <p>親,今天可以幫你做什麼呢?</p>
-          <ChatInputContainer>
-            <ChatInput type="text" placeholder="什麼時候會進貨呢?" />
-            <SendButton>
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </SendButton>
-          </ChatInputContainer>
-        </ChatMessages>
-      </Chat> */}
       {isLoading && <Loading type="spinningBubbles" color="#313538" />}
     </Wrapper>
   );

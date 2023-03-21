@@ -80,6 +80,7 @@ const Table = () => {
   const initialRows = [];
   const [rows, setRows] = useState([...initialRows]);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [postSuccess, setPostSuccess] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
   const [campaignTimeOptions, setCampaignTimeOptions] = useState(
     rows.map(() => '')
@@ -159,7 +160,7 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-       // console.log(rankedItems);
+        console.log(rankedItems);
         //console.log(hotData);
         const rankedItemsWithPromotion = rankedItems.map((item) => {
           //console.log('item.id', item.id);
@@ -167,7 +168,7 @@ const Table = () => {
           const isPromoting = hotData.data.some(
             (hotItem) => hotItem.id === item.id
           );
-          //console.log(isPromoting);
+          console.log(isPromoting);
           return {
             ...item,
             isPromoting,
@@ -188,6 +189,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((res) => console.log(res));
+    setPostSuccess(true);
   };
 
   const deleteHot = (id, discount, deadline) => {
@@ -358,12 +360,25 @@ const Table = () => {
   // remove hotData from dependency array
   useEffect(() => {
     tryGet();
-  }, [hotData, deleteSuccess]);
+  }, [hotData, promotionClicked]);
 
   // add hotData to dependency array
   useEffect(() => {
     getHotData();
-  }, [hotData]);
+  }, []);
+
+  useEffect(() => {
+    if (deleteSuccess) {
+      getHotData();
+      setDeleteSuccess(false);
+    }
+
+    if (postSuccess) {
+      tryGet();
+      getHotData();
+      setPostSuccess(false);
+    }
+  }, [postSuccess, deleteSuccess]);
   //TODO
 
   return (

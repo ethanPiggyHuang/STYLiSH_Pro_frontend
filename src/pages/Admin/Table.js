@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { TextField, MenuItem, Select, Button } from '@mui/material';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 const StyledSelect = styled(Select)`
   min-width: 120px;
@@ -11,14 +11,26 @@ const StyledButton = styled(Button)`
   padding: 5px 15px;
 `;
 
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5;
+`;
+
 const OnSale = styled.div`
-  padding: 5px 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  background-color: #f5f5f5;
 `;
 
 const DataWrap = styled.div`
   border: 1px solid #ddd;
-  padding: 10px;
-  margin: 10px;
+  padding: 20px;
+  margin: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   background-color: #fff;
@@ -28,6 +40,7 @@ const Title = styled.h2`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
+  text-align: center;
 `;
 
 const Subtitle = styled.h3`
@@ -44,19 +57,47 @@ const Info = styled.p`
 const CancelButton = styled.button`
   font-size: 16px;
   margin-bottom: 5px;
+  padding: 8px 12px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #c82333;
+  }
+`;
+
+const SaleTitle = styled.h2`
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 40px;
 `;
 
 const Table = () => {
   const initialRows = [];
   const [rows, setRows] = useState([...initialRows]);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
   const [campaignTimeOptions, setCampaignTimeOptions] = useState(
     rows.map(() => '')
   );
+  const [promotionClicked, setPromotionClicked] = useState(
+    rows.map(() => false)
+  );
 
   const [hotData, setHotData] = useState([]);
-
+  if (hotData.data) {
+    console.log('hotData', hotData.data.length);
+  }
+  //
+  const isPromoting = (id) => {
+    return hotData.data.some((item) => item.id === id);
+  };
   const getHotData = () => {
+    console.log('getHotData');
     fetch('https://side-project2023.online/api/1.0/report/hot/list', {
       method: 'get',
       headers: new Headers({
@@ -65,23 +106,8 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
-        // console.log(data.data[0].discount);
-        setHotData(data);
-        // console.log(hotData);
-      });
-  };
-
-  const getRatings = () => {
-    fetch('https://side-project2023.online/api/1.0/report/order/getevaluate', {
-      method: 'get',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data);
+        console.log('gethot', data);
+        setHotData(...hotData, ...data);
       });
   };
 
@@ -139,10 +165,21 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-        // console.log(rankedItems);
-        getHotData();
-        // console.log(hotData);
-        setRows(rankedItems);
+        console.log(rankedItems);
+        //console.log(hotData);
+        const rankedItemsWithPromotion = rankedItems.map((item) => {
+          //console.log('item.id', item.id);
+          //console.log('hotData', hotData.data);
+          const isPromoting =
+            hotData.data.some((hotItem) => hotItem.id === item.id) || false;
+          console.log(isPromoting);
+          return {
+            ...item,
+            isPromoting,
+          };
+        });
+        //console.log(rankedItemsWithPromotion);
+        setRows(rankedItemsWithPromotion);
       });
   };
 
@@ -158,14 +195,13 @@ const Table = () => {
       .then((res) => console.log(res));
   };
 
-  const deleteHot = (id, discount, time) => {
+  const deleteHot = (id, discount, deadline) => {
     console.log('hi');
     const body = {
       id: id,
       discount: discount,
-      deadline: time,
+      deadline: deadline,
     };
-
     fetch('https://side-project2023.online/api/1.0/report/hot/delete', {
       method: 'POST',
       headers: new Headers({
@@ -174,7 +210,10 @@ const Table = () => {
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res));
+      .then((res) => {
+        console.log(res);
+        setDeleteSuccess(true);
+      });
   };
 
   const handleSelectChange = (rowIndex, e) => {
@@ -197,8 +236,12 @@ const Table = () => {
     selectedOptions,
     campaignTimeOptions,
     tryPost,
+    deleteHot,
+    promotionClicked,
+    setPromotionClicked,
   }) {
-    const [isClicked, setIsClicked] = useState(false);
+    const isClicked = promotionClicked[row.id];
+
     const onClick = (e) => {
       e.stopPropagation();
       const selectedDiscount = selectedOptions[row.id];
@@ -215,79 +258,56 @@ const Table = () => {
         .toISOString()
         .substring(0, 10)
         .replace('T', ' ');
-      setIsClicked(!isClicked);
+
+      setPromotionClicked((prevState) => ({
+        ...prevState,
+        [row.id]: !prevState[row.id],
+      }));
       const discountPost = {
         id: row.id,
         discount: selectedDiscount,
         deadline: formattedDate,
       };
-      tryPost(discountPost);
+
+      if (row.isPromoting) {
+        deleteHot(row.id, row.discount, row.deadline);
+      } else {
+        tryPost(discountPost);
+      }
     };
-    const buttonText = isClicked ? '取消促銷' : '促銷';
-    return <StyledButton onClick={onClick}>{buttonText}</StyledButton>;
+    //console.log(row.id, row.isPromoting);
+
+    return (
+      <Button
+        variant="contained"
+        color={row.isPromoting ? 'secondary' : 'primary'}
+        disabled={row.isPromoting}
+        onClick={onClick}
+      >
+        {row.isPromoting ? '促銷中' : '設為促銷'}
+      </Button>
+    );
   }
 
   const columns = [
-    { field: 'rank', headerName: 'Rank', width: 70 },
-    { field: 'id', headerName: 'ID', width: 200 },
-    { field: 'name', headerName: '商品名稱', width: 200 },
-
-    {
-      field: 'amount',
-      headerName: '數量',
-      width: 100,
-      responsive: true,
-    },
-    {
-      field: 'total',
-      headerName: '金額',
-      width: 120,
-      responsive: true,
-    },
-    // {
-    //   field: 'state',
-    //   headerName: '狀態',
-    //   width: 90,
-    //   renderCell: (params) => {
-    //     const { value } = params;
-    //     let stateColor = '';
-
-    //     if (value === 'up') {
-    //       stateColor = '#5cb85c';
-    //     } else if (value === 'down') {
-    //       stateColor = '#d9534f';
-    //     } else if (value === 'even') {
-    //       stateColor = '#f0ad4e';
-    //     }
-
-    //     return (
-    //       <div
-    //         style={{
-    //           color: 'white',
-    //           backgroundColor: stateColor,
-    //           borderRadius: '20px',
-    //           padding: '3px 10px',
-    //           textAlign: 'center',
-    //         }}
-    //       >
-    //         {value}
-    //       </div>
-    //     );
-    //   },
-    // },
+    { field: 'rank', headerName: 'Rank', width: 70, resizable: true },
+    { field: 'id', headerName: 'ID', width: 150, resizable: true },
+    { field: 'name', headerName: '商品名稱', width: 250, resizable: true },
+    { field: 'amount', headerName: '數量', width: 100, resizable: true },
+    { field: 'total', headerName: '金額', width: 120, resizable: true },
     {
       field: 'discount',
-      headerName: '選擇折扣',
-      sortable: false,
-      width: 130,
-      responsive: true,
+      headerName: '折扣',
+      width: 150,
+      resizable: true,
       renderCell: (params) => {
         const rowIndex = params.row.id;
-
         return (
           <StyledSelect
+            defaultValue=""
             value={selectedOptions[rowIndex]}
             onChange={(e) => handleSelectChange(rowIndex, e)}
+            disabled={promotionClicked[rowIndex]} // pass disabled prop based on the isClicked state
           >
             <MenuItem value="">選擇折數</MenuItem>
             <MenuItem value="0.9">9折</MenuItem>
@@ -297,20 +317,20 @@ const Table = () => {
         );
       },
     },
-
     {
       field: 'campaignTime',
-      headerName: 'deadline',
-      sortable: false,
-      width: 130,
-      responsive: true,
+      headerName: '期限',
+      width: 150,
+      resizable: true,
       renderCell: (params) => {
         const rowIndex = params.row.id;
 
         return (
           <StyledSelect
+            defaultValue=""
             value={campaignTimeOptions[rowIndex]}
             onChange={(e) => handleCampaignTime(rowIndex, e)}
+            disabled={promotionClicked[rowIndex]} // pass disabled prop based on the isClicked state
           >
             <MenuItem value="">選擇天數</MenuItem>
             <MenuItem value="option1">1天</MenuItem>
@@ -323,49 +343,63 @@ const Table = () => {
     {
       field: 'action',
       headerName: '促銷',
+      width: 100,
+      resizable: true,
       sortable: false,
-      width: 70,
-      responsive: true,
-      renderCell: (params) => {
+      disableColumnMenu: true,
+      renderCell: (params) => (
         <PromotionButton
           row={params.row}
           selectedOptions={selectedOptions}
           campaignTimeOptions={campaignTimeOptions}
+          promotionClicked={promotionClicked} // pass promotionClicked state to the PromotionButton component
+          setPromotionClicked={setPromotionClicked}
           tryPost={tryPost}
-        />;
-      },
+        />
+      ),
     },
   ];
 
+  // remove hotData from dependency array
   useEffect(() => {
     tryGet();
-  }, []);
+  }, [hotData, deleteSuccess]);
 
+  // add hotData to dependency array
   useEffect(() => {
     getHotData();
   }, []);
+  //TODO
 
   return (
-    <div style={{ height: '80%', width: '100%' }}>
+    <div style={{ width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
+        style={{ minHeight: '600px' }}
+        rowsPerPageOptions={[10, 25, 50]}
       />
+      <SaleTitle>促銷中的商品</SaleTitle>
       <OnSale>
-        <button onClick={getHotData}>Get Hot Data</button>
+        {console.log('console.', hotData.data)}
         {hotData.data &&
           hotData.data.map((item) => (
-            <DataWrap key={item.id}>
-              <Subtitle>ID: {item.id}</Subtitle>
-              <Info>Discount: {item.discount}</Info>
-              <Info>Deadline: {item.deadline}</Info>
-              <CancelButton
-                onClick={() => deleteHot(item.id, item.discount, item.deadline)}
-              >
-                結束促銷
-              </CancelButton>
-            </DataWrap>
+            <Wrap>
+              <DataWrap key={item.id}>
+                <Subtitle>ID: {item.id}</Subtitle>
+                <Info>Discount: {item.discount}</Info>
+                <Info>Deadline: {item.deadline}</Info>
+                <CancelButton
+                  onClick={() => {
+                    deleteHot(item.id, item.discount, item.deadline);
+                    getHotData();
+                  }}
+                >
+                  結束促銷
+                </CancelButton>
+              </DataWrap>
+            </Wrap>
           ))}
       </OnSale>
     </div>

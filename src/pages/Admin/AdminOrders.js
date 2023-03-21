@@ -282,9 +282,11 @@ function AdminOrders() {
   const [zeroDetail, setZeroDetail] = useState([]);
   const [isEvaluated, setIsEvalutated] = useState(['notEvaluated']);
   const [hasReply, setHasReply] = useState({});
+  const admin_id = 99999;
+
   // console.log(Object.keys(hasReply).length);
   // console.log(orderList.map((order) => order.order_detail.length));
-  // console.log(rankList);
+  // console.log(messages);
 
   useEffect(() => {
     function getOrders() {
@@ -292,7 +294,7 @@ function AdminOrders() {
         fetch(`https://side-project2023.online/api/1.0/report/order/total`)
           .then((res) => res.json())
           .then((data) => {
-            console.log('data', data.data[0]);
+            // console.log('data', data.data[0]);
             const personOrders = data.data.map((order) => {
               const rearrangeOrder = {
                 order_id: order.id,
@@ -310,7 +312,7 @@ function AdminOrders() {
         fetch(`https://side-project2023.online/api/1.0/report/order/detail`)
           .then((res) => res.json())
           .then((data) => {
-            console.log('dataDetail', data.data[0]);
+            // console.log('dataDetail', data.data[0]);
             let detailObj = {};
             data.data.forEach((order) => {
               // console.log(order);
@@ -350,6 +352,7 @@ function AdminOrders() {
         .then((res) => res.json())
         .then((data) => {
           // console.log(index, data);
+          // TODO
           let newPair = {};
           if (data.data.length === 0) {
             newPair[orderId] = false;
@@ -362,7 +365,6 @@ function AdminOrders() {
           });
         });
     });
-    console.log('length', orderIds.length);
   }
 
   function getIsEvaluated(orderId) {
@@ -387,7 +389,7 @@ function AdminOrders() {
   const handleChat = (order, message) => {
     const body = {
       order_id: order.order_id,
-      user_id: order.user_id,
+      user_id: 99999,
       chat: message,
     };
     // console.log(body);
@@ -402,13 +404,12 @@ function AdminOrders() {
       .then((res) => {
         // console.log(res);
       });
-    console.log('m');
     setMessages([
       ...messages,
       {
         chat: message,
         order_id: order.order_id,
-        user_id: order.user_id,
+        user_id: 99999,
       },
     ]);
     setTimeout(() => handleGetMessages(order.order_id), 3000);
@@ -424,14 +425,16 @@ function AdminOrders() {
           setMessages(data.data);
         }
       });
-    // console.log('here?');
+    console.log('here?');
   };
+
+  console.log('hi'); //TODO FIX   //////超級大問題
 
   return (
     <Wrapper>
       <SideBar />
       <Orders>
-        <Title>{`| 所有訂單 (${orderList.length || ''})`}</Title>
+        <Title>{`| 所有訂單 (${orderList.length})`}</Title>
         <OrderTable>
           <Order index={0}>
             <OrderId>訂單編號</OrderId>
@@ -476,7 +479,9 @@ function AdminOrders() {
                     {Object.keys(hasReply).length === 0 ? (
                       ''
                     ) : (
-                      <ReplyNotice>{hasReply.order_id ? '✉' : ''}</ReplyNotice>
+                      <ReplyNotice>
+                        {hasReply[order.order_id] === true ? '✉' : ''}
+                      </ReplyNotice>
                     )}
                   </Order>
                   {isExpand[orderIndex] === true &&
@@ -535,7 +540,7 @@ function AdminOrders() {
                             ? '訂單回饋'
                             : '送出'}
                         </Submit>
-                        {/* <ChatWindow
+                        <ChatWindow
                           detailNumber={
                             order.order_detail.length - zeroDetail[orderIndex]
                           }
@@ -548,9 +553,9 @@ function AdminOrders() {
                                     key={index}
                                     user={
                                       message.user_id.toString() ===
-                                      order.user_id.toString()
-                                        ? 'user'
-                                        : 'admin'
+                                      admin_id.toString()
+                                        ? 'admin'
+                                        : 'user'
                                     }
                                   >
                                     {message.chat}
@@ -558,7 +563,7 @@ function AdminOrders() {
                                 ))
                               : ''}
                           </ChatWindowMessages>
-                        </ChatWindow> */}
+                        </ChatWindow>
                         <GreyBox />
                       </ChatBottom>
                     </>

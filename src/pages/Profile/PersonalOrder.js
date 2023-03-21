@@ -278,6 +278,7 @@ export default function PersonalOrder() {
   const [isEvaluated, setIsEvalutated] = useState(['notEvaluated']);
   const [hasReply, setHasReply] = useState({});
   // console.log(Object.keys(hasReply).length);
+  console.log(hasReply);
 
   useEffect(() => {
     function getOrders() {
@@ -486,7 +487,9 @@ export default function PersonalOrder() {
                   {Object.keys(hasReply).length === 0 ? (
                     ''
                   ) : (
-                    <ReplyNotice>{hasReply.order_id ? '✉' : ''}</ReplyNotice>
+                    <ReplyNotice>
+                      {hasReply[order.order_id] === true ? '✉' : ''}
+                    </ReplyNotice>
                   )}
                 </Order>
                 {isExpand[orderIndex] === true ? (

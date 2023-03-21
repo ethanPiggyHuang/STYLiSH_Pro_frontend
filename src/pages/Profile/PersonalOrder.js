@@ -36,6 +36,7 @@ const Order = styled.div`
   justify-content: space-around;
   padding: 20px;
   cursor: pointer;
+  cursor: ${({ index }) => (index === 0 ? 'default' : 'pointer')};
 
   background-color: ${({ index, isExpand }) =>
     index === 0 ? '#c1c1c1' : isExpand ? '#f1f1f1' : ''};
@@ -86,7 +87,7 @@ const ProductImg = styled.img`
   height: 160px;
 `;
 const ProductDetail = styled.div`
-  width: 320px;
+  width: 260px;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -253,16 +254,17 @@ const Submit = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 10px;
 
   cursor: pointer;
   margin-right: 20px;
 
   background-color: #f1f1f1;
   color: grey;
+`;
 
-  ${'' /* border-top: 1px grey dashed; */}
-  ${'' /* border-bottom: 1px grey solid; */}
+const ReplyNotice = styled.div`
+  width: 40px;
 `;
 
 export default function PersonalOrder() {
@@ -274,7 +276,8 @@ export default function PersonalOrder() {
   const [messages, setMessages] = useState([]);
   const [zeroDetail, setZeroDetail] = useState([]);
   const [isEvaluated, setIsEvalutated] = useState(['notEvaluated']);
-  // console.log(messages);
+  const [hasReply, setHasReply] = useState({});
+  // console.log(Object.keys(hasReply).length);
 
   useEffect(() => {
     function getOrders() {
@@ -316,6 +319,8 @@ export default function PersonalOrder() {
                 )
               )
             );
+            // setHasReply(data.data.map((order) => order));
+            getReplys(data.data.map((order) => order.id));
           });
       } else {
         // 要移植到 商家端
@@ -329,8 +334,30 @@ export default function PersonalOrder() {
     getOrders();
   }, [isLogin]);
 
+  function getReplys(orderIds) {
+    orderIds.forEach((orderId, index) => {
+      fetch(
+        `https://side-project2023.online/api/1.0/order/getOrderchatHistory?order_id=${orderId}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          // console.log(index, data);
+          let newPair = {};
+          if (data.data.length === 0) {
+            newPair[orderId] = false;
+          } else {
+            newPair[orderId] =
+              data.data[data.data.length - 1].user_id === 99999;
+          }
+          setHasReply((prev) => {
+            return { ...prev, ...newPair };
+          });
+        });
+    });
+    console.log('length', orderIds.length);
+  }
+
   function getIsEvaluated(orderId) {
-    // console.log(orderId);
     fetch(
       `https://side-project2023.online/api/1.0/report/order/getorderidevaluate?order_id=${orderId}`
     )
@@ -415,8 +442,7 @@ export default function PersonalOrder() {
     )
       .then((res) => res.json())
       .then((data) => setMessages(data.data));
-    console.log('here?');
-    // messages;
+    // console.log('here?');
   };
 
   return (
@@ -429,6 +455,7 @@ export default function PersonalOrder() {
           <OrderDate>訂單日期</OrderDate>
           <OrderTotal>訂單總金額</OrderTotal>
           <ToggleButton>訂單細節</ToggleButton>
+          <ReplyNotice>回覆</ReplyNotice>
         </Order>
         {orderList.length !== 0 &&
           orderList.map((order, orderIndex) => {
@@ -463,6 +490,11 @@ export default function PersonalOrder() {
                   <ToggleButton>
                     {isExpand[orderIndex] === false ? '▼' : '▲'}
                   </ToggleButton>
+                  {Object.keys(hasReply).length === 0 ? (
+                    ''
+                  ) : (
+                    <ReplyNotice>{hasReply.order_id ? '✉' : ''}</ReplyNotice>
+                  )}
                 </Order>
                 {isExpand[orderIndex] === true ? (
                   <>
@@ -500,7 +532,6 @@ export default function PersonalOrder() {
                                 {isEvaluated[detailIndex]}
                               </ProductEvaluate>
                             )}
-
                             <ProductRate>顆星</ProductRate>
                           </OrderDetail>
                         );
@@ -533,7 +564,7 @@ export default function PersonalOrder() {
                         }}
                       >
                         {isEvaluated[0] === 'notEvaluated'
-                          ? '評價商品並留言'
+                          ? '訂單回饋'
                           : '送出'}
                       </Submit>
                       <ChatWindow
@@ -541,11 +572,12 @@ export default function PersonalOrder() {
                           order.order_detail.length - zeroDetail[orderIndex]
                         }
                       >
-                        <ChatWindowTitle>{`客服對話紀錄`}</ChatWindowTitle>
+                        <ChatWindowTitle>{`對話紀錄`}</ChatWindowTitle>
                         <ChatWindowMessages>
                           {messages.length !== 0
-                            ? messages.map((message) => (
+                            ? messages.map((message, index) => (
                                 <ChatWindowMessage
+                                  key={index}
                                   user={
                                     message.user_id.toString() ===
                                     order.user_id.toString()

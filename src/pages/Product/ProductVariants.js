@@ -127,9 +127,14 @@ function ProductVariants({ product }) {
   const { cartItems, setCartItems } = useContext(CartContext);
 
   function getStock(colorCode, size) {
-    return product.variants.find(
+    const find = product.variants.find(
       (variant) => variant.color_code === colorCode && variant.size === size
-    ).stock;
+    ) || { stock: 0 };
+    return find.stock;
+
+    // return product.variants.find(
+    //   (variant) => variant.color_code === colorCode && variant.size === size
+    // ).stock;
   }
 
   function addToCart() {

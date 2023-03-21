@@ -132,14 +132,18 @@ const AddToCartButton = styled.div`
 
 function Recommend() {
   const { cartItems, setCartItems } = useContext(CartContext);
-  console.log(cartItems); //TODO: 根據 cart item 名稱去抓 fuzzies
+  // console.log(cartItems); //TODO: 根據 cart item 名稱去抓 fuzzies
 
   const [recommentItems, setRecommentItems] = useState([]);
+  // console.log(recommentItems);
 
   useEffect(() => {
     async function getFuzzys() {
-      const { data } = await api.getFuzzys('女'); //TODO:
-      setRecommentItems(data);
+      const { data } = await api.getFuzzys('氣'); //TODO:
+      // console.log(data);
+      if (data) {
+        setRecommentItems(data);
+      }
     }
     getFuzzys();
   }, []);
@@ -188,7 +192,6 @@ function Recommend() {
         <Items>
           {recommentItems.map((item, index) => (
             <Item key={index}>
-              {/* <Link  */}
               <ItemImage src={item.main_image} />
               <ItemDetails>
                 <ItemName>{item.title}</ItemName>

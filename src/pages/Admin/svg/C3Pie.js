@@ -17,16 +17,16 @@ export const C3Pie = () => {
             )
           )
         );
-        console.log(
-          [...new Set(data.data.map((order) => order.createtime))].map((date) =>
-            data.data.reduce(
-              (acc, cur) =>
-                cur.createtime === date ? (acc += cur.total) : acc,
-              0
-            )
-          )
-        );
-        console.log(data.data);
+        // console.log(
+        //   [...new Set(data.data.map((order) => order.createtime))].map((date) =>
+        //     data.data.reduce(
+        //       (acc, cur) =>
+        //         cur.createtime === date ? (acc += cur.total) : acc,
+        //       0
+        //     )
+        //   )
+        // );
+        // console.log(data.data);
       });
   }, []);
 

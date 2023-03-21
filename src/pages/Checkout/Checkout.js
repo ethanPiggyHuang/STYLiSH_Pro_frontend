@@ -10,6 +10,7 @@ import Button from '../../components/Button';
 import Cart from './Cart';
 import Socket from '../Home/Socket';
 import Recommend from './Recommend';
+import AddRandomCart from './AddRandomCart';
 
 const Wrapper = styled.div`
   margin: 0 auto;
@@ -283,11 +284,12 @@ const timeOptions = [
 
 function Checkout() {
   const [recipient, setRecipient] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    address: '',
-    time: '',
+    // TODO 測試用，全部空值
+    name: '測試',
+    email: 'testing@gmail.com',
+    phone: '0912345678',
+    address: 'appWorkSchool',
+    time: 'anytime',
   });
   const [invalidFields, setInvalidFields] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -386,6 +388,7 @@ function Checkout() {
   return (
     <Wrapper>
       <Socket />
+      <AddRandomCart />
       <Cart />
       <Recommend />
       <GrayBlock>

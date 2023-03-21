@@ -28,7 +28,11 @@ function StarRating({ id, ratings }) {
         ''
       ) : (
         <GetStars
-          rating={ratings.find((item) => item.product_id === id).rank}
+          rating={
+            ratings.findIndex((item) => item.product_id === id) === -1
+              ? 5
+              : ratings.find((item) => item.product_id === id).rank
+          }
         />
       )}
     </div>

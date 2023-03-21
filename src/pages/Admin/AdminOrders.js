@@ -283,7 +283,7 @@ function AdminOrders() {
   const [isEvaluated, setIsEvalutated] = useState(['notEvaluated']);
   const [hasReply, setHasReply] = useState({});
   // console.log(Object.keys(hasReply).length);
-
+  // console.log(orderList.map((order) => order.order_detail.length));
   // console.log(rankList);
 
   useEffect(() => {
@@ -419,7 +419,11 @@ function AdminOrders() {
       `https://side-project2023.online/api/1.0/order/getOrderchatHistory?order_id=${orderId}`
     )
       .then((res) => res.json())
-      .then((data) => setMessages(data.data));
+      .then((data) => {
+        if (data.length !== 0) {
+          setMessages(data.data);
+        }
+      });
     // console.log('here?');
   };
 
@@ -475,7 +479,8 @@ function AdminOrders() {
                       <ReplyNotice>{hasReply.order_id ? '✉' : ''}</ReplyNotice>
                     )}
                   </Order>
-                  {isExpand[orderIndex] === true ? (
+                  {isExpand[orderIndex] === true &&
+                  order.order_detail.length !== 0 ? (
                     <>
                       <OrderDetails>
                         {order.order_detail.map((detail, detailIndex) => {
@@ -489,7 +494,6 @@ function AdminOrders() {
                                 <ProductQty>{`數量：${detail.qty} 件`}</ProductQty>
                                 <ProductPrice>{`小計：${detail.price} 元`}</ProductPrice>
                               </ProductDetail>
-
                               {isEvaluated[0] === 'notEvaluated' ? (
                                 <ProductRate>未評價</ProductRate>
                               ) : (

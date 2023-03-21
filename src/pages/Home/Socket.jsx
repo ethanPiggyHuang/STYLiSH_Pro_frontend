@@ -3,6 +3,7 @@ import ReactDom from 'react-dom';
 import { io } from 'socket.io-client';
 import styled, { createdGlobalStyle } from 'styled-components/macro';
 import chatIcon from './chat.png';
+import chatIconActive from './chatActive.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -54,7 +55,7 @@ const AdminImage = styled.img`
 `;
 
 const Chat = styled.div`
-  z-index: 102;
+  z-index: 203;
   position: fixed;
   bottom: 300px;
   left: 120px;
@@ -196,19 +197,21 @@ const UnreadMessageIndicator = styled.div`
   left: 60px;
 `;
 
+const ChatIconWrap = styled.div``;
+
 const ReplyTime = styled.span`
   font-size: 12px;
   color: #888;
-  margin-left: 10px;
+  margin-left: auto;
+  margin-bottom: 10px;
 `;
 
 const CustomerMessageTime = styled.span`
   font-size: 12px;
   color: #888;
-  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
 `;
-
-const ChatIconWrap = styled.div``;
 
 export const Socket = () => {
   const [userId, setUserId] = useState('');
@@ -316,7 +319,7 @@ export const Socket = () => {
     <div>
       <ChatIconWrap>
         <FixedImage
-          src={chatIcon}
+          src={isChatboxVisible ? chatIconActive : chatIcon}
           alt="Chat Icon"
           onClick={handleChatboxToggle}
         />
@@ -359,32 +362,33 @@ export const Socket = () => {
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
               color: '#333',
               fontWeight: 'bold',
+              marginBottom: '10px',
             }}
           />
 
           {messages.map((msg, index) => {
             console.log('msg sender: ' + msg.sender);
-            console.log('msg : ' + msg.time);
-            const time = new Date(msg.time).toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            });
+            const date = new Date(msg.time);
+
+            const formattedDateString = `${
+              date.getMonth() + 1
+            }/${date.getDate()}/${date.getFullYear()}, ${date.toLocaleTimeString()}`;
+
+            console.log(formattedDateString);
             if (msg.sender === 'Me') {
               console.log('me');
               return (
                 <>
-                  {/* <UserImage></UserImage> */}
                   <CustomerMessage key={index}>{msg.text}</CustomerMessage>
-                  <CustomerMessageTime key={index}>{time}</CustomerMessageTime>
+                  <CustomerMessageTime>{msg.time}</CustomerMessageTime>
                 </>
               );
             } else if (msg.sender === 'customer-support') {
               console.log('customer-support');
               return (
                 <>
-                  {/* <AdminImage></AdminImage> */}
                   <Reply key={index}>{msg.text}</Reply>
-                  <CustomerMessageTime key={index}>{time}</CustomerMessageTime>
+                  <ReplyTime>{formattedDateString}</ReplyTime>
                 </>
               );
             }
@@ -396,6 +400,12 @@ export const Socket = () => {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="親, 這邊可以輸入訊息喔!"
+              disabled={!userId} // disable the input if userId is empty
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  handleSendMessage();
+                }
+              }}
             />
             <SendButton onClick={handleSendMessage}>
               <FontAwesomeIcon

@@ -99,6 +99,8 @@ export const Messages = styled.ul`
 export const Message = styled.li`
   margin-bottom: 10px;
   color: #333;
+  text-align: ${({ sender }) =>
+    sender === 'customer-support ' ? 'right' : 'left'};
 `;
 
 export const UserId = styled.input`

@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 
 import add from './add.png';
@@ -122,10 +122,11 @@ function ProductVariants({ product }) {
   const [selectedColorCode, setSelectedColorCode] = useState(
     product.colors[0].code
   );
+
   const [selectedSize, setSelectedSize] = useState();
   const [quantity, setQuantity] = useState(1);
   const { cartItems, setCartItems } = useContext(CartContext);
-
+  const [hotData, setHotData] = useState([]);
   function getStock(colorCode, size) {
     const find = product.variants.find(
       (variant) => variant.color_code === colorCode && variant.size === size
@@ -136,6 +137,36 @@ function ProductVariants({ product }) {
     //   (variant) => variant.color_code === colorCode && variant.size === size
     // ).stock;
   }
+
+  const getHotData = () => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        const dataArray = data.data;
+        // console.log(data.data[0].discount);
+        setHotData(dataArray);
+        // console.log(hotData);
+      });
+  };
+
+  const promote = hotData.find((p) => p.id === product.id);
+  useEffect(() => {
+    getHotData();
+  }, []);
+
+  //console.log(hotData);
+  //console.log(promote);
+  //console.log(product.id);
+  const newPrice = promote
+    ? Math.floor(product.price * promote.discount)
+    : product.price;
+  const isPromoted = !!promote;
 
   function addToCart() {
     if (!selectedSize) {
@@ -150,7 +181,7 @@ function ProductVariants({ product }) {
         id: product.id,
         image: product.main_image,
         name: product.title,
-        price: product.price,
+        price: newPrice,
         qty: quantity,
         size: selectedSize,
         stock: getStock(selectedColorCode, selectedSize),

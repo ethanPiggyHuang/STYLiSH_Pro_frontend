@@ -195,6 +195,7 @@ const Image = styled.img`
 `;
 
 function Product() {
+  const [hotData, setHotData] = useState([]);
   const [product, setProduct] = useState();
   const { id } = useParams();
   // const location = useLocation();
@@ -220,6 +221,33 @@ function Product() {
 
   if (!product || !id) return null;
 
+  const getHotData = () => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        const dataArray = data.data;
+        // console.log(data.data[0].discount);
+        setHotData(dataArray);
+        // console.log(hotData);
+      });
+  };
+
+  const promote = hotData.find((p) => p.id === product.id);
+  getHotData();
+  console.log(hotData);
+  console.log(promote);
+  console.log(product.id);
+  const newPrice = promote
+    ? Math.floor(product.price * promote.discount)
+    : product.price;
+  const isPromoted = !!promote;
+
   return (
     <Wrapper>
       <Socket></Socket>
@@ -227,7 +255,24 @@ function Product() {
       <Details>
         <Title>{product.title}</Title>
         <ID>{product.id}</ID>
-        <Price>TWD.{product.price}</Price>
+        <Price $isPromoted={isPromoted}>
+          {isPromoted ? (
+            <>
+              <span
+                style={{
+                  textDecoration: 'line-through',
+                  color: '#3f3a3a',
+                  fontSize: '20px',
+                }}
+              >
+                TWD.{product.price}
+              </span>
+              <span style={{ fontSize: '24px' }}>TWD.{newPrice}</span>
+            </>
+          ) : (
+            <span>TWD.{product.price}</span>
+          )}
+        </Price>
         <ProductVariants product={product} />
         <Note>{product.note}</Note>
         <Texture>{product.texture}</Texture>

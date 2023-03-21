@@ -101,10 +101,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log(data);
-        // console.log(data.data[0].discount);
         setHotData(data);
-        // console.log(hotData);
       });
   };
 
@@ -162,21 +159,21 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-        console.log(rankedItems);
-        console.log(hotData);
+       // console.log(rankedItems);
+        //console.log(hotData);
         const rankedItemsWithPromotion = rankedItems.map((item) => {
-          console.log('item.id', item.id);
-          console.log('hotData', hotData.data);
+          //console.log('item.id', item.id);
+          //console.log('hotData', hotData.data);
           const isPromoting = hotData.data.some(
             (hotItem) => hotItem.id === item.id
           );
-          console.log(isPromoting);
+          //console.log(isPromoting);
           return {
             ...item,
             isPromoting,
           };
         });
-        console.log(rankedItemsWithPromotion);
+        //console.log(rankedItemsWithPromotion);
         setRows(rankedItemsWithPromotion);
       });
   };
@@ -273,7 +270,7 @@ const Table = () => {
         tryPost(discountPost);
       }
     };
-    console.log(row.id, row.isPromoting);
+    //console.log(row.id, row.isPromoting);
 
     return (
       <Button
@@ -375,6 +372,8 @@ const Table = () => {
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
+        style={{ minHeight: '600px' }}
+        rowsPerPageOptions={[10, 25, 50]}
       />
       <SaleTitle>促銷中的商品</SaleTitle>
       <OnSale>

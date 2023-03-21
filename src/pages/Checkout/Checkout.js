@@ -285,9 +285,9 @@ const timeOptions = [
 function Checkout() {
   const [recipient, setRecipient] = useState({
     // TODO 測試用，全部空值
-    name: '測試',
-    email: 'testing@gmail.com',
-    phone: '0912345678',
+    name: '第七組超棒購物網團隊',
+    email: 'amazingG7@gmail.com',
+    phone: '0907777777',
     address: 'appWorkSchool',
     time: 'anytime',
   });

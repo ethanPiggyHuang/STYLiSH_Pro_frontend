@@ -15,13 +15,13 @@ const productIds = [
 
 function AddRandomCart() {
   const { cartItems, setCartItems } = useContext(CartContext);
-  console.log(cartItems);
+  // console.log(cartItems);
 
   async function getRandom() {
     const fakeIds = new Array(1)
       .fill('')
       .map(() => productIds[Math.floor(Math.random() * productIds.length)]);
-    console.log(fakeIds);
+    // console.log(fakeIds);
 
     const item = await fetch(
       `https://side-project2023.online/api/1.0/products/details?id=${fakeIds[0]}`
@@ -29,7 +29,7 @@ function AddRandomCart() {
     const data = await item.json();
     const detail = data.data;
 
-    console.log(detail);
+    // console.log(detail);
     const randomQty = Math.floor(Math.random() * 6) + 1;
 
     const newCartItems = [

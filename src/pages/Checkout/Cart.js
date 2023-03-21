@@ -255,7 +255,9 @@ function Cart() {
               <ItemQuantityName hideOnDesktop>數量</ItemQuantityName>
               <ItemQuantitySelect
                 value={item.qty}
-                onChange={(e) => changeItemQuantity(index, e.target.value)}
+                onChange={(e) =>
+                  changeItemQuantity(index, Number(e.target.value))
+                }
               >
                 {Array(item.stock)
                   .fill()

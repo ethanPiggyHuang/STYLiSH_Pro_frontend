@@ -118,6 +118,10 @@ const SearchInput = styled.input`
   line-height: 24px;
   color: #8b572a;
 
+  &:focus {
+    border-radius: 8px;
+  }
+
   @media screen and (max-width: 1279px) {
     width: 0;
     border: none;
@@ -139,7 +143,7 @@ const AutoFilleds = styled.ul`
   width: 254px;
   position: absolute;
   right: 312px;
-  top: 65px;
+  top: 70px;
   background: #f1f1f1;
 `;
 
@@ -292,6 +296,7 @@ function Header() {
           return obj;
         })
       );
+      setTimeout(() => setAutoFilled([]), 8000);
     } else if (autoFilled !== 0) {
       setAutoFilled([]);
     }

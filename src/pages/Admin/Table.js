@@ -65,10 +65,10 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        console.log(data.data[0].discount);
+        // console.log(data);
+        // console.log(data.data[0].discount);
         setHotData(data);
-        console.log(hotData);
+        // console.log(hotData);
       });
   };
 
@@ -81,7 +81,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
       });
   };
 
@@ -94,14 +94,14 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data); // Log the response data
+        // console.log(data); // Log the response data
         const newArr = data.data
           .reduce((acc, cur) => {
             acc = [...acc, cur.order_detail];
             return acc;
           }, [])
           .flat(2);
-        console.log(newArr);
+        // console.log(newArr);
         const idQty = newArr.reduce((acc, cur) => {
           const id = cur.id;
           const qty = cur.qty;
@@ -112,7 +112,7 @@ const Table = () => {
           }
           return acc;
         }, {});
-        console.log(idQty);
+        // console.log(idQty);
         const rankedItems = newArr.reduce((acc, item) => {
           const index = acc.findIndex((obj) => obj.id === item.id);
 
@@ -139,9 +139,9 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-        console.log(rankedItems);
+        // console.log(rankedItems);
         getHotData();
-        console.log(hotData);
+        // console.log(hotData);
         setRows(rankedItems);
       });
   };

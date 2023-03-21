@@ -201,7 +201,7 @@ function MessageDashboard() {
     socketRef.current = io('https://side-project2023.online/');
     socketRef.current.emit('register', userId);
     socketRef.current.on('chat message', (data) => {
-      console.log(data);
+      // console.log(data);
       const { message, sender, timestamp } = data;
       setUsers((prevUsers) => {
         const newUsers = new Map(prevUsers);

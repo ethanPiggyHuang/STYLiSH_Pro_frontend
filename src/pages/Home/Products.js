@@ -232,11 +232,11 @@ function Products() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         const dataArray = data.data;
-        console.log(data.data[0].discount);
+        // console.log(data.data[0].discount);
         setHotData(dataArray);
-        console.log(hotData);
+        // console.log(hotData);
       });
   };
 
@@ -297,9 +297,13 @@ function Products() {
       <Socket></Socket>
       {products.map(({ id, main_image, colors, title, price }) => {
         const promote = hotData;
-        console.log(promote);
+        {
+          /* console.log(promote); */
+        }
         const isPromoted = promote.some((p) => p.id === id);
-        console.log(isPromoted);
+        {
+          /* console.log(isPromoted); */
+        }
         return (
           <Product key={id} to={`/products/${id}`}>
             {isPromoted && <PromoteBanner>特價商品</PromoteBanner>}

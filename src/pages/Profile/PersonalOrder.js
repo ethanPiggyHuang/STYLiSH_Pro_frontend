@@ -133,7 +133,7 @@ export default function PersonalOrder() {
       ],
       comment: '物流很爛',
     };
-    console.log(order.order_id, orderDetail.id, rank);
+    // console.log(order.order_id, orderDetail.id, rank);
     fetch('https://side-project2023.online/api/1.0/report/order/evaluate', {
       method: 'POST',
       headers: new Headers({
@@ -160,8 +160,10 @@ export default function PersonalOrder() {
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res));
-    alert('訂單評價已送出');
+      .then((res) => {
+        console.log(res);
+        alert('訂單評價已送出');
+      });
   };
 
   return (

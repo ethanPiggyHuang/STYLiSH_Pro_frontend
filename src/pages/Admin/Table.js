@@ -302,6 +302,7 @@ const Table = () => {
         const rowIndex = params.row.id;
         return (
           <StyledSelect
+            defaultValue=""
             value={selectedOptions[rowIndex]}
             onChange={(e) => handleSelectChange(rowIndex, e)}
             disabled={promotionClicked[rowIndex]} // pass disabled prop based on the isClicked state
@@ -324,6 +325,7 @@ const Table = () => {
 
         return (
           <StyledSelect
+            defaultValue=""
             value={campaignTimeOptions[rowIndex]}
             onChange={(e) => handleCampaignTime(rowIndex, e)}
             disabled={promotionClicked[rowIndex]} // pass disabled prop based on the isClicked state
@@ -386,7 +388,6 @@ const Table = () => {
                 <CancelButton
                   onClick={() =>
                     deleteHot(item.id, item.discount, item.deadline)
-                    
                   }
                 >
                   結束促銷

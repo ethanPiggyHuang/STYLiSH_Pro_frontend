@@ -192,6 +192,41 @@ const Table = () => {
     console.log(newCampaignTimeOptions);
   };
 
+  function PromotionButton({
+    row,
+    selectedOptions,
+    campaignTimeOptions,
+    tryPost,
+  }) {
+    const [isClicked, setIsClicked] = useState(false);
+    const onClick = (e) => {
+      e.stopPropagation();
+      const selectedDiscount = selectedOptions[row.id];
+      const selectedDate = campaignTimeOptions[row.id];
+      const date = new Date();
+      if (selectedDate === 'option1') {
+        date.setDate(date.getDate() + 1);
+      } else if (selectedDate === 'option2') {
+        date.setDate(date.getDate() + 3);
+      } else if (selectedDate === 'option3') {
+        date.setDate(date.getDate() + 7);
+      }
+      const formattedDate = date
+        .toISOString()
+        .substring(0, 10)
+        .replace('T', ' ');
+      setIsClicked(!isClicked);
+      const discountPost = {
+        id: row.id,
+        discount: selectedDiscount,
+        deadline: formattedDate,
+      };
+      tryPost(discountPost);
+    };
+    const buttonText = isClicked ? '取消促銷' : '促銷';
+    return <StyledButton onClick={onClick}>{buttonText}</StyledButton>;
+  }
+
   const columns = [
     { field: 'rank', headerName: 'Rank', width: 70 },
     { field: 'id', headerName: 'ID', width: 200 },
@@ -292,44 +327,12 @@ const Table = () => {
       width: 70,
       responsive: true,
       renderCell: (params) => {
-        const thisRow = params.row;
-        const [isClicked, setIsClicked] = useState(false);
-        const onClick = (e) => {
-          e.stopPropagation(); // don't select this row after clicking
-
-          console.log(thisRow);
-          const selectedDiscount = selectedOptions[thisRow.id];
-          const selectedDate = campaignTimeOptions[thisRow.id];
-
-          console.log('Selected discount:', selectedDiscount);
-          console.log('Selected date:', selectedDate);
-          const date = new Date();
-          if (selectedDate === 'option1') {
-            date.setDate(date.getDate() + 1);
-          } else if (selectedDate === 'option2') {
-            date.setDate(date.getDate() + 3);
-          } else if (selectedDate === 'option3') {
-            date.setDate(date.getDate() + 7);
-          }
-          console.log(date);
-          const formattedDate = date
-            .toISOString()
-            .substring(0, 10)
-            .replace('T', ' ');
-          console.log(formattedDate); // outputs "2023-03-22"
-          setIsClicked(!isClicked);
-
-          const discountPost = {
-            id: thisRow.id,
-            discount: selectedDiscount,
-            deadline: formattedDate,
-          };
-          console.log(formattedDate);
-          tryPost(discountPost);
-          return console.log(discountPost);
-        };
-        const buttonText = isClicked ? '取消促銷' : '促銷';
-        return <StyledButton onClick={onClick}>{buttonText}</StyledButton>;
+        <PromotionButton
+          row={params.row}
+          selectedOptions={selectedOptions}
+          campaignTimeOptions={campaignTimeOptions}
+          tryPost={tryPost}
+        />;
       },
     },
   ];

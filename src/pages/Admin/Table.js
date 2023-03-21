@@ -15,8 +15,26 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
   background-color: #f5f5f5;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
 const OnSale = styled.div`
@@ -24,7 +42,14 @@ const OnSale = styled.div`
   flex-direction: row;
   align-items: center;
   padding: 20px;
+  margin-bottom: 20px;
   background-color: #f5f5f5;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
 const DataWrap = styled.div`
@@ -34,6 +59,11 @@ const DataWrap = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
   background-color: #fff;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+    margin: 10px;
+  }
 `;
 
 const Title = styled.h2`
@@ -74,6 +104,7 @@ const SaleTitle = styled.h2`
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 40px;
+  text-align: center;
 `;
 
 const Table = () => {
@@ -168,7 +199,7 @@ const Table = () => {
           const isPromoting = hotData.data.some(
             (hotItem) => hotItem.id === item.id
           );
-          console.log(isPromoting);
+          console.log('isPromoting' + isPromoting);
           return {
             ...item,
             isPromoting,
@@ -188,8 +219,10 @@ const Table = () => {
       body: JSON.stringify(body),
     })
       .then((res) => res.json())
-      .then((res) => console.log(res));
-    setPostSuccess(true);
+      .then((res) => {
+        console.log(res);
+        setPostSuccess(true);
+      });
   };
 
   const deleteHot = (id, discount, deadline) => {
@@ -240,6 +273,8 @@ const Table = () => {
     const isClicked = promotionClicked[row.id];
 
     const onClick = (e) => {
+      console.log('clicked');
+      console.log(row.isPromoting);
       e.stopPropagation();
       const selectedDiscount = selectedOptions[row.id];
       const selectedDate = campaignTimeOptions[row.id];
@@ -268,7 +303,9 @@ const Table = () => {
 
       if (row.isPromoting) {
         deleteHot(row.id, row.discount, row.deadline);
-      } else {
+        console.log('reset promote!');
+      } else if (!row.isPromoting) {
+        console.log('set promote!');
         tryPost(discountPost);
       }
     };
@@ -382,12 +419,12 @@ const Table = () => {
   //TODO
 
   return (
-    <div style={{ width: '100%' }}>
+    <Wrapper style={{ width: '100%' }}>
       <DataGrid
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
-        style={{ minHeight: '600px' }}
+        style={{ minHeight: '1000px', maxWidth: '50%' }}
         rowsPerPageOptions={[10, 25, 50]}
       />
       <SaleTitle>促銷中的商品</SaleTitle>
@@ -410,7 +447,7 @@ const Table = () => {
             </Wrap>
           ))}
       </OnSale>
-    </div>
+    </Wrapper>
   );
 };
 

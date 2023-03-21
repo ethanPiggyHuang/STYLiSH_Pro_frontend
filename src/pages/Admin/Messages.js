@@ -16,6 +16,8 @@ export const Wrapper = styled.div`
 const Wrap = styled.div`
   display: flex;
   flex-direction: row;
+  width: 90%;
+  height: 50%;
 `;
 
 export const ChatTitle = styled.h1`
@@ -34,6 +36,7 @@ export const UserList = styled.div`
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   margin-right: 40px;
   width: 40%;
+  flex: 1;
 `;
 
 export const UserListTitle = styled.h2`
@@ -70,6 +73,7 @@ export const ChatMessage = styled.div`
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
+  flex: 1;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 `;
 export const MessageTitle = styled.h2`
@@ -270,7 +274,7 @@ function MessageDashboard() {
     <Wrap>
       <SideBar />
       <Wrapper>
-        <ChatTitle>Customer Support Dashboard</ChatTitle>
+        <ChatTitle>客戶服務控制中心</ChatTitle>
         <UserId id="userId" type="text" value={userId} readOnly />
         <Wrap>
           <UserList>

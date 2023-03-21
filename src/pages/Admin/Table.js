@@ -80,8 +80,8 @@ const Subtitle = styled.h3`
 `;
 
 const Info = styled.p`
-  font-size: 16px;
-  margin-bottom: 5px;
+  font-size: 20px;
+  margin-bottom: 10px;
 `;
 
 const CancelButton = styled.button`
@@ -427,15 +427,15 @@ const Table = () => {
         style={{ minHeight: '1000px', maxWidth: '50%' }}
         rowsPerPageOptions={[10, 25, 50]}
       />
-      <SaleTitle>促銷中的商品</SaleTitle>
+
       <OnSale>
         {hotData.data &&
           hotData.data.map((item) => (
             <Wrap>
               <DataWrap key={item.id}>
                 <Subtitle>ID: {item.id}</Subtitle>
-                <Info>Discount: {item.discount}</Info>
-                <Info>Deadline: {item.deadline}</Info>
+                <Info>折扣: {item.discount * 10}折</Info>
+                <Info>期限日期: {item.deadline}</Info>
                 <CancelButton
                   onClick={() =>
                     deleteHot(item.id, item.discount, item.deadline)

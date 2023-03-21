@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import styled, { css, createdGlobalStyle } from 'styled-components/macro';
+import styled, {
+  keyframes,
+  css,
+  createdGlobalStyle,
+} from 'styled-components/macro';
 
 import ReactLoading from 'react-loading';
 import Socket from './Socket';
@@ -218,6 +222,27 @@ const ProductImage = styled.img`
    
 `}
 `;
+
+const marquee = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const MarqueeContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+`;
+
+const MarqueeText = styled.p`
+  display: inline-block;
+  animation: ${marquee} 10s linear infinite;
+`;
+
 const getPromoteBannerStyle = (discount) => {
   if (discount === 0.5) {
     return {
@@ -271,7 +296,7 @@ function Products() {
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [campaignText, setCampaignText] = useState('');
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -333,10 +358,18 @@ function Products() {
       return <span>特價商品</span>;
     }
   };
-
+  const marqueeText = hotData.find((p) => p.discount === 0.5);
+  // setCampaignText(marqueeText.deadline);
+  console.log(marqueeText);
   return (
     <Wrapper>
       <Socket></Socket>
+      <MarqueeContainer>
+        <MarqueeText>
+          {hotData ? `  熱銷王促銷中 熱銷王促銷中 ` : '熱銷王'}
+        </MarqueeText>
+      </MarqueeContainer>
+
       {products.map(({ id, main_image, colors, title, price }) => {
         const promote = hotData.find((p) => p.id === id);
         const newPrice = promote ? Math.floor(price * promote.discount) : price;
@@ -381,7 +414,6 @@ function Products() {
           </Product>
         );
       })}
-
       {isLoading && <Loading type="spinningBubbles" color="#313538" />}
     </Wrapper>
   );

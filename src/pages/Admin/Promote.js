@@ -57,6 +57,7 @@ const Title = styled.div`
   height: 30px;
   font-weight: bold;
   font-size: 25px;
+  flex: 1;
 `;
 
 const RankTitle = styled.div`
@@ -330,6 +331,13 @@ const SendButton = styled.button`
   right: 5px;
 `;
 
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-evenly;
+`;
+
 //nested data is ok, see accessorKeys in ColumnDef below
 
 function Promote() {
@@ -365,7 +373,11 @@ function Promote() {
       <SideBar />
       <Rank>
         <RankTitle>
-          <Title>| 暢銷排名</Title>
+          <Wrap>
+            <Title>| 暢銷排名</Title>
+            <Title>| 正在促銷</Title>
+          </Wrap>
+
           <Split></Split>
         </RankTitle>
 

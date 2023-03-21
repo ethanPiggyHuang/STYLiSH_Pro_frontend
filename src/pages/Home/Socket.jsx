@@ -11,14 +11,27 @@ import {
   faMessage,
 } from '@fortawesome/free-solid-svg-icons';
 
+const primaryColor = '#828282';
+const secondaryColor = '#ECEFF1';
+
 const FixedImage = styled.img`
   position: fixed;
-  bottom: 120px;
+  bottom: 250px;
   left: 30px;
-  width: 50px;
-  height: 50px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background-color: #f2f2f2;
+  z-index: 4;
+  background-color: #d7ccc8;
+  @media only screen and (max-width: 768px) {
+    /* Styles for small screens */
+    Chat {
+      width: 90%;
+      height: 400px;
+      bottom: 100px;
+      left: 5%;
+    }
+  }
 `;
 
 const UserImage = styled.img`
@@ -41,12 +54,12 @@ const AdminImage = styled.img`
 `;
 
 const Chat = styled.div`
-  z-index: 2;
+  z-index: 102;
   position: fixed;
-  bottom: 120px;
-  left: 100px;
-  width: 400px;
-  height: 450px;
+  bottom: 300px;
+  left: 120px;
+  width: 500px;
+  height: 500px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -54,8 +67,23 @@ const Chat = styled.div`
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   transform: ${({ isVisible }) =>
     isVisible ? 'translateX(0)' : 'translateX(100%)'};
-  width: ${({ isExpanded }) => (isExpanded ? '70%' : '300px')};
-  height: ${({ isExpanded }) => (isExpanded ? '500px' : '250px')};
+  width: ${({ isExpanded }) => (isExpanded ? '70%' : '500px')};
+  height: ${({ isExpanded }) => (isExpanded ? '600px' : '300px')};
+  @media only screen and (max-width: 768px) {
+    /* Styles for small screens */
+    Chat {
+      width: 90%;
+      height: 400px;
+      bottom: 100px;
+      left: 5%;
+    }
+    FixedImage {
+      bottom: 150px;
+      left: 10%;
+      width: 50px;
+      height: 50px;
+    }
+  }
 `;
 
 const ChatHeader = styled.div`
@@ -63,7 +91,8 @@ const ChatHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #828282;
+  background-color: ${primaryColor};
+  color: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 `;
 
@@ -75,8 +104,8 @@ const StatusIndicator = styled.div`
 `;
 
 const ChatMessages = styled.div`
-  padding: 30px;
-  height: calc(100% - 100px);
+  padding: 30px 30px 70px 30px; /* Add bottom padding to make space for the input area */
+  height: calc(100% - 150px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -88,50 +117,72 @@ const ChatInputContainer = styled.div`
   justify-content: space-between;
   position: absolute;
   bottom: 0px;
+  right: 0px;
+  padding: 0px;
+  width: 100%;
+  margin-bottom: 0px;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const ChatInput = styled.input`
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   padding: 10px;
-  align-self: flex-end;
-  font-size: 16px;
+  font-size: 32px;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
+  font-weight: bold;
+  &::placeholder {
+    color: #aaa;
+  }
   &:focus {
     outline: none;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
   }
 `;
 
 const ExpandIcon = styled(FontAwesomeIcon)``;
 const CustomerMessage = styled.div`
-  width: 150px;
-  height: 50px;
+  width: auto;
+  max-width: 150px;
+  height: auto;
+  color: white;
   background-color: #bcaaa4;
-  border-radius: 10px; /* Set the radius to your desired value */
-  padding: 10px; /* Set the padding */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a shadow */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   align-self: flex-start;
+  margin-bottom: 10px;
+  word-wrap: break-word;
 `;
 
 const Reply = styled.div`
-  width: 150px;
-  height: 50px;
+  width: auto;
+  max-width: 150px;
+  height: auto;
+  color: white;
   background-color: #8d6e63;
-  border-radius: 10px; /* Set the radius to your desired value */
-  padding: 10px; /* Set the padding */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a shadow */
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   align-self: flex-end;
+  margin-bottom: 10px;
+  word-wrap: break-word;
 `;
 const SendButton = styled.button`
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background-color: #828282;
+  background-color: ${primaryColor};
   border: none;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
   position: absolute;
-  bottom: 10px;
+  bottom: 15px;
   right: 5px;
 `;
 
@@ -143,6 +194,18 @@ const UnreadMessageIndicator = styled.div`
   border-radius: 50%;
   bottom: 160px;
   left: 60px;
+`;
+
+const ReplyTime = styled.span`
+  font-size: 12px;
+  color: #888;
+  margin-left: 10px;
+`;
+
+const CustomerMessageTime = styled.span`
+  font-size: 12px;
+  color: #888;
+  margin-left: 10px;
 `;
 
 const ChatIconWrap = styled.div``;
@@ -285,25 +348,43 @@ export const Socket = () => {
             type="text"
             value={userId}
             onChange={handleUserIdChange}
-            placeholder="Enter user ID"
+            placeholder="親,該怎麼稱呼您?"
+            style={{
+              border: 'none',
+              outline: 'none',
+              fontSize: '20px',
+              padding: '10px',
+              backgroundColor: '#f2f2f2',
+              borderRadius: '5px',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              color: '#333',
+              fontWeight: 'bold',
+            }}
           />
 
           {messages.map((msg, index) => {
             console.log('msg sender: ' + msg.sender);
+            console.log('msg : ' + msg.time);
+            const time = new Date(msg.time).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            });
             if (msg.sender === 'Me') {
               console.log('me');
               return (
                 <>
-                  <UserImage></UserImage>
+                  {/* <UserImage></UserImage> */}
                   <CustomerMessage key={index}>{msg.text}</CustomerMessage>
+                  <CustomerMessageTime key={index}>{time}</CustomerMessageTime>
                 </>
               );
             } else if (msg.sender === 'customer-support') {
               console.log('customer-support');
               return (
                 <>
-                  <AdminImage></AdminImage>
+                  {/* <AdminImage></AdminImage> */}
                   <Reply key={index}>{msg.text}</Reply>
+                  <CustomerMessageTime key={index}>{time}</CustomerMessageTime>
                 </>
               );
             }
@@ -314,9 +395,9 @@ export const Socket = () => {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter message"
+              placeholder="親, 這邊可以輸入訊息喔!"
             />
-            <SendButton>
+            <SendButton onClick={handleSendMessage}>
               <FontAwesomeIcon
                 onClick={handleSendMessage}
                 icon={faPaperPlane}

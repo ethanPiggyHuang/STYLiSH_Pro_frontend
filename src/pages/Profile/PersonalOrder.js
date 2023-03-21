@@ -103,24 +103,26 @@ export default function PersonalOrder() {
               const rearrangeOrder = {
                 order_id: order.id,
                 order_detail: order.details.list,
+                user_id: order.user_id,
               };
               return rearrangeOrder;
             });
             setOrderList(personOrders);
           });
       } else {
-        fetch('https://side-project2023.online/api/1.0/report/order/detail')
-          .then((res) => res.json())
-          .then((data) => {
-            setOrderList(data.data);
-          });
+        // 要移植到 商家端
+        // fetch('https://side-project2023.online/api/1.0/report/order/detail')
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     setOrderList(data.data);
+        //   });
       }
     }
     getOrders();
   }, [isLogin]);
 
   const handleRate = (order, orderDetail, rank) => {
-    console.log(rank, typeof rank);
+    // console.log(rank, typeof rank);
     const body = {
       order_id: order.order_id,
       evaluate: [
@@ -141,6 +143,25 @@ export default function PersonalOrder() {
     })
       .then((res) => res.json())
       .then((res) => console.log(res));
+  };
+
+  const handleChat = (order) => {
+    const body = {
+      order_id: order.order_id,
+      user_id: order.user_id,
+      chat: 'Ethantest',
+    };
+    console.log(body);
+    fetch('https://side-project2023.online/api/1.0/order/insertOrderchat', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(body),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res));
+    alert('訂單評價已送出');
   };
 
   return (
@@ -174,11 +195,7 @@ export default function PersonalOrder() {
                   >
                     詳細資訊
                   </ProductDetail>
-                  <ProductContact
-                    onClick={() => {
-                      alert('功能還沒寫，別亂按～');
-                    }}
-                  >
+                  <ProductContact onClick={() => handleChat(order)}>
                     聯絡客服
                   </ProductContact>
                   <ItemQuantitySelect

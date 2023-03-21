@@ -214,6 +214,8 @@ function Products() {
   const [isChatboxVisible, setIsChatboxVisible] = useState(false);
   const keyword = searchParams.get('keyword');
   const category = searchParams.get('category') || 'all';
+  const [ratings, setRatings] = useState([]);
+  // console.log('r', ratings);
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
@@ -230,11 +232,11 @@ function Products() {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         const dataArray = data.data;
-        console.log(data.data[0].discount);
+        // console.log(data.data[0].discount);
         setHotData(dataArray);
-        console.log(hotData);
+        // console.log(hotData);
       });
   };
 
@@ -282,15 +284,26 @@ function Products() {
     };
   }, [keyword, category]);
   //todo 需改成變數
-  const productRating = 2;
+  useEffect(() => {
+    fetch(`https://side-project2023.online/api/1.0/report/order/getevaluate`)
+      .then((res) => res.json())
+      .then((data) => {
+        setRatings(data.data);
+      });
+  }, []);
+
   return (
     <Wrapper>
       <Socket></Socket>
       {products.map(({ id, main_image, colors, title, price }) => {
         const promote = hotData;
-        console.log(promote);
+        {
+          /* console.log(promote); */
+        }
         const isPromoted = promote.some((p) => p.id === id);
-        console.log(isPromoted);
+        {
+          /* console.log(isPromoted); */
+        }
         return (
           <Product key={id} to={`/products/${id}`}>
             {isPromoted && <PromoteBanner>特價商品</PromoteBanner>}
@@ -302,10 +315,11 @@ function Products() {
             </ProductColors>
             <ProductTitle>{title}</ProductTitle>
             <ProductPrice $isPromoted={isPromoted}>TWD.{price}</ProductPrice>
-            <StarRating></StarRating>
+            <StarRating id={id.toString()} ratings={ratings} />
           </Product>
         );
       })}
+
       {/* <FixedImage
         src={chatIcon}
         alt="Chat Icon"

@@ -276,6 +276,9 @@ function Header() {
   const category = searchParams.get('category');
   const [autoFilled, setAutoFilled] = useState([]);
 
+  // setAutoFilled([]);
+  // setInputValue('');
+
   useEffect(() => {
     if (category) setInputValue('');
   }, [category]);
@@ -283,8 +286,12 @@ function Header() {
   async function handleInput(keyword) {
     const { data } = await api.getFuzzys(keyword);
     if (data.length !== 0) {
-      // console.log(data.map((item) => item.title));
-      setAutoFilled(data.map((item) => item.title));
+      setAutoFilled(
+        data.map((item) => {
+          const obj = { title: item.title, id: item.id };
+          return obj;
+        })
+      );
     } else if (autoFilled !== 0) {
       setAutoFilled([]);
     }
@@ -324,11 +331,18 @@ function Header() {
       />
       <AutoFilleds>
         {autoFilled.length !== 0 &&
-          autoFilled.map((item, index) => {
+          autoFilled.map((obj, index) => {
             return (
-              <Autofilled key={index} onClick={(e) => setInputValue(item)}>
-                {item}
-              </Autofilled>
+              <Link to={`/products/${obj.id}`} key={index}>
+                <Autofilled
+                  onClick={() => {
+                    setAutoFilled([]);
+                    setInputValue('');
+                  }}
+                >
+                  {obj.title}
+                </Autofilled>
+              </Link>
             );
           })}
       </AutoFilleds>

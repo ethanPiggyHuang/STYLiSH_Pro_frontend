@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 
 export const CartContext = createContext({
   cartItems: [],
-  setCartItems: () => {}
+  setCartItems: () => {},
 });
 
 const STORAGE_KEY = 'cartItems';
@@ -21,5 +21,5 @@ export const CartContextProvider = ({ children }) => {
     >
       {children}
     </CartContext.Provider>
-  )
-}
+  );
+};

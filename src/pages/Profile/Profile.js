@@ -8,19 +8,25 @@ import PersonalOrder from './PersonalOrder';
 const Wrapper = styled.div`
   padding: 0ss 20px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-direction: raw;
+  align-items: top;
   text-align: center;
   position: relative;
 `;
 
 const MemberInfo = styled.div`
-  padding: 60px 20px;
+  padding: 60px 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  ${({ isLogin }) => (isLogin ? 'position: fixed; left: 30px;' : '')}
+  position: fixed;
+  width: 300px;
+
+  ${
+    '' /* ${({ isLogin }) =>
+    isLogin ? 'position: fixed; left: 30px;' : ''} */
+  }
 
   ${'' /* transition: width 2s ease-out 2s; */}
   ${'' /* animation: move 5s 1; */}
@@ -82,7 +88,8 @@ function Profile() {
         <Title>會員基本資訊</Title>
         {renderContent()}
       </MemberInfo>
-      {isLogin && <PersonalOrder />}
+      {/* {isLogin && <PersonalOrder />} */}
+      <PersonalOrder />
     </Wrapper>
   );
 }

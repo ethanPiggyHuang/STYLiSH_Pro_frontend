@@ -6,7 +6,7 @@ function insertTappayScript() {
     if (document.getElementById(TAPPAY_SCRIPT_ID)) {
       resolve();
       return;
-    };
+    }
     const tappayScriptTag = document.createElement('script');
     tappayScriptTag.setAttribute('id', TAPPAY_SCRIPT_ID);
     tappayScriptTag.setAttribute('src', TAPPAY_SCRIPT_SRC);

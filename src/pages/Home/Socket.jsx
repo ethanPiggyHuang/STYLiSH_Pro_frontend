@@ -135,10 +135,23 @@ const SendButton = styled.button`
   right: 5px;
 `;
 
+const UnreadMessageIndicator = styled.div`
+  position: fixed;
+  width: 20px;
+  height: 20px;
+  background-color: #f44336;
+  border-radius: 50%;
+  bottom: 160px;
+  left: 60px;
+`;
+
+const ChatIconWrap = styled.div``;
+
 export const Socket = () => {
   const [userId, setUserId] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   const [isSupportOnline, setIsSupportOnline] = useState(false);
   const socketRef = useRef();
   const [itemState, setItemState] = useState('UP');
@@ -151,6 +164,8 @@ export const Socket = () => {
 
     socketRef.current.on('chat message', (data) => {
       const { message, sender, timestamp } = data;
+      setHasUnreadMessages(true);
+      console.log(hasUnreadMessages);
       const formattedTime = timestamp.toLocaleString('en-US');
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -192,6 +207,8 @@ export const Socket = () => {
     console.log(formattedTime); // Outputs: Mon 02:47 AM GMTs
     if (userId === 'customer-support') {
       const recipientId = prompt('Enter the user ID to reply:');
+      setHasUnreadMessages(true);
+      console.log(hasUnreadMessages);
       socketRef.current.emit('chat message', {
         id: recipientId,
         message,
@@ -206,6 +223,7 @@ export const Socket = () => {
           time: formattedTime,
         },
       ]);
+
       socketRef.current.emit('chat message', { message });
     }
 
@@ -214,6 +232,9 @@ export const Socket = () => {
 
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
+    if (isChatboxVisible) {
+      setHasUnreadMessages(false);
+    }
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -222,13 +243,27 @@ export const Socket = () => {
     setIsExpanded(!isExpanded);
   };
 
+  //   useEffect(() => {
+  //     if (isExpanded) {
+  //       setUnreadMessages(0);
+  //     }
+  //   }, [isExpanded]);
+
   return (
     <div>
-      <FixedImage
-        src={chatIcon}
-        alt="Chat Icon"
-        onClick={handleChatboxToggle}
-      />
+      <ChatIconWrap>
+        <FixedImage
+          src={chatIcon}
+          alt="Chat Icon"
+          onClick={handleChatboxToggle}
+        />
+        <UnreadMessageIndicator
+          style={{
+            backgroundColor:
+              hasUnreadMessages && !isChatboxVisible ? 'red' : 'transparent',
+          }}
+        ></UnreadMessageIndicator>
+      </ChatIconWrap>
       <Chat isVisible={isChatboxVisible} isExpanded={isExpanded}>
         <ChatHeader onClick={toggleExpand}>
           <StatusIndicator
@@ -268,7 +303,7 @@ export const Socket = () => {
               return (
                 <>
                   <AdminImage></AdminImage>
-                  <Reply key={index}>{msg.text}</Reply>;
+                  <Reply key={index}>{msg.text}</Reply>
                 </>
               );
             }

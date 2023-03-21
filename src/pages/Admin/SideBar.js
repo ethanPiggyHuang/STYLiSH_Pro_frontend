@@ -58,6 +58,9 @@ function SideBar() {
         <Link to="../admin/orders">
           <PageLink>訂單管理</PageLink>
         </Link>
+        <Link to="../admin/messages">
+          <PageLink>訊息管理</PageLink>
+        </Link>
       </PageLinks>
     </Wrapper>
   );

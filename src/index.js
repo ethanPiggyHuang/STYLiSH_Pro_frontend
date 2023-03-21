@@ -10,7 +10,7 @@ import Profile from './pages/Profile/Profile';
 import Promote from './pages/Admin/Promote';
 import Analyze from './pages/Admin/Analyze';
 import Orders from './pages/Admin/Orders';
-
+import Messages from './pages/Admin/Messages';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const data = [
@@ -33,6 +33,7 @@ root.render(
         <Route path="admin/promote" element={<Promote />} />
         <Route path="admin/analyze" element={<Analyze data={data} />} />
         <Route path="admin/orders" element={<Orders />} />
+        <Route path="admin/messages" element={<Messages />} />
         <Route path="admin" element={<Navigate to="admin/analyze" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

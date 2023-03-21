@@ -1,9 +1,11 @@
+import { Container } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import styled, { createdGlobalStyle } from 'styled-components/macro';
-
+import SideBar from './SideBar';
 export const Wrapper = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
@@ -31,6 +33,7 @@ export const UserList = styled.div`
   border-radius: 10px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   margin-right: 40px;
+  width: 40%;
 `;
 
 export const UserListTitle = styled.h2`
@@ -264,59 +267,64 @@ function MessageDashboard() {
   };
 
   return (
-    <Wrapper>
-      <ChatTitle>Customer Support Dashboard</ChatTitle>
-      <UserId id="userId" type="text" value={userId} readOnly />
-      <UserList>
-        <UserListTitle>User List</UserListTitle>
-        <ul>
-          {Array.from(users).map(([userId, userData]) => (
-            <User
-              key={userId}
-              className={userData.unread ? 'unread' : ''}
-              backgroundColor={userData.unread ? 'red' : 'white'}
-              onClick={() => handleUserClick(userId)}
+    <Wrap>
+      <SideBar />
+      <Wrapper>
+        <ChatTitle>Customer Support Dashboard</ChatTitle>
+        <UserId id="userId" type="text" value={userId} readOnly />
+        <Wrap>
+          <UserList>
+            <UserListTitle>User List</UserListTitle>
+            <ul>
+              {Array.from(users).map(([userId, userData]) => (
+                <User
+                  key={userId}
+                  className={userData.unread ? 'unread' : ''}
+                  backgroundColor={userData.unread ? 'red' : 'white'}
+                  onClick={() => handleUserClick(userId)}
+                >
+                  <Icon>{userData.unread ? '!' : userId.charAt(0)}</Icon>
+                  {userId}
+                </User>
+              ))}
+            </ul>
+          </UserList>
+          <ChatMessage>
+            <MessageTitle>Chat</MessageTitle>
+            <ActiveUser>
+              {activeUser ? (
+                <Messages>
+                  {users
+                    ?.get(activeUser)
+                    ?.messages?.map(({ sender, message, timestamp }, i) => (
+                      <Message key={i}>{`${sender} (${new Date(
+                        timestamp
+                      ).toLocaleTimeString()}): ${message}`}</Message>
+                    ))}
+                </Messages>
+              ) : (
+                <EmptyState>Select a user to start chatting</EmptyState>
+              )}
+            </ActiveUser>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault(); // prevent page from refreshing
+                handleSendMessage();
+              }}
             >
-              <Icon>{userData.unread ? '!' : userId.charAt(0)}</Icon>
-              {userId}
-            </User>
-          ))}
-        </ul>
-      </UserList>
-      <ChatMessage>
-        <MessageTitle>Chat</MessageTitle>
-        <ActiveUser>
-          {activeUser ? (
-            <Messages>
-              {users
-                ?.get(activeUser)
-                ?.messages?.map(({ sender, message, timestamp }, i) => (
-                  <Message key={i}>{`${sender} (${new Date(
-                    timestamp
-                  ).toLocaleTimeString()}): ${message}`}</Message>
-                ))}
-            </Messages>
-          ) : (
-            <EmptyState>Select a user to start chatting</EmptyState>
-          )}
-        </ActiveUser>
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault(); // prevent page from refreshing
-            handleSendMessage();
-          }}
-        >
-          <Input
-            id="message"
-            type="text"
-            placeholder="Type a message"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
-          />
-          <Button type="submit">Send</Button>
-        </Form>
-      </ChatMessage>
-    </Wrapper>
+              <Input
+                id="message"
+                type="text"
+                placeholder="Type a message"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              />
+              <Button type="submit">Send</Button>
+            </Form>
+          </ChatMessage>
+        </Wrap>
+      </Wrapper>
+    </Wrap>
   );
 }
 

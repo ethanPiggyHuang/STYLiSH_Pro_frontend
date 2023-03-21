@@ -43,6 +43,14 @@ const OrderId = styled.div`
   width: 100px;
 `;
 
+const OrderDate = styled.div`
+  width: 200px;
+`;
+
+const OrderTotal = styled.div`
+  width: 200px;
+`;
+
 const ProductName = styled.div`
   width: 350px;
 `;
@@ -83,10 +91,16 @@ const ItemQuantitySelect = styled.select`
   }
 `;
 
+const ToggleButton = styled.div`
+  width: 150px;
+`;
+
 export default function PersonalOrder() {
   const [orderList, setOrderList] = useState([]);
   const [rankList, setRankList] = useState(0);
   const { jwtToken, isLogin, login } = useContext(AuthContext);
+  const [isExpand, setIsExpand] = useState([true]);
+  console.log(isExpand);
 
   useEffect(() => {
     function getOrders() {
@@ -104,10 +118,14 @@ export default function PersonalOrder() {
                 order_id: order.id,
                 order_detail: order.details.list,
                 user_id: order.user_id,
+                order_date: order.time,
+                order_total: order.total,
               };
               return rearrangeOrder;
             });
             setOrderList(personOrders);
+            setIsExpand(new Array(data.data.length).fill(false));
+            // console.log(data.data[0].total);
           });
       } else {
         // 要移植到 商家端
@@ -151,7 +169,7 @@ export default function PersonalOrder() {
       user_id: order.user_id,
       chat: 'Ethantest',
     };
-    console.log(body);
+    // console.log(body);
     fetch('https://side-project2023.online/api/1.0/order/insertOrderchat', {
       method: 'POST',
       headers: new Headers({
@@ -173,54 +191,83 @@ export default function PersonalOrder() {
       <OrderTable>
         <Order index={0}>
           <OrderId>訂單編號</OrderId>
-          <ProductName>商品名稱</ProductName>
-          <ProductQty>數量</ProductQty>
-          <ProductPrice>小計</ProductPrice>
-          <ProductDetail>詳細資訊</ProductDetail>
-          <ProductContact>聯絡客服</ProductContact>
-          <ItemQuantitySelect index={0}></ItemQuantitySelect>
-          <ProductRate index={0}>評價區</ProductRate>
+          <OrderDate>訂單日期</OrderDate>
+          <OrderTotal>訂單總金額</OrderTotal>
+          <ToggleButton>訂單細節</ToggleButton>
         </Order>
         {orderList.length !== 0 &&
-          orderList.map((order) =>
-            order.order_detail.map((orderDetail, index) =>
-              orderDetail.qty ? (
-                <Order key={`${order.order_id}${index}`}>
+          orderList.map((order, orderIndex) => {
+            const orderDate = new Date(order.order_date);
+            return (
+              <>
+                <Order key={`${order.order_id}${orderIndex}`}>
                   <OrderId>{order.order_id}</OrderId>
-                  <ProductName>{orderDetail.name}</ProductName>
-                  <ProductQty>{orderDetail.qty}</ProductQty>
-                  <ProductPrice>{orderDetail.price}</ProductPrice>
-                  <ProductDetail
-                    onClick={() => {
-                      alert('功能還沒寫，別亂按～');
-                    }}
+                  <OrderDate>{`${orderDate.getFullYear() - 1911} 年 ${
+                    orderDate.getMonth() + 1
+                  } 月 ${orderDate.getDate()} 日`}</OrderDate>
+                  <OrderTotal>{`${order.order_total} 元`}</OrderTotal>
+                  <ToggleButton
+                    onClick={() =>
+                      setIsExpand(
+                        isExpand.map((orderIsExpand, index) =>
+                          index === orderIndex ? !orderIsExpand : orderIsExpand
+                        )
+                      )
+                    }
                   >
-                    詳細資訊
-                  </ProductDetail>
-                  <ProductContact onClick={() => handleChat(order)}>
-                    聯絡客服
-                  </ProductContact>
-                  <ItemQuantitySelect
-                    value={rankList}
-                    onChange={(e) => setRankList(e.target.value)}
-                  >
-                    {[0, 1, 2, 3, 4, 5].map((_, index) => (
-                      <option key={index}>{index}</option>
-                    ))}
-                  </ItemQuantitySelect>
-                  <ProductRate
-                    onClick={() => {
-                      handleRate(order, orderDetail, rankList);
-                    }}
-                  >
-                    送出評價
-                  </ProductRate>
+                    {isExpand[orderIndex] === false ? '▼' : '▲'}
+                  </ToggleButton>
+                </Order>
+                {isExpand[orderIndex] === true ? <Order>jj</Order> : ''}
+              </>
+            );
+          })}
+        {/* order.order_detail.map((orderDetail, index) => {
+              
+              return orderDetail.qty ? (  ////TODO 要設限制
+                
+                  {isExpand[orderIndex] === true ? (
+                    <Order>
+                      <ProductName>{orderDetail.name}</ProductName>
+                      <ProductQty>{orderDetail.qty}</ProductQty>
+                      <ProductPrice>{orderDetail.price}</ProductPrice>
+                      <ProductDetail
+                        onClick={() => {
+                          alert('功能還沒寫，別亂按～');
+                        }}
+                      >
+                        詳細資訊
+                      </ProductDetail>
+                      <ProductContact onClick={() => handleChat(order)}>
+                        聯絡客服
+                      </ProductContact>
+                      <ItemQuantitySelect
+                        value={rankList}
+                        onChange={(e) => setRankList(e.target.value)}
+                      >
+                        {[0, 1, 2, 3, 4, 5].map((_, index) => (
+                          <option key={index}>{index}</option>
+                        ))}
+                      </ItemQuantitySelect>
+                      <ProductRate
+                        onClick={() => {
+                          handleRate(order, orderDetail, rankList);
+                        }}
+                      >
+                        送出評價
+                      </ProductRate>
+                    </Order>
+                  ) : (
+                    ''
+                  )}
+
+                  
                 </Order>
               ) : (
                 ''
-              )
-            )
-          )}
+              );
+            }) */}
+        {/* )} */}
       </OrderTable>
     </Orders>
   );

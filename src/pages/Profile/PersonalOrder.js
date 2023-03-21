@@ -34,7 +34,7 @@ const Order = styled.div`
   width: calc(100vw - 300px);
   display: flex;
   justify-content: space-around;
-  padding: 25px 20px 15px;
+  padding: 20px;
   cursor: pointer;
 
   background-color: ${({ index, isExpand }) =>
@@ -105,22 +105,6 @@ const ProductPrice = styled.div`
   padding: 20px 10px 10px;
 `;
 
-const Submit = styled.div`
-  width: 600px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 0 20px;
-
-  cursor: pointer;
-  margin-right: 20px;
-
-  background-color: #f1f1f1;
-
-  ${'' /* border-top: 1px grey dashed; */}
-  ${'' /* border-bottom: 1px grey solid; */}
-`;
-
 const ProductContact = styled.div`
   width: 150px;
   cursor: ${({ index }) => (index !== 0 ? 'pointer' : '')};
@@ -130,6 +114,12 @@ const ProductRate = styled.div`
   text-align: center;
   color: ${({ index }) => (index !== 0 ? 'darkred' : '')};
   ${'' /* cursor: ${({ index }) => (index !== 0 ? 'pointer' : '')}; */}
+`;
+
+const ProductEvaluate = styled.div`
+  width: 10px;
+  text-align: center;
+  color: darkred;
 `;
 
 const ItemQuantitySelect = styled.select`
@@ -159,20 +149,51 @@ const ChatBottom = styled.div`
 `;
 
 const ChatTitle = styled.div`
-  width: 200px;
+  position: absolute;
+  z-index: 1;
+  bottom: 15px;
+  right: 520px;
+  width: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 20px;
+  border-radius: 10px;
+  color: grey;
+
+  line-height: 45px;
+  background-color: #d1d1d1;
 `;
 
 const ChatInput = styled.input`
+  position: absolute;
+  z-index: 1;
+  bottom: 15px;
+  right: 145px;
+  height: 45px;
   display: block;
-  width: calc(100vw - 1140px);
-  margin: 5px 20px 5px 0;
+  width: 375px;
+  border-radius: 10px;
+  ${'' /* width: calc(100vw - 1140px); */}
+  ${'' /* margin: 5px 20px 5px 0; */}
   padding-left: 10px;
   border: none;
   font-size: 20px;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const GreyBox = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  height: 60px;
+  width: 600px;
+  z-index: 0;
+  border-radius: 10px;
+  background-color: #d1d1d1;
 `;
 
 const ChatWindow = styled.div`
@@ -196,13 +217,14 @@ const ChatWindow = styled.div`
 
 const ChatWindowTitle = styled.div`
   font-size: 20px;
-  margin-bottom: auto;
+  margin-bottom: 5px;
 `;
 
 const ChatWindowMessages = styled.div`
   font-size: 20px;
   ${'' /* background-color: #ffffff; */}
-  border: 1px solid black;
+  border: 1px solid grey;
+  border-radius: 10px;
   height: 100%;
   overflow: scroll;
 `;
@@ -220,6 +242,29 @@ const ChatWindowMessage = styled.div`
   text-align: ${({ user }) => (user === 'admin' ? 'left' : 'right')};
 `;
 
+const Submit = styled.div`
+  position: absolute;
+  z-index: 1;
+  bottom: 15px;
+  right: 5px;
+  height: 45px;
+  width: 115px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 20px;
+
+  cursor: pointer;
+  margin-right: 20px;
+
+  background-color: #f1f1f1;
+  color: grey;
+
+  ${'' /* border-top: 1px grey dashed; */}
+  ${'' /* border-bottom: 1px grey solid; */}
+`;
+
 export default function PersonalOrder() {
   const [orderList, setOrderList] = useState([]);
   const [rankList, setRankList] = useState([]);
@@ -228,8 +273,8 @@ export default function PersonalOrder() {
   const [chatMessage, setChatMessage] = useState({ orderId: 0, message: '' });
   const [messages, setMessages] = useState([]);
   const [zeroDetail, setZeroDetail] = useState([]);
-  const [isEvaluated, setIsEvalutated] = useState(false);
-  console.log(zeroDetail);
+  const [isEvaluated, setIsEvalutated] = useState(['notEvaluated']);
+  // console.log(messages);
 
   useEffect(() => {
     function getOrders() {
@@ -284,35 +329,61 @@ export default function PersonalOrder() {
     getOrders();
   }, [isLogin]);
 
-  const handleRate = (order, ranks, message) => {
-    const evaluates = order.order_detail.map((detail, detailIndex) => {
-      return { product_id: detail.id, rank: ranks[detailIndex] };
-    });
-    // console.log(message);
-    const body = {
-      order_id: order.order_id,
-      evaluate: evaluates,
-      comment: message,
-    };
-    fetch('https://side-project2023.online/api/1.0/report/order/evaluate', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify(body),
-    })
+  function getIsEvaluated(orderId) {
+    // console.log(orderId);
+    fetch(
+      `https://side-project2023.online/api/1.0/report/order/getorderidevaluate?order_id=${orderId}`
+    )
       .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        alert('訂單評價已送出');
+      .then((data) => {
+        if (data.status === 400) {
+          setIsEvalutated(['notEvaluated']);
+        } else {
+          setIsEvalutated(data.data.map((detail) => detail.product_rank));
+        }
       });
+  }
+
+  const handleSend = (order, ranks, message) => {
+    if (isEvaluated[0] === 'notEvaluated') {
+      const evaluates = order.order_detail.map((detail, detailIndex) => {
+        return { product_id: detail.id, rank: ranks[detailIndex] };
+      });
+      const body = {
+        order_id: order.order_id,
+        evaluate: evaluates,
+        comment: message,
+      };
+      // console.log(JSON.stringify(body));
+      fetch('https://side-project2023.online/api/1.0/report/order/evaluate', {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+        }),
+        body: JSON.stringify(body),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.status === 500) {
+            alert('已給過評價了喔');
+          } else {
+            alert('評價已送出');
+            getIsEvaluated(order.order_id);
+          }
+        });
+    } else {
+      console.log('evaluated');
+      handleChat(order, message);
+    }
+
+    setChatMessage({ ...chatMessage, message: '' });
   };
 
-  const handleChat = (order) => {
+  const handleChat = (order, message) => {
     const body = {
       order_id: order.order_id,
       user_id: order.user_id,
-      chat: 'Ethantest',
+      chat: message,
     };
     // console.log(body);
     fetch('https://side-project2023.online/api/1.0/order/insertOrderchat', {
@@ -324,8 +395,18 @@ export default function PersonalOrder() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        // console.log(res);
       });
+    console.log('m');
+    setMessages([
+      ...messages,
+      {
+        chat: message,
+        order_id: order.order_id,
+        user_id: order.user_id,
+      },
+    ]);
+    setTimeout(() => handleGetMessages(order.order_id), 3000);
   };
 
   const handleGetMessages = (orderId) => {
@@ -334,7 +415,7 @@ export default function PersonalOrder() {
     )
       .then((res) => res.json())
       .then((data) => setMessages(data.data));
-
+    console.log('here?');
     // messages;
   };
 
@@ -370,6 +451,7 @@ export default function PersonalOrder() {
                         message: '',
                       });
                       handleGetMessages(order.order_id);
+                      getIsEvaluated(order.order_id);
                     }
                   }}
                 >
@@ -398,27 +480,34 @@ export default function PersonalOrder() {
                               <ProductPrice>{`小計：${detail.price} 元`}</ProductPrice>
                             </ProductDetail>
                             <ProductRate>評價</ProductRate>
-                            <ItemQuantitySelect
-                              value={rankList[orderIndex][detailIndex]}
-                              onChange={(e) => {
-                                let newArray = [...rankList];
-                                newArray[orderIndex][detailIndex] = Number(
-                                  e.target.value
-                                );
-                                setRankList(newArray);
-                              }}
-                            >
-                              {[0, 1, 2, 3, 4, 5].map((_, index) => (
-                                <option key={index}>{index}</option>
-                              ))}
-                            </ItemQuantitySelect>
+                            {isEvaluated[0] === 'notEvaluated' ? (
+                              <ItemQuantitySelect
+                                value={rankList[orderIndex][detailIndex]}
+                                onChange={(e) => {
+                                  let newArray = [...rankList];
+                                  newArray[orderIndex][detailIndex] = Number(
+                                    e.target.value
+                                  );
+                                  setRankList(newArray);
+                                }}
+                              >
+                                {[0, 1, 2, 3, 4, 5].map((_, index) => (
+                                  <option key={index}>{index}</option>
+                                ))}
+                              </ItemQuantitySelect>
+                            ) : (
+                              <ProductEvaluate>
+                                {isEvaluated[detailIndex]}
+                              </ProductEvaluate>
+                            )}
+
                             <ProductRate>顆星</ProductRate>
                           </OrderDetail>
                         );
                       })}
                     </OrderDetails>
                     <ChatBottom>
-                      <ChatTitle>我想對客服說：</ChatTitle>
+                      <ChatTitle>聯繫客服</ChatTitle>
                       <ChatInput
                         value={chatMessage.message}
                         onChange={(e) => {
@@ -430,17 +519,23 @@ export default function PersonalOrder() {
                       />
                       <Submit
                         onClick={() => {
-                          handleRate(
-                            order,
-                            rankList[orderIndex],
-                            chatMessage.message
+                          if (chatMessage.message !== '') {
+                            handleSend(
+                              order,
+                              rankList[orderIndex],
+                              chatMessage.message
+                            );
+                          }
+                          setTimeout(
+                            () => handleGetMessages(order.order_id),
+                            2000
                           );
-                          setTimeout(handleGetMessages(order.order_id), 5000);
                         }}
                       >
-                        評價商品並留言
+                        {isEvaluated[0] === 'notEvaluated'
+                          ? '評價商品並留言'
+                          : '送出'}
                       </Submit>
-                      {console.log(orderIndex)}
                       <ChatWindow
                         detailNumber={
                           order.order_detail.length - zeroDetail[orderIndex]
@@ -462,24 +557,9 @@ export default function PersonalOrder() {
                                 </ChatWindowMessage>
                               ))
                             : ''}
-
-                          {/* <ChatWindowMessage
-                            user={'user'}
-                          >{`第一則`}</ChatWindowMessage>
-                          <ChatWindowMessage
-                            user={'admin'}
-                          >{`測試用`}</ChatWindowMessage>
-                          <ChatWindowMessage
-                            user={'user'}
-                          >{`超級無敵長的訊息`}</ChatWindowMessage>
-                          <ChatWindowMessage
-                            user={'admin'}
-                          >{`測試用二號`}</ChatWindowMessage>
-                          <ChatWindowMessage
-                            user={'user'}
-                          >{`超級無敵長的訊息`}</ChatWindowMessage> */}
                         </ChatWindowMessages>
                       </ChatWindow>
+                      <GreyBox />
                     </ChatBottom>
                   </>
                 ) : (
@@ -488,24 +568,6 @@ export default function PersonalOrder() {
               </>
             );
           })}
-        {/* order.order_detail.map((orderDetail, index) => {
-              
-                      <ProductContact onClick={() => handleChat(order)}>
-                        聯絡客服
-                      </ProductContact>
-                      
-                    </Order>
-                  ) : (
-                    ''
-                  )}
-
-                  
-                </Order>
-              ) : (
-                ''
-              );
-            }) */}
-        {/* )} */}
       </OrderTable>
     </Orders>
   );

@@ -33,7 +33,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border: 2px solid blue;
+  ${'' /* border: 2px solid blue; */}
   padding: 10px;
   height: auto;
   background-color: #f5f5f5;
@@ -49,7 +49,7 @@ const OnSale = styled.div`
   flex-direction: row;
   flex: 1;
   align-items: center;
-  border: 2px solid red;
+  ${'' /* border: 2px solid red; */}
   padding: 20px;
   margin-bottom: 20px;
   background-color: #f5f5f5;
@@ -436,7 +436,7 @@ const Table = () => {
         columns={columns}
         components={{ Toolbar: GridToolbar }}
         style={{
-          border: '2px solid green',
+          //border: '2px solid green',
           minHeight: '80%',
           maxWidth: '100%',
         }}
@@ -447,7 +447,7 @@ const Table = () => {
         <Title>正在促銷</Title>
         <OnSale
           style={{
-            border: '2px solid green',
+            //border: '2px solid green',
             minHeight: '80%',
             maxWidth: '100%',
           }}

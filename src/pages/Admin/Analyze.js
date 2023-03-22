@@ -154,11 +154,20 @@ function Analyze({ data }) {
             <TopBar>
               <Title>{titles[index]}</Title>
               <Amount>
-                {index === 1 ? '四日總流量 ' : '四日總金額 '}
-                {index === 2
-                  ? totals[2].reduce((acc, cur) => (acc += cur), 0)
-                  : totals[index]}
-                {index === 0 ? ' 百萬元' : ' 次'}
+                {totals[0] !== 0 && totals[1] !== 0 && totals[2] !== 0 ? (
+                  ''
+                ) : (
+                  <>
+                    {index === 1 ? '四日總流量 ' : '四日總金額 '}
+                    {/* TODO */}
+                    {/* {index === 2
+                      ? totals[2].length === 0
+                        ? 0
+                        : totals[2].reduce((acc, cur) => (acc += cur), 0)
+                      : totals[index]} */}
+                    {index === 0 ? ' 百萬元' : ' 次'}
+                  </>
+                )}
               </Amount>
               {/* <TimeButtons>
                 <TimeButton>月</TimeButton>

@@ -126,8 +126,9 @@ export const Input = styled.input`
   border: none;
   border-radius: 5px;
   padding: 10px;
-  font-size: 16px;
+  font-size: 24px;
   margin-right: 10px;
+  height: 40px;
   width: 100%;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
@@ -219,8 +220,6 @@ export const Loader = styled.div`
   }
 `;
 
-
-
 function MessageDashboard() {
   const socketRef = useRef();
   const userId = 'customer-support';
@@ -229,36 +228,48 @@ function MessageDashboard() {
   // const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState(new Map());
   const [activeUser, setActiveUser] = useState(null);
+  const [connect, setConnect] = useState(0);
 
-  useEffect(() => {
-    socketRef.current = io('https://side-project2023.online/');
-    socketRef.current.emit('register', userId);
-    socketRef.current.on('chat message', (data) => {
-      // console.log(data);
-      const { message, sender, timestamp } = data;
-      setUsers((prevUsers) => {
-        const newUsers = new Map(prevUsers);
-        if (!newUsers.has(sender)) {
-          newUsers.set(sender, { messages: [], unread: false });
-        }
-        const userData = newUsers.get(sender);
-        const newMessages = [
-          ...userData.messages,
-          { sender, message, timestamp },
-        ];
-        newUsers.set(sender, {
-          messages: newMessages,
-          unread: activeUser !== sender,
+  console.log('start');
+  // useEffect(() => {
+  const handleConnect = () => {
+    if (connect === 0) {
+      socketRef.current = io('https://side-project2023.online/');
+      socketRef.current.emit('register', userId);
+      socketRef.current.on('chat message', (data) => {
+        console.log('ME');
+        const { message, sender, timestamp } = data;
+        setUsers((prevUsers) => {
+          const newUsers = new Map(prevUsers);
+          if (!newUsers.has(sender)) {
+            newUsers.set(sender, { messages: [], unread: false });
+          }
+          const userData = newUsers.get(sender);
+          const newMessages = [
+            ...userData.messages,
+            { sender, message, timestamp },
+          ];
+          newUsers.set(sender, {
+            messages: newMessages,
+            unread: activeUser !== sender,
+          });
+          return newUsers;
         });
-        return newUsers;
+        // setMessages((prev) => [...prev, { sender, message, timestamp }]);
       });
-      // setMessages((prev) => [...prev, { sender, message, timestamp }]);
-    });
+      setConnect(1);
+    } else {
+      // socketRef.current.off('chat message');
+      socketRef.current.disconnect();
 
-    return () => {
-      socketRef.current.off('chat message');
-    };
-  }, []);
+      setConnect(0);
+    }
+
+    // return () => {
+    //   socketRef.current.off('chat message');
+    // };
+  };
+  // }, []);
 
   const handleUserClick = (userId) => {
     setActiveUser(userId);
@@ -302,6 +313,7 @@ function MessageDashboard() {
     setBroadcastInput('');
   };
 
+  console.log('bottom');
   return (
     <Wrap>
       <SideBar />
@@ -375,6 +387,12 @@ function MessageDashboard() {
           />
           <Button type="submit">setup</Button>
         </BroadcastForm>
+        <Button
+          style={{ fontSize: '36px', marginTop: '30px' }}
+          onClick={handleConnect}
+        >
+          {connect === 0 ? '打卡上班' : '下班囉'}
+        </Button>
       </Wrapper>
     </Wrap>
   );

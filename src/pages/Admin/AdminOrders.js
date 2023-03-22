@@ -307,7 +307,7 @@ function AdminOrders() {
             });
             setOrderList(personOrders);
             setIsExpand(new Array(data.data.length).fill(false));
-            getReplys(data.data.map((order) => order.id));
+            // getReplys(data.data.map((order) => order.id)); // 只要一次就好吧？
           });
         fetch(`https://side-project2023.online/api/1.0/report/order/detail`)
           .then((res) => res.json())
@@ -552,8 +552,9 @@ function AdminOrders() {
                                   <ChatWindowMessage
                                     key={index}
                                     user={
+                                      message.user_id &&
                                       message.user_id.toString() ===
-                                      admin_id.toString()
+                                        admin_id.toString()
                                         ? 'admin'
                                         : 'user'
                                     }

@@ -1,7 +1,6 @@
 import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
-import { lineChart } from './svg/lineChart';
-import { MyC3Component } from './svg/MyC3Component';
+import { Chart1 } from './svg/Chart1';
 import { C3Pie } from './svg/C3Pie';
 import SideBar from './SideBar';
 
@@ -21,6 +20,7 @@ const Blocks = styled.div`
   display: flex;
   justify-content: left;
   flex-wrap: wrap;
+  padding-top: 30px;
 
   @media screen and (max-width: 1279px) {
     padding: 0 0 32px;
@@ -122,59 +122,24 @@ function Analyze({ data }) {
       )
     );
   };
-
-  const svgRef = useRef(null);
+  const [productList, setProductList] = useState([]);
+  const [nextpaging, setNextpaging] = useState(0);
+  // console.log(productList);
 
   useEffect(() => {
-    // 定義資料;
-    // const data = [
-    //   { year: 2010, value: 10 },
-    //   { year: 2011, value: 45 },
-    //   { year: 2012, value: 10 },
-    //   { year: 2013, value: 65 },
-    //   { year: 2014, value: 50 },
-    // ];
-
-    lineChart(data, svgRef.current);
-  }, [svgRef]);
-
-  // const headers = {
-  //   'Content-Type': 'application/json',
-  //   // Accept: 'application/json',
-  //   // Authorization: `Bearer ${token}`,
-  // };
-
-  const body = {
-    id: '201807242222',
-    discount: '0.8',
-    deadline: '2023-03-20',
-  };
-
-  // const tryPost = () => {
-  //   fetch('https://side-project2023.online/api/1.0/report/hot/add', {
-  //     method: 'POST',
-  //     headers: new Headers({
-  //       'Content-Type': 'application/json',
-  //     }),
-  //     body: JSON.stringify(body),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((res) => console.log(res));
-  // };
-
-  // const getOrders = () => {
-  //   fetch('https://side-project2023.online/api/1.0/report/order/detail')
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       const newArr = data.data
-  //         .reduce((acc, cur) => {
-  //           acc = [...acc, cur.order_detail];
-  //           return acc;
-  //         }, [])
-  //         .flat(2);
-  //       console.log(newArr);
-  //     });
-  // };
+    if (nextpaging > -1)
+      fetch(
+        `https://side-project2023.online/api/1.0/products/all?paging=${nextpaging}`
+      )
+        .then((res) => res.json())
+        .then((data) => {
+          const newArr = data.data.map((item) => {
+            return { category: item.category, productId: item.id };
+          });
+          setNextpaging(data.next_paging === null ? -1 : data.next_paging);
+          setProductList([...productList, ...newArr]);
+        });
+  }, [nextpaging]);
 
   return (
     <Wrapper>
@@ -190,40 +155,22 @@ function Analyze({ data }) {
                 <TimeButton>週</TimeButton>
                 <TimeButton>日</TimeButton>
               </TimeButtons>
-              <Resize
+              {/* <Resize
                 size={blockSize[index]}
                 onClick={() => {
                   handleResize(index);
                 }}
               >
                 {blockSize[index] === 'large' ? '縮' : '展'}
-              </Resize>
+              </Resize> */}
             </TopBar>
             <Chart size={blockSize[index]}>
-              {index === 0 ? <MyC3Component /> : ''}
-              {index === 2 ? <C3Pie /> : ''}
+              {index === 0 ? <Chart1 size={blockSize[0]} /> : ''}
+              {index === 2 ? <C3Pie productList={productList} /> : ''}
             </Chart>
           </Block>
         ))}
-
-        {/* <svg ref={svgRef} width={800} height={500}>
-          <g transform="translate(50, 10)">
-            <text x={0} y={10} textAnchor="middle">
-              Line Chart
-            </text>
-          </g>
-        </svg> */}
-        {/* <MyD3Component
-          data={[
-            { year: 2010, value: 10 },
-            { year: 2011, value: 45 },
-            { year: 2012, value: 10 },
-            { year: 2013, value: 65 },
-            { year: 2014, value: 50 },
-          ]}
-        /> */}
       </Blocks>
-      {/* <button onClick={() => getOrders()}>測試POST</button> */}
     </Wrapper>
   );
 }

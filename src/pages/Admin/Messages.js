@@ -11,13 +11,20 @@ export const Wrapper = styled.div`
   font-family: 'Montserrat', sans-serif;
   background-color: #f5f5f5;
   min-height: 100vh;
+  padding: 10px;
 `;
 
 const Wrap = styled.div`
   display: flex;
   flex-direction: row;
-  width: 90%;
+  width: 100%;
   height: 50%;
+  margin: 0 auto;
+  justify-content: left;
+
+  @media screen and (max-width: 1279px) {
+    padding: 0 0 32px;
+  }
 `;
 
 export const ChatTitle = styled.h1`
@@ -80,6 +87,14 @@ export const MessageTitle = styled.h2`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: #666;
+`;
+
+export const BroadcastTitle = styled.h2`
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 30px;
   color: #666;
 `;
 
@@ -147,6 +162,12 @@ export const Form = styled.form`
   margin-top: 20px;
 `;
 
+export const BroadcastForm = styled.form`
+  display: flex;
+  align-items: center;
+  width: 90%;
+  margin-top: 20px;
+`;
 export const Icon = styled.span`
   display: flex;
   justify-content: center;
@@ -198,10 +219,13 @@ export const Loader = styled.div`
   }
 `;
 
+
+
 function MessageDashboard() {
   const socketRef = useRef();
   const userId = 'customer-support';
   const [messageInput, setMessageInput] = useState('');
+  const [broadcastInput, setBroadcastInput] = useState('');
   // const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState(new Map());
   const [activeUser, setActiveUser] = useState(null);
@@ -271,6 +295,12 @@ function MessageDashboard() {
       // setMessages(newMessages);
     }
   };
+  console.log(typeof broadcastInput);
+  const handleBroadcast = () => {
+    console.log('廣播訊息' + broadcastInput);
+    socketRef.current.emit('broadcast channel', broadcastInput);
+    setBroadcastInput('');
+  };
 
   return (
     <Wrap>
@@ -296,7 +326,7 @@ function MessageDashboard() {
             </ul>
           </UserList>
           <ChatMessage>
-            <MessageTitle>Chat</MessageTitle>
+            <MessageTitle>聊天</MessageTitle>
             <ActiveUser>
               {activeUser ? (
                 <Messages>
@@ -309,7 +339,7 @@ function MessageDashboard() {
                     ))}
                 </Messages>
               ) : (
-                <EmptyState>Select a user to start chatting</EmptyState>
+                <EmptyState>選擇使用者來進行聊天</EmptyState>
               )}
             </ActiveUser>
             <Form
@@ -321,14 +351,30 @@ function MessageDashboard() {
               <Input
                 id="message"
                 type="text"
-                placeholder="Type a message"
+                placeholder="輸入訊息"
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
               />
-              <Button type="submit">Send</Button>
+              <Button type="submit">send</Button>
             </Form>
           </ChatMessage>
         </Wrap>
+        <BroadcastTitle>廣播</BroadcastTitle>
+        <BroadcastForm
+          onSubmit={(e) => {
+            e.preventDefault(); // prevent page from refreshing
+            handleBroadcast();
+          }}
+        >
+          <Input
+            id="message"
+            type="text"
+            placeholder="輸入廣播"
+            value={broadcastInput}
+            onChange={(e) => setBroadcastInput(e.target.value)}
+          />
+          <Button type="submit">setup</Button>
+        </BroadcastForm>
       </Wrapper>
     </Wrap>
   );

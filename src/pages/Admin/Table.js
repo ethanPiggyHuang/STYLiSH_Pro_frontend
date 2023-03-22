@@ -15,7 +15,7 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px;
+  padding: 0px;
   background-color: #f5f5f5;
   flex-direction: column;
   @media (max-width: 768px) {
@@ -24,11 +24,18 @@ const Wrap = styled.div`
   }
 `;
 
+const ColumnWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  border: 2px solid blue;
   padding: 10px;
+  height: auto;
   background-color: #f5f5f5;
 
   @media (max-width: 768px) {
@@ -40,7 +47,9 @@ const Wrapper = styled.div`
 const OnSale = styled.div`
   display: flex;
   flex-direction: row;
+  flex: 1;
   align-items: center;
+  border: 2px solid red;
   padding: 20px;
   margin-bottom: 20px;
   background-color: #f5f5f5;
@@ -419,34 +428,49 @@ const Table = () => {
   //TODO
 
   return (
-    <Wrapper style={{ width: '100%' }}>
+    <Wrapper style={{ minHeight: '80%', width: '100%' }}>
+      <Title>暢銷排名</Title>
       <DataGrid
+        title="暢銷排名"
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
-        style={{ minHeight: '1000px', maxWidth: '50%' }}
+        style={{
+          border: '2px solid green',
+          minHeight: '80%',
+          maxWidth: '100%',
+        }}
         rowsPerPageOptions={[10, 25, 50]}
       />
 
-      <OnSale>
-        {hotData.data &&
-          hotData.data.map((item) => (
-            <Wrap>
-              <DataWrap key={item.id}>
-                <Subtitle>ID: {item.id}</Subtitle>
-                <Info>折扣: {item.discount * 10}折</Info>
-                <Info>期限日期: {item.deadline}</Info>
-                <CancelButton
-                  onClick={() =>
-                    deleteHot(item.id, item.discount, item.deadline)
-                  }
-                >
-                  結束促銷
-                </CancelButton>
-              </DataWrap>
-            </Wrap>
-          ))}
-      </OnSale>
+      <ColumnWrap>
+        <Title>正在促銷</Title>
+        <OnSale
+          style={{
+            border: '2px solid green',
+            minHeight: '80%',
+            maxWidth: '100%',
+          }}
+        >
+          {hotData.data &&
+            hotData.data.map((item) => (
+              <Wrap>
+                <DataWrap key={item.id}>
+                  <Subtitle>ID: {item.id}</Subtitle>
+                  <Info>折扣: {item.discount * 10}折</Info>
+                  <Info>期限日期: {item.deadline}</Info>
+                  <CancelButton
+                    onClick={() =>
+                      deleteHot(item.id, item.discount, item.deadline)
+                    }
+                  >
+                    結束促銷
+                  </CancelButton>
+                </DataWrap>
+              </Wrap>
+            ))}
+        </OnSale>
+      </ColumnWrap>
     </Wrapper>
   );
 };

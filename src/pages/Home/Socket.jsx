@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactDom from 'react-dom';
 import { io } from 'socket.io-client';
-import styled, { createdGlobalStyle } from 'styled-components/macro';
+import styled, { keyframes, createdGlobalStyle } from 'styled-components/macro';
 import chatIcon from './chat.png';
 import chatIconActive from './chatActive.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -57,6 +57,7 @@ const AdminImage = styled.img`
 const Chat = styled.div`
   z-index: 203;
   position: fixed;
+
   bottom: 300px;
   left: 120px;
   width: 500px;
@@ -105,9 +106,9 @@ const StatusIndicator = styled.div`
 `;
 
 const ChatMessages = styled.div`
-  padding: 30px 30px 70px 30px; /* Add bottom padding to make space for the input area */
-  height: calc(100% - 150px);
-  overflow-y: auto;
+  padding: 20px 20px 70px 20px; /* Add bottom padding to make space for the input area */
+  height: calc(100% - 65px);
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
 `;
@@ -117,7 +118,7 @@ const ChatInputContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   position: absolute;
-  bottom: 0px;
+  bottom: -10px;
   right: 0px;
   padding: 0px;
   width: 100%;
@@ -157,6 +158,19 @@ const CustomerMessage = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   align-self: flex-start;
   margin-bottom: 10px;
+  word-wrap: break-word;
+`;
+
+const Broadcast = styled.div`
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  color: white;
+  background-color: #bcaaa4;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-self: flex-start;
   word-wrap: break-word;
 `;
 
@@ -213,17 +227,52 @@ const CustomerMessageTime = styled.span`
   margin-bottom: 10px;
 `;
 
+const MarqueeAnimation = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const Marquee = styled.div`
+  animation: ${MarqueeAnimation} 20s linear infinite;
+  white-space: nowrap; /* added property */
+  text-overflow: ellipsis; /* added property */
+  opacity: ${(props) => (props.isOverflowing ? 0 : 1)};
+`;
+
+const MarqueeContainer = styled.div`
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  color: white;
+  background-color: #8d6e63;
+
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-self: flex-end;
+  margin-bottom: 0px;
+  word-wrap: break-word;
+`;
+
 export const Socket = () => {
   const [userId, setUserId] = useState('');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [broadcast, setBroadcast] = useState('');
   const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
   const [isSupportOnline, setIsSupportOnline] = useState(false);
   const socketRef = useRef();
   const [itemState, setItemState] = useState('UP');
   const [isChatboxVisible, setIsChatboxVisible] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
-
+  const [hasSentFirstMessage, setHasSentFirstMessage] = useState(false);
+  const [isOverflowing, setIsOverflowing] = useState(false);
   useEffect(() => {
     socketRef.current = io('https://side-project2023.online/');
     // socketRef.current = io("http://localhost:4000/");
@@ -247,6 +296,11 @@ export const Socket = () => {
       setIsSupportOnline(isOnline);
     });
 
+    socketRef.current.on('broadcast channel', (data) => {
+      console.log(data);
+      setBroadcast(data);
+    });
+
     return () => {
       socketRef.current.disconnect();
     };
@@ -263,8 +317,10 @@ export const Socket = () => {
   }, []);
 
   const handleUserIdChange = (e) => {
-    setUserId(e.target.value);
-    socketRef.current.emit('register', e.target.value);
+    if (!hasSentFirstMessage) {
+      setUserId(e.target.value);
+      socketRef.current.emit('register', e.target.value);
+    }
   };
 
   const handleSendMessage = () => {
@@ -294,6 +350,9 @@ export const Socket = () => {
     }
 
     setMessage('');
+    if (!hasSentFirstMessage) {
+      setHasSentFirstMessage(true);
+    }
   };
 
   const handleChatboxToggle = () => {
@@ -314,6 +373,18 @@ export const Socket = () => {
   //       setUnreadMessages(0);
   //     }
   //   }, [isExpanded]);
+
+  const messagesEndRef = useRef(null);
+  useEffect(() => {
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  const handleMarqueeRef = (node) => {
+    console.log('node' + node);
+    if (node !== null) {
+      setIsOverflowing(node.offsetWidth < node.scrollWidth);
+    }
+  };
 
   return (
     <div>
@@ -345,26 +416,40 @@ export const Socket = () => {
           {isSupportOnline ? '客服在線上' : '客服下班嘍'}
           <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
         </ChatHeader>
-
+        {broadcast !== '' && (
+          <MarqueeContainer>
+            <Marquee
+              isOverflowing={isOverflowing}
+              ref={handleMarqueeRef}
+            >{`📢全館優惠中: ${broadcast}`}</Marquee>
+          </MarqueeContainer>
+        )}
         <ChatMessages>
-          <input
-            type="text"
-            value={userId}
-            onChange={handleUserIdChange}
-            placeholder="親,該怎麼稱呼您?"
-            style={{
-              border: 'none',
-              outline: 'none',
-              fontSize: '20px',
-              padding: '10px',
-              backgroundColor: '#f2f2f2',
-              borderRadius: '5px',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-              color: '#333',
-              fontWeight: 'bold',
-              marginBottom: '10px',
-            }}
-          />
+          {hasSentFirstMessage ? (
+            <CustomerMessage>
+              {`您好，${userId}。歡迎使用聊天功能。`}
+            </CustomerMessage>
+          ) : (
+            <input
+              type="text"
+              value={userId}
+              onChange={handleUserIdChange}
+              placeholder="親，該怎麼稱呼您？"
+              style={{
+                border: 'none',
+                outline: 'none',
+                fontSize: '20px',
+                padding: '10px',
+                backgroundColor: '#f2f2f2',
+                borderRadius: '5px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                color: '#333',
+                fontWeight: 'bold',
+                marginBottom: '10px',
+              }}
+              disabled={hasSentFirstMessage}
+            />
+          )}
 
           {messages.map((msg, index) => {
             console.log('msg sender: ' + msg.sender);
@@ -408,12 +493,10 @@ export const Socket = () => {
               }}
             />
             <SendButton onClick={handleSendMessage}>
-              <FontAwesomeIcon
-                onClick={handleSendMessage}
-                icon={faPaperPlane}
-              />
+              <FontAwesomeIcon icon={faPaperPlane} />
             </SendButton>
           </ChatInputContainer>
+          <div ref={messagesEndRef} />
         </ChatMessages>
       </Chat>
     </div>

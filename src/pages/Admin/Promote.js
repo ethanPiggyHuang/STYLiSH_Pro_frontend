@@ -36,15 +36,10 @@ const Wrapper = styled.div`
 const Rank = styled.div`
   margin: 0 auto;
   display: flex;
-  flex-wrap: wrap;
 
-  width: 80vw;
+  width: 90vw;
   flex-direction: column;
   height: 100vh;
-
-  @media screen and (max-width: 1279px) {
-    width: 100%;
-  }
 `;
 
 const Split = styled.div`
@@ -372,131 +367,9 @@ function Promote() {
     <Wrapper>
       <SideBar />
       <Rank>
-        <RankTitle>
-          <Wrap>
-            <Title>| 暢銷排名</Title>
-            <Title>| 正在促銷</Title>
-          </Wrap>
-
-          <Split></Split>
-        </RankTitle>
-
         <Table></Table>
 
         <ChatComponet />
-
-        {/* <Header>
-          <Label column="1">排名</Label>
-          <Label column="2">產品名稱</Label>
-          <Label column="3">ID</Label>
-          <Label column="4">數量</Label>
-          <Label column="5">金額</Label>
-          <Label column="6">狀態</Label>
-          <Label column="7">加強推廣</Label>
-          <abel column="8">輸入折扣</abel>
-        </Header>
-        <Items>
-          <Item>
-            <ItemRank>1</ItemRank>
-            <ItemName>牛仔帽</ItemName>
-            <ItemID>20934823</ItemID>
-            <ItemAmount>30</ItemAmount>
-            <ItemTotal>20000</ItemTotal>
-            <ItemState>
-              {itemState === 'UP' && <UpIcon />}
-              {itemState === 'DOWN' && <DownIcon />}
-              {itemState === 'NO_CHANGE' && <NoChangeIcon />}
-            </ItemState>
-            <PromoteBtn>加強推廣</PromoteBtn>
-            <Discount>
-              <option value="">選擇折扣</option>
-              <option value="0.9">9折優惠</option>
-              <option value="0.8">8折優惠</option>
-              <option value="0.7">7折優惠</option>
-              <option value="0.6">6折優惠</option>
-            </Discount>
-          </Item>
-          <Item>
-            <ItemRank>2</ItemRank>
-            <ItemName>牛仔帽</ItemName>
-            <ItemID>20934823</ItemID>
-            <ItemAmount>30</ItemAmount>
-            <ItemTotal>20000</ItemTotal>
-            <ItemState>
-              {itemState === 'UP' && <UpIcon />}
-              {itemState === 'DOWN' && <DownIcon />}
-              {itemState === 'NO_CHANGE' && <NoChangeIcon />}
-            </ItemState>
-            <PromoteBtn>加強推廣</PromoteBtn>
-            <Discount>
-              <option value="">選擇折扣</option>
-              <option value="0.9">9折優惠</option>
-              <option value="0.8">8折優惠</option>
-              <option value="0.7">7折優惠</option>
-              <option value="0.6">6折優惠</option>
-            </Discount>
-          </Item>
-          <Item>
-            <ItemRank>3</ItemRank>
-            <ItemName>牛仔帽</ItemName>
-            <ItemID>20934823</ItemID>
-            <ItemAmount>30</ItemAmount>
-            <ItemTotal>20000</ItemTotal>
-            <ItemState>
-              {itemState === 'UP' && <UpIcon />}
-              {itemState === 'DOWN' && <DownIcon />}
-              {itemState === 'NO_CHANGE' && <NoChangeIcon />}
-            </ItemState>
-            <PromoteBtn>加強推廣</PromoteBtn>
-            <Discount>
-              <option value="">選擇折扣</option>
-              <option value="0.9">9折優惠</option>
-              <option value="0.8">8折優惠</option>
-              <option value="0.7">7折優惠</option>
-              <option value="0.6">6折優惠</option>
-            </Discount>
-          </Item>
-          <Item>
-            <ItemRank>4</ItemRank>
-            <ItemName>牛仔帽</ItemName>
-            <ItemID>20934823</ItemID>
-            <ItemAmount>30</ItemAmount>
-            <ItemTotal>20000</ItemTotal>
-            <ItemState>
-              {itemState === 'UP' && <UpIcon />}
-              {itemState === 'DOWN' && <DownIcon />}
-              {itemState === 'NO_CHANGE' && <NoChangeIcon />}
-            </ItemState>
-            <PromoteBtn>加強推廣</PromoteBtn>
-            <Discount>
-              <option value="">選擇折扣</option>
-              <option value="0.9">9折優惠</option>
-              <option value="0.8">8折優惠</option>
-              <option value="0.7">7折優惠</option>
-              <option value="0.6">6折優惠</option>
-            </Discount>
-          </Item>
-          <Item>
-            <ItemRank>5</ItemRank>
-            <ItemName>牛仔帽</ItemName>
-            <ItemID>20934823</ItemID>
-            <ItemAmount>30</ItemAmount>
-            <ItemTotal>20000</ItemTotal>
-            <ItemState>
-              {itemState === 'UP' && <UpIcon />}
-              {itemState === 'DOWN' && <DownIcon />}
-              {itemState === 'NO_CHANGE' && <NoChangeIcon />}
-            </ItemState>
-            <PromoteBtn>加強推廣</PromoteBtn>
-            <Discount>
-              <option value="">選擇折扣</option>
-              <option value="0.9">9折優惠</option>
-              <option value="0.8">8折優惠</option>
-              <option value="0.7">7折優惠</option>
-              <option value="0.6">6折優惠</option>
-            </Discount>
-          </Item>
-        </Items> */}
       </Rank>
     </Wrapper>
   );

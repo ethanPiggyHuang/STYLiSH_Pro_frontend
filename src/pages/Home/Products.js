@@ -236,11 +236,22 @@ const MarqueeContainer = styled.div`
   width: 100%;
   overflow: hidden;
   white-space: nowrap;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
 
 const MarqueeText = styled.p`
   display: inline-block;
-  animation: ${marquee} 10s linear infinite;
+  animation: ${marquee} 20s linear infinite;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  margin: 0;
 `;
 
 const getPromoteBannerStyle = (discount) => {
@@ -274,6 +285,7 @@ function Products() {
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
+  const [marquee, setMarquee] = useState([]);
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
   };
@@ -289,8 +301,11 @@ function Products() {
       .then((data) => {
         // console.log(data);
         const dataArray = data.data;
-        // console.log(data.data[0].discount);
+        console.log(dataArray);
+        const marqueePromote = dataArray.find((p) => p.discount === 0.5);
+        setMarquee(marqueePromote);
         setHotData(dataArray);
+
         // console.log(hotData);
       });
   };
@@ -300,11 +315,13 @@ function Products() {
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
+  useEffect(() => {
+    getHotData();
+  }, []);
   useEffect(() => {
     let nextPaging = 0;
     let isFetching = false;
-    getHotData();
+
     async function fetchProducts() {
       isFetching = true;
       setIsLoading(true);
@@ -319,6 +336,10 @@ function Products() {
       nextPaging = response.next_paging;
       isFetching = false;
       setIsLoading(false);
+      const item = products.find((p) => p.id === marquee.id);
+      console.log(products);
+      setCampaignText(item);
+      console.log(item);
     }
 
     async function scrollHandler() {
@@ -358,17 +379,27 @@ function Products() {
       return <span>特價商品</span>;
     }
   };
-  const marqueeText = hotData.find((p) => p.discount === 0.5);
-  // setCampaignText(marqueeText.deadline);
-  console.log(marqueeText);
+
   return (
     <Wrapper>
       <Socket></Socket>
-      <MarqueeContainer>
+      {/* <MarqueeContainer>
         <MarqueeText>
-          {hotData ? `  熱銷王促銷中 熱銷王促銷中 ` : '熱銷王'}
+          {hotData
+            ? `熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} `
+            : '熱銷王'}
         </MarqueeText>
-      </MarqueeContainer>
+      </MarqueeContainer> */}
 
       {products.map(({ id, main_image, colors, title, price }) => {
         const promote = hotData.find((p) => p.id === id);

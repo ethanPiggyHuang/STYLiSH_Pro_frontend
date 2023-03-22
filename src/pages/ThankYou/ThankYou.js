@@ -18,6 +18,7 @@ const Title = styled.div`
 
 const Content = styled.div`
   margin-top: 24px;
+  font-size: 24px;
 `;
 
 const BackButton = styled.button`
@@ -33,8 +34,8 @@ function ThankYou() {
   return (
     <Wrapper>
       <Title>感謝您的購買，我們會盡快將商品送達！</Title>
-      <Content>請記住以下訂單編號，以便查詢</Content>
-      <Content>{state.orderNumber}</Content>
+      <Content>訂單資訊已送至您的email，以便查詢</Content>
+      <Content>訂單編號：{state.orderNumber}</Content>
       <BackButton onClick={() => navigate('/')}>繼續購物</BackButton>
     </Wrapper>
   );

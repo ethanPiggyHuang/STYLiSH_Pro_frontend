@@ -2,6 +2,7 @@ import styled from 'styled-components/macro';
 import { useState, useRef, useEffect } from 'react';
 import { Chart1 } from './svg/Chart1';
 import { C3Pie } from './svg/C3Pie';
+import { PieChart2 } from './svg/PieChart2';
 import SideBar from './SideBar';
 
 const Wrapper = styled.div`
@@ -114,8 +115,8 @@ function Analyze({ data }) {
       .fill('')
       .map((element, index) => (index === 0 ? 'large' : 'medium'))
   );
-  const blockData = [0, 1, 2, 3, 4];
-  const titles = ['交易總額', '流量', '客單價', '轉換率', '回購率'];
+  const blockData = [0, 1, 2];
+  const titles = ['交易總額', '各類別流量', '各類別銷售額'];
   const handleResize = (blockIndex) => {
     setBlockSize(
       blockSize.map((size, index) =>
@@ -179,6 +180,15 @@ function Analyze({ data }) {
               )}
               {index === 1 ? (
                 <C3Pie
+                  productList={productList}
+                  totals={totals}
+                  setTotals={setTotals}
+                />
+              ) : (
+                ''
+              )}
+              {index === 2 ? (
+                <PieChart2
                   productList={productList}
                   totals={totals}
                   setTotals={setTotals}

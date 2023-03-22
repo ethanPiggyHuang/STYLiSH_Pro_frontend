@@ -23,8 +23,6 @@ export const Chart1 = ({ size, totals, setTotals }) => {
   }, []);
 
   const date = new Date();
-  const day = date.getDate();
-  const month = date.getDate();
 
   const drawChart = (data) => {
     const inMillion = data.map((number) => number / 1000000);

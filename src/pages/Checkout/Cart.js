@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 import trash from './trash.png';
@@ -212,7 +212,7 @@ const DeleteButton = styled.div`
 
 function Cart() {
   const { cartItems, setCartItems } = useContext(CartContext);
-
+  const [hotData, setHotData] = useState([]);
   function changeItemQuantity(itemIndex, itemQuantity) {
     const newCartItems = cartItems.map((item, index) =>
       index === itemIndex
@@ -232,6 +232,36 @@ function Cart() {
     window.alert('已刪除商品');
   }
 
+  //const promote = hotData.find((p) => p.id === product.id);
+
+  const getHotData = () => {
+    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+      method: 'get',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        const dataArray = data.data;
+        // console.log(data.data[0].discount);
+        setHotData(dataArray);
+        // console.log(hotData);
+      });
+  };
+
+  useEffect(() => {
+    getHotData();
+  }, []);
+  //console.log(hotData);
+  // console.log(promote);
+  // console.log(product.id);
+  // const newPrice = promote
+  //   ? Math.floor(product.price * promote.discount)
+  //   : product.price;
+  // const isPromoted = !!promote;
+
   return (
     <>
       <Header>
@@ -242,39 +272,48 @@ function Cart() {
         <Empty />
       </Header>
       <Items>
-        {cartItems.map((item, index) => (
-          <Item key={`${item.id}-${item.color.code}-${item.size}`}>
-            <ItemImage src={item.image} />
-            <ItemDetails>
-              <ItemName>{item.name}</ItemName>
-              <ItemID>{item.id}</ItemID>
-              <ItemColorName>顏色｜{item.color.name}</ItemColorName>
-              <ItemSize>尺寸｜{item.size}</ItemSize>
-            </ItemDetails>
-            <ItemQuantity>
-              <ItemQuantityName hideOnDesktop>數量</ItemQuantityName>
-              <ItemQuantitySelect
-                value={item.qty}
-                onChange={(e) => changeItemQuantity(index, e.target.value)}
-              >
-                {Array(item.stock)
-                  .fill()
-                  .map((_, index) => (
-                    <option key={index}>{index + 1}</option>
-                  ))}
-              </ItemQuantitySelect>
-            </ItemQuantity>
-            <ItemUnitPrice>
-              <ItemUnitPriceName hideOnDesktop>單價</ItemUnitPriceName>
-              <ItemUnitPriceValue>NT.{item.price}</ItemUnitPriceValue>
-            </ItemUnitPrice>
-            <ItemPrice>
-              <ItemPriceName hideOnDesktop>小計</ItemPriceName>
-              <ItemPriceValue>NT.{item.qty * item.price}</ItemPriceValue>
-            </ItemPrice>
-            <DeleteButton onClick={() => deleteItem(index)} />
-          </Item>
-        ))}
+        {cartItems.map((item, index) => {
+          let newPrice = item.price;
+          const hotItem = hotData.find((hotItem) => hotItem.id === item.id);
+          if (hotItem) {
+            newPrice = Math.floor(item.price * hotItem.discount);
+          }
+
+          return (
+            <Item key={`${item.id}-${item.color.code}-${item.size}`}>
+              <ItemImage src={item.image} />
+              <ItemDetails>
+                <ItemName>{item.name}</ItemName>
+                <ItemID>{item.id}</ItemID>
+                <ItemColorName>顏色｜{item.color.name}</ItemColorName>
+                <ItemSize>尺寸｜{item.size}</ItemSize>
+              </ItemDetails>
+              <ItemQuantity>
+                <ItemQuantityName hideOnDesktop>數量</ItemQuantityName>
+                <ItemQuantitySelect
+                  value={item.qty}
+                  onChange={(e) => changeItemQuantity(index, e.target.value)}
+                >
+                  {Array(item.stock)
+                    .fill()
+                    .map((_, index) => (
+                      <option key={index}>{index + 1}</option>
+                    ))}
+                </ItemQuantitySelect>
+              </ItemQuantity>
+              <ItemUnitPrice>
+                <ItemUnitPriceName hideOnDesktop>單價</ItemUnitPriceName>
+
+                <ItemUnitPriceValue>NT.{item.price}</ItemUnitPriceValue>
+              </ItemUnitPrice>
+              <ItemPrice>
+                <ItemPriceName hideOnDesktop>小計</ItemPriceName>
+                <ItemPriceValue>NT.{item.qty * item.price}</ItemPriceValue>
+              </ItemPrice>
+              <DeleteButton onClick={() => deleteItem(index)} />
+            </Item>
+          );
+        })}
       </Items>
     </>
   );

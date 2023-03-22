@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import styled, { css, createdGlobalStyle } from 'styled-components/macro';
+import styled, {
+  keyframes,
+  css,
+  createdGlobalStyle,
+} from 'styled-components/macro';
 
 import ReactLoading from 'react-loading';
 import Socket from './Socket';
@@ -32,16 +36,6 @@ const Product = styled(Link)`
     width: calc((100% - 12px) / 2);
     margin: 0 3px 24px;
   }
-`;
-
-const ProductImage = styled.img`
-  width: 100%;
-  vertical-align: middle;
-  ${(props) =>
-    props.$isPromoted &&
-    css`
-      border: 3px solid red;
-    `}
 `;
 
 const ProductColors = styled.div`
@@ -99,9 +93,8 @@ const ProductPrice = styled.div`
     props.$isPromoted &&
     css`
       color: red;
-      font-size: 32px;
+      font-size: 24px;
       font-weight: bold;
-      text-decoration: line-through;
     `}
   @media screen and (max-width: 1279px) {
     margin-top: 8px;
@@ -160,6 +153,10 @@ const ChatMessages = styled.div`
   overflow-y: auto;
 `;
 
+const ImageWrap = styled.div`
+  position: relative;
+`;
+
 const ChatInputContainer = styled.div`
   display: flex;
   align-items: center;
@@ -200,12 +197,81 @@ const Loading = styled(ReactLoading)`
 `;
 
 const PromoteBanner = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   position: absolute;
-  bottom: 0px;
+  top: 0px;
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  ${({ discount }) => {
+    const style = getPromoteBannerStyle(discount);
+    return `
+      background-color: ${style.backgroundColor};
+    `;
+  }}
 `;
+
+const ProductImage = styled.img`
+  width: 100%;
+  vertical-align: middle;
+  ${(props) =>
+    props.$isPromoted &&
+    `
+   
+`}
+`;
+
+const marquee = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const MarqueeContainer = styled.div`
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #f7f7f7;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+const MarqueeText = styled.p`
+  display: inline-block;
+  animation: ${marquee} 20s linear infinite;
+  color: #333;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+  margin: 0;
+`;
+
+const getPromoteBannerStyle = (discount) => {
+  if (discount === 0.5) {
+    return {
+      backgroundColor: 'red', // Change to desired color
+      content: '打到骨折',
+    };
+  } else if (discount === 0.8) {
+    return {
+      backgroundColor: 'orange', // Change to desired color
+      content: '特價商品',
+    };
+  } else if (discount === 0.9) {
+    return {
+      backgroundColor: '#EF9A9A', // Change to desired color
+      content: '九折特賣',
+    };
+  }
+};
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -219,6 +285,7 @@ function Products() {
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
+  const [marquee, setMarquee] = useState([]);
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
   };
@@ -234,22 +301,27 @@ function Products() {
       .then((data) => {
         // console.log(data);
         const dataArray = data.data;
-        // console.log(data.data[0].discount);
+        console.log(dataArray);
+        const marqueePromote = dataArray.find((p) => p.discount === 0.5);
+        setMarquee(marqueePromote);
         setHotData(dataArray);
+
         // console.log(hotData);
       });
   };
 
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [campaignText, setCampaignText] = useState('');
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
+  useEffect(() => {
+    getHotData();
+  }, []);
   useEffect(() => {
     let nextPaging = 0;
     let isFetching = false;
-    getHotData();
+
     async function fetchProducts() {
       isFetching = true;
       setIsLoading(true);
@@ -264,6 +336,10 @@ function Products() {
       nextPaging = response.next_paging;
       isFetching = false;
       setIsLoading(false);
+      const item = products.find((p) => p.id === marquee.id);
+      console.log(products);
+      setCampaignText(item);
+      console.log(item);
     }
 
     async function scrollHandler() {
@@ -292,56 +368,83 @@ function Products() {
       });
   }, []);
 
+  const PromotionalMessage = ({ discount }) => {
+    if (discount === 0.5) {
+      return <span>打到骨折</span>;
+    } else if (discount === 0.8) {
+      return <span>本季爆款八折特賣</span>;
+    } else if (discount === 0.9) {
+      return <span>9折特價</span>;
+    } else {
+      return <span>特價商品</span>;
+    }
+  };
+
   return (
     <Wrapper>
       <Socket></Socket>
+      {/* <MarqueeContainer>
+        <MarqueeText>
+          {hotData
+            ? `熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
+                campaignText.price * 0.5
+              )} `
+            : '熱銷王'}
+        </MarqueeText>
+      </MarqueeContainer> */}
+
       {products.map(({ id, main_image, colors, title, price }) => {
-        const promote = hotData;
-        {
-          /* console.log(promote); */
-        }
-        const isPromoted = promote.some((p) => p.id === id);
-        {
-          /* console.log(isPromoted); */
-        }
+        const promote = hotData.find((p) => p.id === id);
+        const newPrice = promote ? Math.floor(price * promote.discount) : price;
+        const isPromoted = !!promote;
+
         return (
           <Product key={id} to={`/products/${id}`}>
-            {isPromoted && <PromoteBanner>特價商品</PromoteBanner>}
-            <ProductImage src={main_image} $isPromoted={isPromoted} />
+            <ImageWrap>
+              <ProductImage src={main_image} $isPromoted={isPromoted} />
+              {isPromoted && (
+                <PromoteBanner discount={promote.discount}>
+                  <PromotionalMessage discount={promote.discount} />
+                </PromoteBanner>
+              )}
+            </ImageWrap>
+
             <ProductColors>
               {colors.map(({ code }) => (
                 <ProductColor $colorCode={`#${code}`} key={code} />
               ))}
             </ProductColors>
             <ProductTitle>{title}</ProductTitle>
-            <ProductPrice $isPromoted={isPromoted}>TWD.{price}</ProductPrice>
+            <ProductPrice $isPromoted={isPromoted}>
+              {isPromoted ? (
+                <>
+                  <span
+                    style={{
+                      textDecoration: 'line-through',
+                      color: '#3f3a3a',
+                      fontSize: '20px',
+                    }}
+                  >
+                    TWD.{price}
+                  </span>
+                  <span style={{ fontSize: '24px' }}>TWD.{newPrice}</span>
+                </>
+              ) : (
+                <span>TWD.{price}</span>
+              )}
+            </ProductPrice>
             <StarRating id={id.toString()} ratings={ratings} />
           </Product>
         );
       })}
-
-      {/* <FixedImage
-        src={chatIcon}
-        alt="Chat Icon"
-        onClick={handleChatboxToggle}
-      />
-      <Chat isVisible={isChatboxVisible} isExpanded={isExpanded}>
-        <ChatHeader onClick={toggleExpand}>
-          <StatusIndicator isOnline={true} />
-          客服在線上
-          <ExpandIcon icon={isExpanded ? faCompress : faExpand} />
-        </ChatHeader>
-        <ChatMessages>
-          <p>Hello!</p>
-          <p>親,今天可以幫你做什麼呢?</p>
-          <ChatInputContainer>
-            <ChatInput type="text" placeholder="什麼時候會進貨呢?" />
-            <SendButton>
-              <FontAwesomeIcon icon={faPaperPlane} />
-            </SendButton>
-          </ChatInputContainer>
-        </ChatMessages>
-      </Chat> */}
       {isLoading && <Loading type="spinningBubbles" color="#313538" />}
     </Wrapper>
   );

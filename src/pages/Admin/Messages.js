@@ -1,19 +1,30 @@
+import { Container } from '@mui/system';
 import React, { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import styled, { createdGlobalStyle } from 'styled-components/macro';
-
+import SideBar from './SideBar';
 export const Wrapper = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
   background-color: #f5f5f5;
   min-height: 100vh;
+  padding: 10px;
 `;
 
 const Wrap = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
+  height: 50%;
+  margin: 0 auto;
+  justify-content: left;
+
+  @media screen and (max-width: 1279px) {
+    padding: 0 0 32px;
+  }
 `;
 
 export const ChatTitle = styled.h1`
@@ -31,6 +42,8 @@ export const UserList = styled.div`
   border-radius: 10px;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
   margin-right: 40px;
+  width: 40%;
+  flex: 1;
 `;
 
 export const UserListTitle = styled.h2`
@@ -67,12 +80,21 @@ export const ChatMessage = styled.div`
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
+  flex: 1;
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 `;
 export const MessageTitle = styled.h2`
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: #666;
+`;
+
+export const BroadcastTitle = styled.h2`
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  margin-top: 30px;
   color: #666;
 `;
 
@@ -92,6 +114,8 @@ export const Messages = styled.ul`
 export const Message = styled.li`
   margin-bottom: 10px;
   color: #333;
+  text-align: ${({ sender }) =>
+    sender === 'customer-support ' ? 'right' : 'left'};
 `;
 
 export const UserId = styled.input`
@@ -138,6 +162,12 @@ export const Form = styled.form`
   margin-top: 20px;
 `;
 
+export const BroadcastForm = styled.form`
+  display: flex;
+  align-items: center;
+  width: 90%;
+  margin-top: 20px;
+`;
 export const Icon = styled.span`
   display: flex;
   justify-content: center;
@@ -189,10 +219,13 @@ export const Loader = styled.div`
   }
 `;
 
+
+
 function MessageDashboard() {
   const socketRef = useRef();
   const userId = 'customer-support';
   const [messageInput, setMessageInput] = useState('');
+  const [broadcastInput, setBroadcastInput] = useState('');
   // const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState(new Map());
   const [activeUser, setActiveUser] = useState(null);
@@ -262,61 +295,88 @@ function MessageDashboard() {
       // setMessages(newMessages);
     }
   };
+  console.log(typeof broadcastInput);
+  const handleBroadcast = () => {
+    console.log('廣播訊息' + broadcastInput);
+    socketRef.current.emit('broadcast channel', broadcastInput);
+    setBroadcastInput('');
+  };
 
   return (
-    <Wrapper>
-      <ChatTitle>Customer Support Dashboard</ChatTitle>
-      <UserId id="userId" type="text" value={userId} readOnly />
-      <UserList>
-        <UserListTitle>User List</UserListTitle>
-        <ul>
-          {Array.from(users).map(([userId, userData]) => (
-            <User
-              key={userId}
-              className={userData.unread ? 'unread' : ''}
-              backgroundColor={userData.unread ? 'red' : 'white'}
-              onClick={() => handleUserClick(userId)}
+    <Wrap>
+      <SideBar />
+      <Wrapper>
+        <ChatTitle>客戶服務控制中心</ChatTitle>
+        <UserId id="userId" type="text" value={userId} readOnly />
+        <Wrap>
+          <UserList>
+            <UserListTitle>User List</UserListTitle>
+            <ul>
+              {Array.from(users).map(([userId, userData]) => (
+                <User
+                  key={userId}
+                  className={userData.unread ? 'unread' : ''}
+                  backgroundColor={userData.unread ? 'red' : 'white'}
+                  onClick={() => handleUserClick(userId)}
+                >
+                  <Icon>{userData.unread ? '!' : userId.charAt(0)}</Icon>
+                  {userId}
+                </User>
+              ))}
+            </ul>
+          </UserList>
+          <ChatMessage>
+            <MessageTitle>聊天</MessageTitle>
+            <ActiveUser>
+              {activeUser ? (
+                <Messages>
+                  {users
+                    ?.get(activeUser)
+                    ?.messages?.map(({ sender, message, timestamp }, i) => (
+                      <Message key={i}>{`${sender} (${new Date(
+                        timestamp
+                      ).toLocaleTimeString()}): ${message}`}</Message>
+                    ))}
+                </Messages>
+              ) : (
+                <EmptyState>選擇使用者來進行聊天</EmptyState>
+              )}
+            </ActiveUser>
+            <Form
+              onSubmit={(e) => {
+                e.preventDefault(); // prevent page from refreshing
+                handleSendMessage();
+              }}
             >
-              <Icon>{userData.unread ? '!' : userId.charAt(0)}</Icon>
-              {userId}
-            </User>
-          ))}
-        </ul>
-      </UserList>
-      <ChatMessage>
-        <MessageTitle>Chat</MessageTitle>
-        <ActiveUser>
-          {activeUser ? (
-            <Messages>
-              {users
-                ?.get(activeUser)
-                ?.messages?.map(({ sender, message, timestamp }, i) => (
-                  <Message key={i}>{`${sender} (${new Date(
-                    timestamp
-                  ).toLocaleTimeString()}): ${message}`}</Message>
-                ))}
-            </Messages>
-          ) : (
-            <EmptyState>Select a user to start chatting</EmptyState>
-          )}
-        </ActiveUser>
-        <Form
+              <Input
+                id="message"
+                type="text"
+                placeholder="輸入訊息"
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              />
+              <Button type="submit">send</Button>
+            </Form>
+          </ChatMessage>
+        </Wrap>
+        <BroadcastTitle>廣播</BroadcastTitle>
+        <BroadcastForm
           onSubmit={(e) => {
             e.preventDefault(); // prevent page from refreshing
-            handleSendMessage();
+            handleBroadcast();
           }}
         >
           <Input
             id="message"
             type="text"
-            placeholder="Type a message"
-            value={messageInput}
-            onChange={(e) => setMessageInput(e.target.value)}
+            placeholder="輸入廣播"
+            value={broadcastInput}
+            onChange={(e) => setBroadcastInput(e.target.value)}
           />
-          <Button type="submit">Send</Button>
-        </Form>
-      </ChatMessage>
-    </Wrapper>
+          <Button type="submit">setup</Button>
+        </BroadcastForm>
+      </Wrapper>
+    </Wrap>
   );
 }
 

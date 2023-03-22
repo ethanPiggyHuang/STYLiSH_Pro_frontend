@@ -15,16 +15,50 @@ const Wrap = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px;
+  padding: 0px;
   background-color: #f5f5f5;
+  flex-direction: column;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
+`;
+
+const ColumnWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 2px solid blue;
+  padding: 10px;
+  height: auto;
+  background-color: #f5f5f5;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
 const OnSale = styled.div`
   display: flex;
   flex-direction: row;
+  flex: 1;
   align-items: center;
+  border: 2px solid red;
   padding: 20px;
+  margin-bottom: 20px;
   background-color: #f5f5f5;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 10px;
+  }
 `;
 
 const DataWrap = styled.div`
@@ -79,12 +113,14 @@ const SaleTitle = styled.h2`
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 40px;
+  text-align: center;
 `;
 
 const Table = () => {
   const initialRows = [];
   const [rows, setRows] = useState([...initialRows]);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
+  const [postSuccess, setPostSuccess] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState(rows.map(() => ''));
   const [campaignTimeOptions, setCampaignTimeOptions] = useState(
     rows.map(() => '')
@@ -94,15 +130,10 @@ const Table = () => {
   );
 
   const [hotData, setHotData] = useState([]);
-  if (hotData.data) {
-    // console.log('hotData', hotData.data.length);
-  }
-  //
   const isPromoting = (id) => {
     return hotData.data.some((item) => item.id === id);
   };
   const getHotData = () => {
-    // console.log('getHotData');
     fetch('https://side-project2023.online/api/1.0/report/hot/list', {
       method: 'get',
       headers: new Headers({
@@ -111,8 +142,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // console.log('gethot', data);
-        setHotData(...hotData, ...data);
+        setHotData(data);
       });
   };
 
@@ -170,14 +200,15 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-        // console.log(rankedItems);
+        console.log(rankedItems);
         //console.log(hotData);
         const rankedItemsWithPromotion = rankedItems.map((item) => {
           //console.log('item.id', item.id);
           //console.log('hotData', hotData.data);
-          const isPromoting =
-            hotData.data.some((hotItem) => hotItem.id === item.id) || false;
-          // console.log(isPromoting);
+          const isPromoting = hotData.data.some(
+            (hotItem) => hotItem.id === item.id
+          );
+          console.log('isPromoting' + isPromoting);
           return {
             ...item,
             isPromoting,
@@ -195,12 +226,16 @@ const Table = () => {
         'Content-Type': 'application/json',
       }),
       body: JSON.stringify(body),
-    }).then((res) => res.json());
-    // .then((res) => console.log(res));
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        setPostSuccess(true);
+      });
   };
 
   const deleteHot = (id, discount, deadline) => {
-    // console.log('hi');
+    console.log('hi');
     const body = {
       id: id,
       discount: discount,
@@ -215,7 +250,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        // console.log(res);
+        console.log(res);
         setDeleteSuccess(true);
       });
   };
@@ -232,7 +267,7 @@ const Table = () => {
     newCampaignTimeOptions[rowIndex] = e.target.value;
     setCampaignTimeOptions(newCampaignTimeOptions);
     e.stopPropagation();
-    // console.log(newCampaignTimeOptions);
+    console.log(newCampaignTimeOptions);
   };
 
   function PromotionButton({
@@ -277,7 +312,9 @@ const Table = () => {
 
       if (row.isPromoting) {
         deleteHot(row.id, row.discount, row.deadline);
-      } else {
+        console.log('reset promote!');
+      } else if (!row.isPromoting) {
+        console.log('set promote!');
         tryPost(discountPost);
       }
     };
@@ -369,13 +406,12 @@ const Table = () => {
   // remove hotData from dependency array
   useEffect(() => {
     tryGet();
-  }, [hotData, deleteSuccess]);
+  }, [hotData, promotionClicked]);
 
   // add hotData to dependency array
   useEffect(() => {
     getHotData();
   }, []);
-  //TODO
 
   useEffect(() => {
     if (deleteSuccess) {
@@ -392,38 +428,50 @@ const Table = () => {
   //TODO
 
   return (
-    <div style={{ width: '100%' }}>
+    <Wrapper style={{ minHeight: '80%', width: '100%' }}>
+      <Title>暢銷排名</Title>
       <DataGrid
         title="暢銷排名"
         rows={rows}
         columns={columns}
         components={{ Toolbar: GridToolbar }}
-        style={{ minHeight: '600px' }}
+        style={{
+          border: '2px solid green',
+          minHeight: '80%',
+          maxWidth: '100%',
+        }}
         rowsPerPageOptions={[10, 25, 50]}
       />
-      <SaleTitle>促銷中的商品</SaleTitle>
-      <OnSale>
-        {console.log('console.', hotData.data)}
-        {hotData.data &&
-          hotData.data.map((item) => (
-            <Wrap>
-              <DataWrap key={item.id}>
-                <Subtitle>ID: {item.id}</Subtitle>
-                <Info>Discount: {item.discount}</Info>
-                <Info>Deadline: {item.deadline}</Info>
-                <CancelButton
-                  onClick={() => {
-                    deleteHot(item.id, item.discount, item.deadline);
-                    getHotData();
-                  }}
-                >
-                  結束促銷
-                </CancelButton>
-              </DataWrap>
-            </Wrap>
-          ))}
-      </OnSale>
-    </div>
+
+      <ColumnWrap>
+        <Title>正在促銷</Title>
+        <OnSale
+          style={{
+            border: '2px solid green',
+            minHeight: '80%',
+            maxWidth: '100%',
+          }}
+        >
+          {hotData.data &&
+            hotData.data.map((item) => (
+              <Wrap>
+                <DataWrap key={item.id}>
+                  <Subtitle>ID: {item.id}</Subtitle>
+                  <Info>折扣: {item.discount * 10}折</Info>
+                  <Info>期限日期: {item.deadline}</Info>
+                  <CancelButton
+                    onClick={() =>
+                      deleteHot(item.id, item.discount, item.deadline)
+                    }
+                  >
+                    結束促銷
+                  </CancelButton>
+                </DataWrap>
+              </Wrap>
+            ))}
+        </OnSale>
+      </ColumnWrap>
+    </Wrapper>
   );
 };
 

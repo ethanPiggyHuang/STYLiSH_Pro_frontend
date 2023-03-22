@@ -12,10 +12,16 @@ const api = {
   },
   async searchProducts(keyword, paging) {
     const response = await fetch(
-      `${this.hostname}/products/search?keyword=${keyword}&paging=${paging}`
+      `${this.hostname}/products/fuzzysearchs?keyword=${keyword}`
     );
     return await response.json();
   },
+  // async searchProducts(keyword, paging) {
+  //   const response = await fetch(
+  //     `${this.hostname}/products/search?keyword=${keyword}&paging=${paging}`
+  //   );
+  //   return await response.json();
+  // },
   async getProduct(id) {
     const response = await fetch(`${this.hostname}/products/details?id=${id}`);
     return await response.json();

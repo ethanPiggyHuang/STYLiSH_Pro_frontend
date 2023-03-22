@@ -153,7 +153,11 @@ function Analyze({ data }) {
           <Block size={blockSize[index]} key={index}>
             <TopBar>
               <Title>{titles[index]}</Title>
-              <Amount>總金額：元</Amount>
+              <Amount>
+                {index === 1 ? '總流量 ' : '總金額 '}
+                {totals[index]}
+                {index === 1 ? ' 次' : ' 百萬元'}
+              </Amount>
               {/* <TimeButtons>
                 <TimeButton>月</TimeButton>
                 <TimeButton>週</TimeButton>

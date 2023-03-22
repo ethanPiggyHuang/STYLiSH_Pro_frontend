@@ -14,56 +14,44 @@ export const PieChart2 = ({ productList }) => {
   ];
   console.log(data);
 
-  useEffect(
-    () => {
-      list.forEach((id) => {
-        // console.log(Object.keys(data));
-        if (
-          Object.keys(data).length === 0 ||
-          Object.keys(data).findIndex(data) === -1
-        ) {
-          fetch(
-            `https://side-project2023.online/api/1.0/products/trafficreport?id=${id}`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              if (Object.keys(data.data).length !== 0) {
-                setData((prev) => {
-                  return { ...prev, ...data.data };
-                });
-              }
-            });
-        }
-      });
-    },
+  // useEffect(
+  //   () => {
+  //     list.forEach((id) => {
+  //       // console.log(Object.keys(data));
+  //       if (
+  //         Object.keys(data).length === 0 ||
+  //         Object.keys(data).findIndex(data) === -1
+  //       ) {
+  //         fetch(
+  //           `https://side-project2023.online/api/1.0/products/trafficreport?id=${id}`
+  //         )
+  //           .then((res) => res.json())
+  //           .then((data) => {
+  //             if (Object.keys(data.data).length !== 0) {
+  //               setData((prev) => {
+  //                 return { ...prev, ...data.data };
+  //               });
+  //             }
+  //           });
+  //       }
+  //     });
+  //   },
 
-    // drawChart(
-    //   [...new Set(data.data.map((order) => order.createtime))].map((date) =>
-    //     data.data.reduce(
-    //       (acc, cur) =>
-    //         cur.createtime === date ? (acc += cur.total) : acc,
-    //       0
-    //     )
-    //   )
-    // );
-    []
-  );
-
-  useEffect(()=>{
-    if()
-  },[data])
+  //   []
+  // );
 
   const drawChart = (data) => {
     c3.generate({
-      bindto: '#pie',
+      bindto: '#pie2',
       size: {
-        height: 300,
-        width: 420,
+        height: 450,
+        width: 500,
       },
       data: {
         columns: [
-          ['men', 300],
-          ['women', 200],
+          ['男裝', 200],
+          ['女裝', 300],
+          ['配件', 150],
         ],
         type: 'pie',
         onclick: function (d, i) {
@@ -78,6 +66,7 @@ export const PieChart2 = ({ productList }) => {
       },
     });
   };
+  drawChart();
 
-  return <div id="pie" />;
+  return <div id="pie2" />;
 };

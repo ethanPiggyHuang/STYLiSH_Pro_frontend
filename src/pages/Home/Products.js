@@ -281,7 +281,7 @@ function Products() {
   const keyword = searchParams.get('keyword');
   const category = searchParams.get('category') || 'all';
   const [ratings, setRatings] = useState([]);
-  // console.log('r', ratings);
+  console.log('products', products);
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
@@ -324,12 +324,17 @@ function Products() {
     let isFetching = false;
 
     async function fetchProducts() {
+      console.log('enter');
       isFetching = true;
       setIsLoading(true);
       const response = keyword
         ? await api.searchProducts(keyword, nextPaging)
         : await api.getProducts(category, nextPaging);
-      if (nextPaging === 0) {
+      if (response.data.length < 3) {
+        setProducts(response.data);
+        console.log(response.data.map((item) => item.id));
+        getMoreSearch(response.data.map((item) => item.id));
+      } else if (nextPaging === 0) {
         setProducts(response.data);
 
         //
@@ -340,6 +345,32 @@ function Products() {
       }
 
       nextPaging = response.next_paging;
+      isFetching = false;
+      setIsLoading(false);
+    }
+
+    async function getMoreSearch(searchedIds) {
+      async function handleMoreSearch(id) {
+        const response = await fetch(
+          `https://side-project2023.online/api/1.0/products/details?id=${id}`
+        );
+        const data = await response.json();
+        console.log(data.data);
+        setProducts((prev) => [...prev, data.data]);
+      }
+      // hot
+      isFetching = true;
+      setIsLoading(true);
+      const response = await fetch(
+        'https://side-project2023.online/api/1.0/report/hot/list'
+      );
+      const data = await response.json();
+      const hotArray = data.data.map((promote) => promote.id);
+      // console.log(hotArray);
+      hotArray.forEach((id) =>
+        searchedIds?.includes(id) ? null : handleMoreSearch(id)
+      );
+      // setProducts((prev) => [...prev, ...data.data]);
       isFetching = false;
       setIsLoading(false);
     }

@@ -56,6 +56,11 @@ function AddRandomCart() {
         width: '200px',
         fontSize: '30px',
         cursor: 'pointer',
+        border: 'solid 1px grey',
+        borderRadius: '5px',
+        boxShadow: '2px 2px 5px grey',
+        textAlign: 'center',
+        marginBottom: '20px',
       }}
     >
       衝動購物

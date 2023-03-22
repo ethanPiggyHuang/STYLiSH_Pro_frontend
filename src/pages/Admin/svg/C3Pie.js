@@ -3,7 +3,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 /* Component */
-export const C3Pie = ({ productList }) => {
+export const C3Pie = ({ productList, totals, setTotals }) => {
   const [data, setData] = useState({});
   const list = [
     201807201824, 201807202140, 201807202150, 201807202157, 201807242211,
@@ -105,6 +105,18 @@ export const C3Pie = ({ productList }) => {
         return Number(flowPerId.reduce((acc, cur) => (acc += cur), 0));
       });
       drawChart(menFlows, womenFlows, accessoriesFlows);
+      const menTotal = menFlows.reduce((acc, cur) => (acc += cur));
+      const womenTotal = womenFlows.reduce((acc, cur) => (acc += cur));
+      const accessoriesTotal = accessoriesFlows.reduce(
+        (acc, cur) => (acc += cur)
+      );
+      const newTotal = [...totals];
+      newTotal[1] = Number(
+        (menTotal + womenTotal + accessoriesTotal).toFixed(2)
+      );
+      newTotal[2] = [menTotal, womenTotal, accessoriesTotal];
+      console.log(newTotal);
+      setTotals(newTotal);
     }
 
     // console.log(category);

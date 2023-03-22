@@ -3,7 +3,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 /* Component */
-export const PieChart2 = ({ productList }) => {
+export const PieChart2 = ({ productList, totals }) => {
   const [data, setData] = useState({});
   const list = [
     201807201824, 201807202140, 201807202150, 201807202157, 201807242211,
@@ -49,9 +49,9 @@ export const PieChart2 = ({ productList }) => {
       },
       data: {
         columns: [
-          ['男裝', 200],
-          ['女裝', 300],
-          ['配件', 150],
+          ['男裝', Number(totals[2][0])],
+          ['女裝', Number(totals[2][1])],
+          ['配件', Number(totals[2][2])],
         ],
         type: 'pie',
         onclick: function (d, i) {

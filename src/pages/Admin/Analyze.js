@@ -59,7 +59,7 @@ const Title = styled.div`
 const Amount = styled.div`
   line-height: 50px;
   height: 50px;
-  width: 200px;
+  width: 300px;
   text-align: right;
 
   @media screen and (max-width: 1279px) {
@@ -116,7 +116,7 @@ function Analyze({ data }) {
       .map((element, index) => (index === 0 ? 'large' : 'medium'))
   );
   const blockData = [0, 1, 2];
-  const titles = ['交易總額', '各類別流量', '各類別銷售額'];
+  const titles = ['交易總額', '各類別流量', '各類別流量比例'];
   const handleResize = (blockIndex) => {
     setBlockSize(
       blockSize.map((size, index) =>
@@ -154,9 +154,11 @@ function Analyze({ data }) {
             <TopBar>
               <Title>{titles[index]}</Title>
               <Amount>
-                {index === 1 ? '總流量 ' : '總金額 '}
-                {totals[index]}
-                {index === 1 ? ' 次' : ' 百萬元'}
+                {index === 1 ? '四日總流量 ' : '四日總金額 '}
+                {index === 2
+                  ? totals[2].reduce((acc, cur) => (acc += cur), 0)
+                  : totals[index]}
+                {index === 0 ? ' 百萬元' : ' 次'}
               </Amount>
               {/* <TimeButtons>
                 <TimeButton>月</TimeButton>

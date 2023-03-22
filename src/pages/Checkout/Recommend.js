@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 import api from '../../utils/api';
 import { CartContext } from '../../context/cartContext';
@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   margin-top: 10px;
   padding: 10px 0;
   background-color: #f1f1f1;
+  overflow-x: scroll;
 
   @media screen and (max-width: 1279px) {
     padding-bottom: 10px;
@@ -130,22 +131,30 @@ const AddToCartButton = styled.div`
   }
 `;
 
-function Recommend() {
+function Recommend({ cartLength }) {
   const { cartItems, setCartItems } = useContext(CartContext);
   // console.log(cartItems); //TODO: 根據 cart item 名稱去抓 fuzzies
+
+  // console.log(newKeywords);
 
   const [recommentItems, setRecommentItems] = useState([]);
   // console.log(recommentItems);
 
   useEffect(() => {
-    async function getFuzzys() {
-      const { data } = await api.getFuzzys('氣'); //TODO:
-      // console.log(data);
-      if (data) {
-        setRecommentItems(data);
+    const words =
+      cartItems.length === 0 ? [''] : cartItems.map((item) => item.name[0]);
+    const defaultWord = ['洋', '西', '童', '襯', '褲'];
+    const newKeywords = defaultWord.map((word, index) =>
+      words.length < index + 1 ? word : words[index]
+    );
+    newKeywords.forEach((keyword) => getFuzzys(keyword));
+    async function getFuzzys(keyword) {
+      const { data } = await api.getFuzzys(keyword); //TODO:
+      console.log(data);
+      if (data.length !== 0) {
+        setRecommentItems((prev) => [...prev, data[0]]);
       }
     }
-    getFuzzys();
   }, []);
 
   // const fuzzys = () => {
@@ -183,6 +192,36 @@ function Recommend() {
   //   ]);
   // };
 
+  function addToCart(index) {
+    // if (!selectedSize) {
+    //   window.alert('請選擇尺寸');
+    //   return;
+    // }
+    console.log(index);
+    // console.log(recommentItems);
+    const product = recommentItems[index];
+    console.log(recommentItems[index]);
+    const randomQty = Math.floor(Math.random() * 6) + 1;
+    const newCartItems = [
+      ...cartItems,
+      {
+        color: product.colors[0],
+        id: product.id,
+        image: product.main_image,
+        name: product.title,
+        price: product.price,
+        qty: randomQty,
+        size: product.sizes[0],
+        stock: product.variants[0].stock - randomQty,
+      },
+    ];
+    setCartItems(newCartItems);
+    const newRecomment = [...recommentItems];
+    newRecomment.splice(index, 1);
+    setRecommentItems(newRecomment);
+    window.alert('已加入商品');
+  }
+
   return (
     <Wrapper>
       <Header>
@@ -199,7 +238,7 @@ function Recommend() {
                   <ItemUnitPriceName hideOnDesktop>單價</ItemUnitPriceName>
                   <ItemUnitPriceValue>NT.{item.price}</ItemUnitPriceValue>
                 </ItemUnitPrice>
-                <AddToCartButton onClick={() => null}>
+                <AddToCartButton onClick={(e) => addToCart(index)}>
                   加入購物車
                 </AddToCartButton>
               </ItemDetails>

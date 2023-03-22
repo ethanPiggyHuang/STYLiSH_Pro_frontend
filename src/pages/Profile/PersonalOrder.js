@@ -323,6 +323,17 @@ export default function PersonalOrder() {
             // setHasReply(data.data.map((order) => order));
             getReplys(data.data.map((order) => order.id));
           });
+
+        fetch(`https://side-project2023.online/api/1.0/user/getuserrole`, {
+          headers: new Headers({
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${jwtToken}`,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(`your role is`, data.data.role_id);
+          });
       }
     }
     getOrders();

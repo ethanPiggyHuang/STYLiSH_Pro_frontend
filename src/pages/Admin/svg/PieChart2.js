@@ -3,7 +3,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 /* Component */
-export const C3Pie = ({ productList }) => {
+export const PieChart2 = ({ productList }) => {
   const [data, setData] = useState({});
   const list = [
     201807201824, 201807202140, 201807202150, 201807202157, 201807242211,

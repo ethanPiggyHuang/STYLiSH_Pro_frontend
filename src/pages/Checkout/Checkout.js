@@ -384,6 +384,11 @@ function Checkout() {
       setLoading(false);
     }
   }
+  console.log(cartItems);
+  if (cartItems.length !== 0) {
+    const titles = cartItems.map((item) => item.name[0]);
+    console.log(titles);
+  }
 
   return (
     <Wrapper>

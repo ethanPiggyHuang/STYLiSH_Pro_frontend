@@ -142,7 +142,7 @@ const SearchInput = styled.input`
 const AutoFilleds = styled.ul`
   width: 254px;
   position: absolute;
-  right: 312px;
+  right: ${({ role }) => (role === 1 ? '312px' : '226px')};
   top: 70px;
   background: #f1f1f1;
 `;
@@ -296,7 +296,7 @@ function Header() {
           return obj;
         })
       );
-      setTimeout(() => setAutoFilled([]), 8000);
+      setTimeout(() => setAutoFilled([]), 10000);
     } else if (autoFilled !== 0) {
       setAutoFilled([]);
     }
@@ -334,7 +334,7 @@ function Header() {
         }}
         value={inputValue}
       />
-      <AutoFilleds>
+      <AutoFilleds role={role}>
         {autoFilled.length !== 0 &&
           autoFilled.map((obj, index) => {
             return (

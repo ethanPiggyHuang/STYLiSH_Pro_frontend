@@ -225,7 +225,7 @@ const ProductImage = styled.img`
 
 const marquee = keyframes`
   from {
-    transform: translateX(0);
+    transform: translateX(100%);
   }
   to {
     transform: translateX(-100%);
@@ -246,7 +246,7 @@ const MarqueeText = styled.p`
   display: inline-block;
   animation: ${marquee} 20s linear infinite;
   color: #333;
-  font-size: 18px;
+  font-size: 52px;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -286,6 +286,7 @@ function Products() {
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
   const [marquee, setMarquee] = useState([]);
+  const [promoteItem, setPromoteItem] = useState([]);
   const handleChatboxToggle = () => {
     setIsChatboxVisible(!isChatboxVisible);
   };
@@ -330,16 +331,17 @@ function Products() {
         : await api.getProducts(category, nextPaging);
       if (nextPaging === 0) {
         setProducts(response.data);
+
+        //
+        //
       } else {
         setProducts((prev) => [...prev, ...response.data]);
+        console.log(products);
       }
+
       nextPaging = response.next_paging;
       isFetching = false;
       setIsLoading(false);
-      const item = products.find((p) => p.id === marquee.id);
-      console.log(products);
-      setCampaignText(item);
-      console.log(item);
     }
 
     async function scrollHandler() {
@@ -359,6 +361,31 @@ function Products() {
       window.removeEventListener('scroll', scrollHandler);
     };
   }, [keyword, category]);
+
+  useEffect(() => {
+    async function getProduct() {
+      if (marquee && marquee.id) {
+        const { data } = await api.getProduct(marquee.id);
+        setPromoteItem(data);
+        console.log(marquee.id);
+      }
+    }
+
+    getProduct();
+  }, [marquee]);
+  // if (products.length > 0) {
+  //   console.log(`Searching for product with id ${marquee.id}`);
+  //   console.log(products);
+
+  //   const item = products.find((p) => p.id === marquee.id);
+
+  //   if (item) {
+  //     console.log(`Found product with id ${item.id}: ${item.title}`);
+  //     setCampaignText(item);
+  //   } else {
+  //     console.log(`No product found with id ${marquee.id}`);
+  //   }
+  // }
   //todo 需改成變數
   useEffect(() => {
     fetch(`https://side-project2023.online/api/1.0/report/order/getevaluate`)
@@ -385,7 +412,7 @@ function Products() {
       <Socket></Socket>
       {/* <MarqueeContainer>
         <MarqueeText>
-          {hotData
+          {campaignText
             ? `熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
                 campaignText.price * 0.5
               )} 熱銷王${campaignText.title}五折促銷中,只要${Math.floor(
@@ -400,6 +427,17 @@ function Products() {
             : '熱銷王'}
         </MarqueeText>
       </MarqueeContainer> */}
+
+      {promoteItem.title !== undefined && (
+        <MarqueeContainer>
+          <MarqueeText
+          //isOverflowing={isOverflowing}
+          //ref={handleMarqueeRef}
+          >{`📢慶祝老闆被打到骨折!🎉 ${promoteItem.title}只要${Math.floor(
+            promoteItem.price * 0.5
+          )}`}</MarqueeText>
+        </MarqueeContainer>
+      )}
 
       {products.map(({ id, main_image, colors, title, price }) => {
         const promote = hotData.find((p) => p.id === id);

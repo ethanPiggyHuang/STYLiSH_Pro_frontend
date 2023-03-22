@@ -26,7 +26,11 @@ export const Chart1 = ({ size, totals, setTotals }) => {
 
   const drawChart = (data) => {
     const inMillion = data.map((number) => number / 1000000);
-    // const total_1 = inMillion.reduce((acc, cur) => (acc += cur)); /TODO
+    const total_1 = inMillion.reduce((acc, cur) => (acc += cur));
+    const newTotal = [...totals];
+    newTotal[0] = Number(total_1.toFixed(2));
+    console.log(newTotal);
+    setTotals(newTotal);
 
     c3.generate({
       bindto: '#chart1',

@@ -58,32 +58,9 @@ export const C3Pie = ({ productList }) => {
       );
       const menFlows = dates.map((date) => {
         const flowPerId = category.men.map((id) => {
-          const result = data[id].reduce((acc, cur) => {
-            if (cur[date] !== undefined) {
-              acc += Number(cur[date]);
-            }
-            return acc;
-          }, 0);
-          return result;
-        });
-        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
-      });
-      const womenFlows = dates.map((date) => {
-        const flowPerId = category.women.map((id) => {
-          const result = data[id].reduce((acc, cur) => {
-            if (cur[date] !== undefined) {
-              acc += Number(cur[date]);
-            }
-            return acc;
-          }, 0);
-          return result;
-        });
-        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
-      });
-      const accessoriesFlows = dates.map((date) => {
-        const flowPerId = category.accessories.map((id) => {
           let result = 0;
-          if (data[id] !== undefined) {
+          // console.log(data[id]);
+          if (data[id] !== undefined && data[id] !== null) {
             result = data[id].reduce((acc, cur) => {
               if (cur[date] !== undefined) {
                 acc += Number(cur[date]);
@@ -91,7 +68,38 @@ export const C3Pie = ({ productList }) => {
               return acc;
             }, 0);
           }
-
+          return result;
+        });
+        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
+      });
+      const womenFlows = dates.map((date) => {
+        const flowPerId = category.women.map((id) => {
+          let result = 0;
+          // console.log(data[id]);
+          if (data[id] !== undefined && data[id] !== null) {
+            result = data[id].reduce((acc, cur) => {
+              if (cur[date] !== undefined) {
+                acc += Number(cur[date]);
+              }
+              return acc;
+            }, 0);
+          }
+          return result;
+        });
+        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
+      });
+      const accessoriesFlows = dates.map((date) => {
+        const flowPerId = category.accessories.map((id) => {
+          let result = 0;
+          // console.log(data[id]);
+          if (data[id] !== undefined && data[id] !== null) {
+            result = data[id].reduce((acc, cur) => {
+              if (cur[date] !== undefined) {
+                acc += Number(cur[date]);
+              }
+              return acc;
+            }, 0);
+          }
           return result;
         });
         return Number(flowPerId.reduce((acc, cur) => (acc += cur), 0));
@@ -108,8 +116,8 @@ export const C3Pie = ({ productList }) => {
     c3.generate({
       bindto: '#spline',
       size: {
-        height: 300,
-        width: 420,
+        height: 450,
+        width: 500,
       },
       data: {
         x: 'x',

@@ -47,15 +47,14 @@ function App() {
   //   ReactGA.pageview(location.pathname + location.search);
   // }, [location]);
 
-  const [role, setRole] = useState(0);
   return (
     <>
       <Reset />
       <GlobalStyle />
       <AuthContextProvider>
         <CartContextProvider>
-          <Header role={role} />
-          <Outlet setRole={setRole} />
+          <Header />
+          <Outlet />
           <Footer />
         </CartContextProvider>
       </AuthContextProvider>

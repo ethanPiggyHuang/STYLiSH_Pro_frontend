@@ -198,18 +198,6 @@ function Product() {
   const [hotData, setHotData] = useState([]);
   const [product, setProduct] = useState();
   const { id } = useParams();
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   ReactGA.initialize('UA-000000-01', {
-  //     debug: true,
-  //     titleCase: false,
-  //     gaOptions: {
-  //       userId: 123,
-  //     },
-  //   });
-  //   ReactGA.pageview(location.pathname + location.search);
-  // }, [location]);
 
   useEffect(() => {
     async function getProduct() {
@@ -219,27 +207,28 @@ function Product() {
     getProduct();
   }, [id]);
 
+  useEffect(() => {
+    const getHotData = () => {
+      fetch('https://side-project2023.online/api/1.0/report/hot/list', {
+        method: 'get',
+        headers: new Headers({
+          'Content-Type': 'application/json',
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          const dataArray = data.data;
+          setHotData(dataArray);
+        });
+    };
+
+    // Call getHotData only once when the component mounts
+    getHotData();
+  }, []);
+
   if (!product || !id) return null;
 
-  const getHotData = () => {
-    fetch('https://side-project2023.online/api/1.0/report/hot/list', {
-      method: 'get',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data);
-        const dataArray = data.data;
-        // console.log(data.data[0].discount);
-        setHotData(dataArray);
-        // console.log(hotData);
-      });
-  };
-
   const promote = hotData.find((p) => p.id === product.id);
-  getHotData();
   console.log(hotData);
   console.log(promote);
   console.log(product.id);

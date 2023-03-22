@@ -61,15 +61,16 @@ const Chat = styled.div`
   bottom: 300px;
   left: 120px;
   width: 500px;
-  height: 500px;
+  height: 400px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+
   transition: all 0.3s ease-in-out;
   display: ${({ isVisible }) => (isVisible ? 'block' : 'none')};
   transform: ${({ isVisible }) =>
     isVisible ? 'translateX(0)' : 'translateX(100%)'};
-  width: ${({ isExpanded }) => (isExpanded ? '70%' : '500px')};
+  width: ${({ isExpanded }) => (isExpanded ? '600px' : '400px')};
   height: ${({ isExpanded }) => (isExpanded ? '600px' : '300px')};
   @media only screen and (max-width: 768px) {
     /* Styles for small screens */
@@ -425,6 +426,7 @@ export const Socket = () => {
           </MarqueeContainer>
         )}
         <ChatMessages>
+          <div ref={messagesEndRef} />
           {hasSentFirstMessage ? (
             <CustomerMessage>
               {`您好，${userId}。歡迎使用聊天功能。`}

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 import { Reset } from 'styled-reset';
+import { useState } from 'react';
 // import { useEffect } from 'react';
 // import { useLocation } from 'react-router-dom';
 // import ReactGA from 'react-ga';
@@ -45,14 +46,16 @@ function App() {
   // useEffect(() => {
   //   ReactGA.pageview(location.pathname + location.search);
   // }, [location]);
+
+  const [role, setRole] = useState(0);
   return (
     <>
       <Reset />
       <GlobalStyle />
       <AuthContextProvider>
         <CartContextProvider>
-          <Header />
-          <Outlet />
+          <Header role={role} />
+          <Outlet setRole={setRole} />
           <Footer />
         </CartContextProvider>
       </AuthContextProvider>

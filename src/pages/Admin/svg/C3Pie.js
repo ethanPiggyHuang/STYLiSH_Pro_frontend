@@ -4,7 +4,6 @@ import 'c3/c3.css';
 
 /* Component */
 export const C3Pie = ({ productList }) => {
-  console.log(productList);
   const [data, setData] = useState({});
   const list = [
     201807201824, 201807202140, 201807202150, 201807202157, 201807242211,
@@ -20,103 +19,92 @@ export const C3Pie = ({ productList }) => {
     '2023-03-19',
     '2023-03-20',
   ];
-  // const [complete, setComplete] = useState([]);
-
-  // console.log(data);
-
-  useEffect(
-    () => {
-      list.forEach((id) => {
-        // console.log(Object.keys(data));
-        if (
-          Object.keys(data).length === 0 ||
-          Object.keys(data).findIndex((e) => e === id) === -1
-        ) {
-          fetch(
-            `https://side-project2023.online/api/1.0/products/trafficreport?id=${id}`
-          )
-            .then((res) => res.json())
-            .then((data) => {
-              if (Object.keys(data.data).length !== 0) {
-                setData((prev) => {
-                  return { ...prev, ...data.data };
-                });
-              }
-            });
-        }
-      });
-    },
-
-    // drawChart(
-    //   [...new Set(data.data.map((order) => order.createtime))].map((date) =>
-    //     data.data.reduce(
-    //       (acc, cur) =>
-    //         cur.createtime === date ? (acc += cur.total) : acc,
-    //       0
-    //     )
-    //   )
-    // );
-    [productList]
-  );
 
   useEffect(() => {
-    let category = productList.reduce(
-      (acc, cur) => {
-        if (cur.category === 'men') {
-          acc.men = [...acc.men, cur.productId];
-        } else if (cur.category === 'women') {
-          acc.women = [...acc.women, cur.productId];
-        } else if (cur.category === 'accessories') {
-          acc.accessories = [...acc.accessories, cur.productId];
-        }
-        return acc;
-      },
-      { men: [], women: [], accessories: [] }
-    );
-    console.log(category);
-    // console.log(data);
+    list.forEach((id) => {
+      if (
+        Object.keys(data).length === 0 ||
+        Object.keys(data).findIndex((e) => e === id) === -1
+      ) {
+        fetch(
+          `https://side-project2023.online/api/1.0/products/trafficreport?id=${id}`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (Object.keys(data.data).length !== 0) {
+              setData((prev) => {
+                return { ...prev, ...data.data };
+              });
+            }
+          });
+      }
+    });
+  }, [productList]);
 
-    const menFlows = dates.map((date) => {
-      const flowPerId = category.men.map((id) => {
-        const result = data[id].reduce((acc, cur) => {
-          if (cur[date] !== undefined) {
-            acc += Number(cur[date]);
+  useEffect(() => {
+    if (productList.length !== 0) {
+      let category = productList.reduce(
+        (acc, cur) => {
+          if (cur.category === 'men') {
+            acc.men = [...acc.men, cur.productId];
+          } else if (cur.category === 'women') {
+            acc.women = [...acc.women, cur.productId];
+          } else if (cur.category === 'accessories') {
+            acc.accessories = [...acc.accessories, cur.productId];
           }
           return acc;
-        }, 0);
-        return result;
+        },
+        { men: [], women: [], accessories: [] }
+      );
+      const menFlows = dates.map((date) => {
+        const flowPerId = category.men.map((id) => {
+          const result = data[id].reduce((acc, cur) => {
+            if (cur[date] !== undefined) {
+              acc += Number(cur[date]);
+            }
+            return acc;
+          }, 0);
+          return result;
+        });
+        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
       });
-      return flowPerId.reduce((acc, cur) => (acc += cur), 0);
-    });
-    const womenFlows = dates.map((date) => {
-      const flowPerId = category.women.map((id) => {
-        const result = data[id].reduce((acc, cur) => {
-          if (cur[date] !== undefined) {
-            acc += Number(cur[date]);
+      const womenFlows = dates.map((date) => {
+        const flowPerId = category.women.map((id) => {
+          const result = data[id].reduce((acc, cur) => {
+            if (cur[date] !== undefined) {
+              acc += Number(cur[date]);
+            }
+            return acc;
+          }, 0);
+          return result;
+        });
+        return flowPerId.reduce((acc, cur) => (acc += cur), 0);
+      });
+      const accessoriesFlows = dates.map((date) => {
+        const flowPerId = category.accessories.map((id) => {
+          let result = 0;
+          if (data[id] !== undefined) {
+            result = data[id].reduce((acc, cur) => {
+              if (cur[date] !== undefined) {
+                acc += Number(cur[date]);
+              }
+              return acc;
+            }, 0);
           }
-          return acc;
-        }, 0);
-        return result;
+
+          return result;
+        });
+        return Number(flowPerId.reduce((acc, cur) => (acc += cur), 0));
       });
-      return flowPerId.reduce((acc, cur) => (acc += cur), 0);
-    });
-    const accessoriesFlows = dates.map((date) => {
-      const flowPerId = category.accessories.map((id) => {
-        const result = data[id].reduce((acc, cur) => {
-          if (cur[date] !== undefined) {
-            acc += Number(cur[date]);
-          }
-          return acc;
-        }, 0);
-        return result;
-      });
-      return flowPerId.reduce((acc, cur) => (acc += cur), 0);
-    });
-    // console.log(accessoriesDates);
-    drawChart(menFlows, womenFlows, accessoriesFlows);
+      drawChart(menFlows, womenFlows, accessoriesFlows);
+    }
+
+    // console.log(category);
+    // console.log(data);
   }, [data]);
 
-  const drawChart = ({ menFlows, womenFlows, accessoriesFlows }) => {
+  function drawChart(menFlows, womenFlows, accessoriesFlows) {
+    const date = new Date();
     c3.generate({
       bindto: '#spline',
       size: {
@@ -124,23 +112,32 @@ export const C3Pie = ({ productList }) => {
         width: 420,
       },
       data: {
+        x: 'x',
         columns: [
+          [
+            'x',
+            date.getDate() - 4,
+            date.getDate() - 3,
+            date.getDate() - 2,
+            date.getDate() - 1,
+            date.getDate(),
+          ],
           ['男裝', ...menFlows],
           ['女裝', ...womenFlows],
           ['配件', ...accessoriesFlows],
+          // ['data1', 300, 350, 300, 0, 0, 120],
+          // ['data2', 130, 100, 140, 200, 150, 50],
         ],
         types: {
-          data1: 'area-spline',
-          data2: 'area-spline',
-          data3: 'area-spline',
+          男裝: 'area-spline',
+          女裝: 'area-spline',
+          配件: 'area-spline',
           // 'line', 'spline', 'step', 'area', 'area-step' are also available to stack
         },
-        groups: [['data1', 'data2', 'data3']],
+        groups: [['男裝', '女裝', '配件']],
       },
     });
-  };
-
-  drawChart();
+  }
 
   return <div id="spline" />;
 };

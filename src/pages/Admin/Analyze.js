@@ -15,7 +15,7 @@ const Wrapper = styled.div`
 `;
 
 const Blocks = styled.div`
-  max-width: 960px;
+  max-width: 1160px;
   margin: 0 auto;
   display: flex;
   justify-content: left;
@@ -59,6 +59,7 @@ const Amount = styled.div`
   line-height: 50px;
   height: 50px;
   width: 200px;
+  text-align: right;
 
   @media screen and (max-width: 1279px) {
   }
@@ -99,8 +100,8 @@ const Resize = styled.div`
 `;
 
 const Chart = styled.div`
-  border: solid 1px black;
-  height: ${({ size }) => (size === 'large' ? '400px' : '300px')};
+  border: dashed 1px grey;
+  height: ${({ size }) => (size === 'large' ? '600px' : '450px')};
 
   @media screen and (max-width: 1279px) {
   }
@@ -126,6 +127,8 @@ function Analyze({ data }) {
   const [nextpaging, setNextpaging] = useState(0);
   // console.log(productList);
 
+  const [totals, setTotals] = useState([0, 0, 0]);
+
   useEffect(() => {
     if (nextpaging > -1)
       fetch(
@@ -150,11 +153,11 @@ function Analyze({ data }) {
             <TopBar>
               <Title>{titles[index]}</Title>
               <Amount>總金額：元</Amount>
-              <TimeButtons>
+              {/* <TimeButtons>
                 <TimeButton>月</TimeButton>
                 <TimeButton>週</TimeButton>
                 <TimeButton>日</TimeButton>
-              </TimeButtons>
+              </TimeButtons> */}
               {/* <Resize
                 size={blockSize[index]}
                 onClick={() => {
@@ -165,8 +168,24 @@ function Analyze({ data }) {
               </Resize> */}
             </TopBar>
             <Chart size={blockSize[index]}>
-              {index === 0 ? <Chart1 size={blockSize[0]} /> : ''}
-              {index === 2 ? <C3Pie productList={productList} /> : ''}
+              {index === 0 ? (
+                <Chart1
+                  size={blockSize[0]}
+                  totals={totals}
+                  setTotals={setTotals}
+                />
+              ) : (
+                ''
+              )}
+              {index === 1 ? (
+                <C3Pie
+                  productList={productList}
+                  totals={totals}
+                  setTotals={setTotals}
+                />
+              ) : (
+                ''
+              )}
             </Chart>
           </Block>
         ))}

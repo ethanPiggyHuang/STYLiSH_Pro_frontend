@@ -5,7 +5,7 @@ import 'c3/c3.css';
 import './Chart1.css';
 
 /* Component */
-export const Chart1 = ({ size }) => {
+export const Chart1 = ({ size, totals, setTotals }) => {
   useEffect(() => {
     fetch('https://side-project2023.online/api/1.0/report/order/total')
       .then((res) => res.json())
@@ -28,16 +28,17 @@ export const Chart1 = ({ size }) => {
 
   const drawChart = (data) => {
     const inMillion = data.map((number) => number / 1000000);
+    // const total_1 = inMillion.reduce((acc, cur) => (acc += cur)); /TODO
 
     c3.generate({
       bindto: '#chart1',
       size: {
-        height: 400,
+        height: 570,
         //   width: 900,
       },
       data: {
         x: 'x',
-        xFormat: '%Y%m%d',
+        // xFormat: '%Y%m%d',
         columns: [
           [
             'x',

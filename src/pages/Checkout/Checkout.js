@@ -379,15 +379,15 @@ function Checkout() {
       setCartItems([]);
       navigate('/thankyou', { state: { orderNumber: data.number } });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     } finally {
       setLoading(false);
     }
   }
-  console.log(cartItems);
+  // console.log(cartItems);
   if (cartItems.length !== 0) {
     const titles = cartItems.map((item) => item.name[0]);
-    console.log(titles);
+    // console.log(titles);
   }
 
   return (

@@ -95,14 +95,14 @@ const Table = () => {
 
   const [hotData, setHotData] = useState([]);
   if (hotData.data) {
-    console.log('hotData', hotData.data.length);
+    // console.log('hotData', hotData.data.length);
   }
   //
   const isPromoting = (id) => {
     return hotData.data.some((item) => item.id === id);
   };
   const getHotData = () => {
-    console.log('getHotData');
+    // console.log('getHotData');
     fetch('https://side-project2023.online/api/1.0/report/hot/list', {
       method: 'get',
       headers: new Headers({
@@ -111,7 +111,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log('gethot', data);
+        // console.log('gethot', data);
         setHotData(...hotData, ...data);
       });
   };
@@ -170,14 +170,14 @@ const Table = () => {
           item.rank = index + 1;
         });
 
-        console.log(rankedItems);
+        // console.log(rankedItems);
         //console.log(hotData);
         const rankedItemsWithPromotion = rankedItems.map((item) => {
           //console.log('item.id', item.id);
           //console.log('hotData', hotData.data);
           const isPromoting =
             hotData.data.some((hotItem) => hotItem.id === item.id) || false;
-          console.log(isPromoting);
+          // console.log(isPromoting);
           return {
             ...item,
             isPromoting,
@@ -195,16 +195,12 @@ const Table = () => {
         'Content-Type': 'application/json',
       }),
       body: JSON.stringify(body),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        setPostSuccess(true);
-      });
+    }).then((res) => res.json());
+    // .then((res) => console.log(res));
   };
 
   const deleteHot = (id, discount, deadline) => {
-    console.log('hi');
+    // console.log('hi');
     const body = {
       id: id,
       discount: discount,
@@ -219,7 +215,7 @@ const Table = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setDeleteSuccess(true);
       });
   };
@@ -236,7 +232,7 @@ const Table = () => {
     newCampaignTimeOptions[rowIndex] = e.target.value;
     setCampaignTimeOptions(newCampaignTimeOptions);
     e.stopPropagation();
-    console.log(newCampaignTimeOptions);
+    // console.log(newCampaignTimeOptions);
   };
 
   function PromotionButton({

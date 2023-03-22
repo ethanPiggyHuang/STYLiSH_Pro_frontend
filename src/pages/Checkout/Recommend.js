@@ -150,7 +150,7 @@ function Recommend({ cartLength }) {
     newKeywords.forEach((keyword) => getFuzzys(keyword));
     async function getFuzzys(keyword) {
       const { data } = await api.getFuzzys(keyword); //TODO:
-      console.log(data);
+      // console.log(data);
       if (data.length !== 0) {
         setRecommentItems((prev) => [...prev, data[0]]);
       }
@@ -197,10 +197,10 @@ function Recommend({ cartLength }) {
     //   window.alert('請選擇尺寸');
     //   return;
     // }
-    console.log(index);
+    // console.log(index);
     // console.log(recommentItems);
     const product = recommentItems[index];
-    console.log(recommentItems[index]);
+    // console.log(recommentItems[index]);
     const randomQty = Math.floor(Math.random() * 6) + 1;
     const newCartItems = [
       ...cartItems,

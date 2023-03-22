@@ -115,7 +115,7 @@ export const C3Pie = ({ productList, totals, setTotals }) => {
         (menTotal + womenTotal + accessoriesTotal).toFixed(2)
       );
       newTotal[2] = [menTotal, womenTotal, accessoriesTotal];
-      console.log(newTotal);
+      // console.log(newTotal);
       setTotals(newTotal);
     }
 

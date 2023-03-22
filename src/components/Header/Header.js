@@ -273,7 +273,7 @@ const categories = [
 
 function Header() {
   const [inputValue, setInputValue] = useState('');
-  const { user } = useContext(AuthContext);
+  const { user, role } = useContext(AuthContext);
   const { cartCount } = useContext(CartContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -362,10 +362,15 @@ function Header() {
           <PageLinkProfileIcon icon={profile} url={user?.picture} />
           <PageLinkText>會員</PageLinkText>
         </PageLink>
-        <PageLink to="/admin/analyze">
-          <PageLinkProfileIcon icon={profile} />
-          <PageLinkText>後台</PageLinkText>
-        </PageLink>
+        {/* role = 1是管理者 */}
+        {role === 1 ? (
+          <PageLink to="/admin/analyze">
+            <PageLinkProfileIcon icon={profile} />
+            <PageLinkText>後台</PageLinkText>
+          </PageLink>
+        ) : (
+          ''
+        )}
       </PageLinks>
     </Wrapper>
   );

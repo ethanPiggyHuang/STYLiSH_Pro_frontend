@@ -9,6 +9,7 @@ export const AuthContext = createContext({
   jwtToken: '',
   login: () => {},
   logout: () => {},
+  role: 0,
 });
 
 export const AuthContextProvider = ({ children }) => {
@@ -16,6 +17,7 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const [jwtToken, setJwtToken] = useState();
+  const [role, setRole] = useState(0);
 
   const handleLoginResponse = useCallback(async (response) => {
     const accessToken = response.authResponse.accessToken;
@@ -30,6 +32,22 @@ export const AuthContextProvider = ({ children }) => {
     setIsLogin(true);
     return tokenFromServer;
   }, []);
+
+  useEffect(() => {
+    if (jwtToken) {
+      fetch(`https://side-project2023.online/api/1.0/user/getuserrole`, {
+        headers: new Headers({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${jwtToken}`,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(`your role is`, data.data.role_id);
+          setRole(data.data.role_id);
+        });
+    }
+  }, [jwtToken]);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -53,6 +71,7 @@ export const AuthContextProvider = ({ children }) => {
     if (response.status === 'connected') {
       const tokenFromServer = handleLoginResponse(response);
       setLoading(false);
+
       return tokenFromServer;
     } else {
       window.localStorage.removeItem('jwtToken');
@@ -69,6 +88,7 @@ export const AuthContextProvider = ({ children }) => {
     setJwtToken();
     window.localStorage.removeItem('jwtToken');
     setLoading(false);
+    setRole(0);
   };
 
   return (
@@ -80,6 +100,7 @@ export const AuthContextProvider = ({ children }) => {
         jwtToken,
         login,
         logout,
+        role,
       }}
     >
       {children}

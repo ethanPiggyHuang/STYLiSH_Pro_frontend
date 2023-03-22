@@ -30,8 +30,8 @@ function AddRandomCart() {
     // console.log(detail);
     const randomQty = Math.floor(Math.random() * 6) + 1;
 
-    console.log(fakeIds);
-    console.log(data.data);
+    // console.log(fakeIds);
+    // console.log(data.data);
     const newCartItems = [
       ...cartItems,
       {

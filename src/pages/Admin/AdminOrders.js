@@ -425,10 +425,10 @@ function AdminOrders() {
           setMessages(data.data);
         }
       });
-    console.log('here?');
+    // console.log('here?');
   };
 
-  console.log('hi'); //TODO FIX   //////超級大問題
+  // console.log('hi'); //TODO FIX   //////超級大問題
 
   return (
     <Wrapper>

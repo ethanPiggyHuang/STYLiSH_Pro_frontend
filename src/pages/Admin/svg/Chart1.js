@@ -29,7 +29,7 @@ export const Chart1 = ({ size, totals, setTotals }) => {
     const total_1 = inMillion.reduce((acc, cur) => (acc += cur));
     const newTotal = [...totals];
     newTotal[0] = Number(total_1.toFixed(2));
-    console.log(newTotal);
+    // console.log(newTotal);
     setTotals(newTotal);
 
     c3.generate({

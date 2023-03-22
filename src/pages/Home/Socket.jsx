@@ -165,7 +165,7 @@ export const Socket = () => {
     socketRef.current.on('chat message', (data) => {
       const { message, sender, timestamp } = data;
       setHasUnreadMessages(true);
-      console.log(hasUnreadMessages);
+      // console.log(hasUnreadMessages);
       const formattedTime = timestamp.toLocaleString('en-US');
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -204,11 +204,11 @@ export const Socket = () => {
   const handleSendMessage = () => {
     const timestamp = new Date();
     const formattedTime = timestamp.toLocaleString('en-US');
-    console.log(formattedTime); // Outputs: Mon 02:47 AM GMTs
+    // console.log(formattedTime); // Outputs: Mon 02:47 AM GMTs
     if (userId === 'customer-support') {
       const recipientId = prompt('Enter the user ID to reply:');
       setHasUnreadMessages(true);
-      console.log(hasUnreadMessages);
+      // console.log(hasUnreadMessages);
       socketRef.current.emit('chat message', {
         id: recipientId,
         message,
@@ -289,9 +289,13 @@ export const Socket = () => {
           />
 
           {messages.map((msg, index) => {
-            console.log('msg sender: ' + msg.sender);
+            {
+              /* console.log('msg sender: ' + msg.sender); */
+            }
             if (msg.sender === 'Me') {
-              console.log('me');
+              {
+                /* console.log('me'); */
+              }
               return (
                 <>
                   <UserImage></UserImage>
@@ -299,7 +303,9 @@ export const Socket = () => {
                 </>
               );
             } else if (msg.sender === 'customer-support') {
-              console.log('customer-support');
+              {
+                /* console.log('customer-support'); */
+              }
               return (
                 <>
                   <AdminImage></AdminImage>

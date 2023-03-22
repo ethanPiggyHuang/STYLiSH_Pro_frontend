@@ -43,7 +43,7 @@ export const AuthContextProvider = ({ children }) => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(`your role is`, data.data.role_id);
+          // console.log(`your role is`, data.data.role_id);
           setRole(data.data.role_id);
         });
     }

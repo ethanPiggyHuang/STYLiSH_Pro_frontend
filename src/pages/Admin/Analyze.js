@@ -117,13 +117,13 @@ function Analyze({ data }) {
   );
   const blockData = [0, 1, 2];
   const titles = ['交易總額', '各類別流量', '各類別流量比例'];
-  const handleResize = (blockIndex) => {
-    setBlockSize(
-      blockSize.map((size, index) =>
-        index === blockIndex ? (size === 'large' ? 'medium' : 'large') : size
-      )
-    );
-  };
+  // const handleResize = (blockIndex) => {
+  //   setBlockSize(
+  //     blockSize.map((size, index) =>
+  //       index === blockIndex ? (size === 'large' ? 'medium' : 'large') : size
+  //     )
+  //   );
+  // };
   const [productList, setProductList] = useState([]);
   const [nextpaging, setNextpaging] = useState(0);
   // console.log(productList);

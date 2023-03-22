@@ -393,7 +393,7 @@ export default function PersonalOrder() {
           }
         });
     } else {
-      console.log('evaluated');
+      // console.log('evaluated');
       handleChat(order, message);
     }
 
@@ -418,7 +418,7 @@ export default function PersonalOrder() {
       .then((res) => {
         // console.log(res);
       });
-    console.log('m');
+    // console.log('m');
     setMessages([
       ...messages,
       {

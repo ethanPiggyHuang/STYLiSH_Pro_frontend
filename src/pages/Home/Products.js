@@ -215,7 +215,7 @@ function Products() {
   const keyword = searchParams.get('keyword');
   const category = searchParams.get('category') || 'all';
   const [ratings, setRatings] = useState([]);
-  console.log('products', products);
+  // console.log('products', products);
 
   const [isOnline, setIsOnline] = useState(true);
   const [hotData, setHotData] = useState([]);
@@ -251,7 +251,7 @@ function Products() {
     let isFetching = false;
     getHotData();
     async function fetchProducts() {
-      console.log('enter');
+      // console.log('enter');
       isFetching = true;
       setIsLoading(true);
       const response = keyword
@@ -259,7 +259,7 @@ function Products() {
         : await api.getProducts(category, nextPaging);
       if (response.data.length < 3) {
         setProducts(response.data);
-        console.log(response.data.map((item) => item.id));
+        // console.log(response.data.map((item) => item.id));
         getMoreSearch(response.data.map((item) => item.id));
       } else if (nextPaging === 0) {
         setProducts(response.data);
@@ -277,7 +277,7 @@ function Products() {
           `https://side-project2023.online/api/1.0/products/details?id=${id}`
         );
         const data = await response.json();
-        console.log(data.data);
+        // console.log(data.data);
         setProducts((prev) => [...prev, data.data]);
       }
       // hot

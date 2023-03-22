@@ -12,7 +12,7 @@ export const PieChart2 = ({ productList, totals }) => {
     201902191275, 201902191276, 201902191277, 201902191278, 201902191279,
     201902191280,
   ];
-  console.log(data);
+  // console.log(data);
 
   // useEffect(
   //   () => {
@@ -55,13 +55,13 @@ export const PieChart2 = ({ productList, totals }) => {
         ],
         type: 'pie',
         onclick: function (d, i) {
-          console.log('onclick', d, i);
+          // console.log('onclick', d, i);
         },
         onmouseover: function (d, i) {
-          console.log('onmouseover', d, i);
+          // console.log('onmouseover', d, i);
         },
         onmouseout: function (d, i) {
-          console.log('onmouseout', d, i);
+          // console.log('onmouseout', d, i);
         },
       },
     });

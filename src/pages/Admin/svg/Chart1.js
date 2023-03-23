@@ -44,10 +44,10 @@ export const Chart1 = ({ size, totals, setTotals }) => {
         columns: [
           [
             'x',
+            date.getDate() - 4,
             date.getDate() - 3,
             date.getDate() - 2,
             date.getDate() - 1,
-            date.getDate(),
           ],
           ['單日總額', ...inMillion],
         ],

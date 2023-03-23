@@ -105,10 +105,11 @@ export const C3Pie = ({ productList, totals, setTotals }) => {
         return Number(flowPerId.reduce((acc, cur) => (acc += cur), 0));
       });
       drawChart(menFlows, womenFlows, accessoriesFlows);
-      const menTotal = menFlows.reduce((acc, cur) => (acc += cur));
-      const womenTotal = womenFlows.reduce((acc, cur) => (acc += cur));
+      const menTotal = menFlows.reduce((acc, cur) => (acc += cur), 0);
+      const womenTotal = womenFlows.reduce((acc, cur) => (acc += cur), 0);
       const accessoriesTotal = accessoriesFlows.reduce(
-        (acc, cur) => (acc += cur)
+        (acc, cur) => (acc += cur),
+        0
       );
       const newTotal = [...totals];
       newTotal[1] = Number(
@@ -136,11 +137,11 @@ export const C3Pie = ({ productList, totals, setTotals }) => {
         columns: [
           [
             'x',
+            date.getDate() - 5,
             date.getDate() - 4,
             date.getDate() - 3,
             date.getDate() - 2,
             date.getDate() - 1,
-            date.getDate(),
           ],
           ['男裝', ...menFlows],
           ['女裝', ...womenFlows],

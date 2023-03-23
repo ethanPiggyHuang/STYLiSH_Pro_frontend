@@ -116,7 +116,7 @@ function Analyze({ data }) {
       .map((element, index) => (index === 0 ? 'large' : 'medium'))
   );
   const blockData = [0, 1, 2];
-  const titles = ['交易總額', '各類別流量', '各類別流量比例'];
+  const titles = ['交易總額', '各類別流量', '各類別銷售額'];
   // const handleResize = (blockIndex) => {
   //   setBlockSize(
   //     blockSize.map((size, index) =>
@@ -158,14 +158,14 @@ function Analyze({ data }) {
                   ''
                 ) : (
                   <>
-                    {index === 1 ? '四日總流量 ' : '四日總金額 '}
+                    {/* {index === 1 ? '四日總流量 ' : '四日總金額 '} */}
                     {/* TODO */}
                     {/* {index === 2
                       ? totals[2].length === 0
                         ? 0
                         : totals[2].reduce((acc, cur) => (acc += cur), 0)
                       : totals[index]} */}
-                    {index === 0 ? ' 百萬元' : ' 次'}
+                    {/* {index === 0 ? ' 百萬元' : ' 次'} */}
                   </>
                 )}
               </Amount>

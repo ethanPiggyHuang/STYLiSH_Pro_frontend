@@ -40,7 +40,7 @@ export const PieChart2 = ({ productList, totals }) => {
   //   []
   // );
 
-  const drawChart = (data) => {
+  const drawChart = () => {
     c3.generate({
       bindto: '#pie2',
       size: {
@@ -66,7 +66,10 @@ export const PieChart2 = ({ productList, totals }) => {
       },
     });
   };
-  drawChart();
+  useEffect(() => {
+    console.log(totals[2]);
+    drawChart();
+  }, [totals[2]]);
 
   return <div id="pie2" />;
 };

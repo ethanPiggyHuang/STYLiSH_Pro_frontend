@@ -34,7 +34,10 @@ root.render(
         <Route path="admin/analyze" element={<Analyze data={data} />} />
         <Route path="admin/orders" element={<AdminOrders />} />
         <Route path="admin/messages" element={<Messages />} />
-        <Route path="admin" element={<Navigate to="admin/analyze" replace />} />
+        <Route
+          path="admin"
+          element={<Navigate to="admin/messages" replace />}
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

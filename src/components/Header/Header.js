@@ -364,7 +364,7 @@ function Header() {
         </PageLink>
         {/* role = 1是管理者 */}
         {role === 1 ? (
-          <PageLink to="/admin/analyze">
+          <PageLink to="/admin/messages">
             <PageLinkProfileIcon icon={profile} />
             <PageLinkText>後台</PageLinkText>
           </PageLink>

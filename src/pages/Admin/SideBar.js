@@ -49,8 +49,8 @@ function SideBar() {
   return (
     <Wrapper>
       <PageLinks>
-        <Link to="../admin/analyze">
-          <PageLink>分析報表</PageLink>
+        <Link to="../admin/messages">
+          <PageLink>訊息管理</PageLink>
         </Link>
         <Link to="../admin/promote">
           <PageLink>促銷設定</PageLink>
@@ -58,8 +58,8 @@ function SideBar() {
         <Link to="../admin/orders">
           <PageLink>訂單管理</PageLink>
         </Link>
-        <Link to="../admin/messages">
-          <PageLink>訊息管理</PageLink>
+        <Link to="../admin/analyze">
+          <PageLink>分析報表</PageLink>
         </Link>
       </PageLinks>
     </Wrapper>

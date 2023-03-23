@@ -208,8 +208,9 @@ const UnreadMessageIndicator = styled.div`
   height: 20px;
   background-color: #f44336;
   border-radius: 50%;
-  bottom: 160px;
-  left: 60px;
+  bottom: 310px;
+  z-index: 205;
+  left: 90px;
 `;
 
 const ChatIconWrap = styled.div``;

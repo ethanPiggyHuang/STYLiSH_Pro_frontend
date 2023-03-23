@@ -116,7 +116,7 @@ function Analyze({ data }) {
       .map((element, index) => (index === 0 ? 'large' : 'medium'))
   );
   const blockData = [0, 1, 2];
-  const titles = ['交易總額', '各類別流量', '各類別銷售額'];
+  const titles = ['交易總額', '各類別流量', '各類別流量比例'];
   // const handleResize = (blockIndex) => {
   //   setBlockSize(
   //     blockSize.map((size, index) =>
